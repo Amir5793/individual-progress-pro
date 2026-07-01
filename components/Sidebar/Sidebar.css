@@ -1,0 +1,103 @@
+.sidebar {
+  width: 220px;
+  min-width: 220px;
+  height: 100vh;
+  background: var(--sidebar-bg);
+  display: flex;
+  flex-direction: column;
+  padding: 28px 16px 24px;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative;
+  z-index: 2;
+}
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 8px;
+  margin-bottom: 36px;
+}
+.logo-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #7b61ff 0%, #4f8dff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+.logo-text .t1 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.logo-text .t2 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--accent-purple);
+}
+aside svg{
+  width: 3rem;
+  height: 3rem;
+}
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 15px;
+  font-weight: 500;
+  position: relative;
+  white-space: nowrap;
+}
+.nav-item.active {
+  background: rgba(123, 97, 255, 0.15);
+  color: var(--accent-purple);
+}
+.nav-item.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 60%;
+  background: var(--accent-purple);
+  border-radius: 0 3px 3px 0;
+}
+.sidebar-bottom {
+  margin-top: auto;
+  padding-top: 16px;
+}
+.theme-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+}
+.theme-selector .chevron {
+  margin-left: auto;
+  opacity: 0.5;
+}

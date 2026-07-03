@@ -26,16 +26,27 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  min-width: 35vw;
+  min-width: 50vw;
   max-width: 28rem;
-  min-height: 25vh;
+  min-height: 50vh;
+  max-height: 75vh;
+  height: fit-content;
+  overflow: visible;
   margin-left: auto;
   margin-right: auto;
-  width: 100%;
+  /*width: 100%;*/
+  display: flex;
+  flex-direction: column;
+  /*align-items: space-between;*/
+  justify-content: space-between;
   border-radius: 2rem;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
   0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  background-color: var(--accent);
+  /*background-color: var(--accent);*/
+  /*background-color: var(--primary);*/
+  background: linear-gradient(-45deg, #3B3B98, #2C3A47, #182C61, #2f3640);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
 }
 
 .step-indicator-row {
@@ -48,9 +59,15 @@
 .step-content-default {
   position: relative;
   overflow: hidden;
+  min-height: 25vh;
+  height: fit-content;
+
 }
 
 .step-default {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
   padding-left: 2rem;
   padding-right: 2rem;
 }
@@ -100,7 +117,9 @@
   align-items: center;
   justify-content: center;
   border-radius: 9999px;
-  background-color: var(--success);
+  background: linear-gradient(-45deg, var(--accent-purple), var(--card), var(--sidebar-primary-foreground), var(--sidebar-bg));
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
   color: #fff;
   font-weight: 500;
   letter-spacing: -0.025em;
@@ -109,13 +128,13 @@
   border: none;
 }
 
-.next-button:hover {
-  background-color: var(--success-foreground);
-}
+/*.next-button:hover {*/
+/*  background-color: var(--success-foreground);*/
+/*}*/
 
-.next-button:active {
-  background-color: var(--success-foreground);
-}
+/*.next-button:active {*/
+/*  background-color: var(--success-foreground);*/
+/*}*/
 
 .skip-button {
   transition: all 350ms;
@@ -128,13 +147,13 @@
 }
 
 .skip-button:hover {
-  color: var(--accent-blue);
+  color: var(--accent-purple);
 }
 
 .skip-button.inactive {
   pointer-events: none;
   opacity: 0.5;
-  color: var(--accent-blue);
+  color: var(--accent-purple);
 }
 
 .complete-button {
@@ -143,7 +162,9 @@
   align-items: center;
   justify-content: center;
   border-radius: 9999px;
-  background-color: var(--primary);
+  background: linear-gradient(-45deg, var(--accent-purple), var(--card), var(--sidebar-primary-foreground), var(--sidebar-bg));
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
   color: #fff;
   font-weight: 500;
   letter-spacing: -0.025em;
@@ -201,4 +222,17 @@
   height: 1rem;
   width: 1rem;
   color: #fff;
+}
+
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }

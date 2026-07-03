@@ -21,3 +21,20 @@
 .fab svg {
   width: 80%;
 }
+
+.stepper-wrapper{
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  background: rgba(37, 55, 143, 0.19);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(11.8px);
+  -webkit-backdrop-filter: blur(11.8px);
+  backdrop-filter: blur(11.8px);
+  /*align-items: center;*/
+  /*justify-content: center;*/
+}

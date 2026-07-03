@@ -4,6 +4,7 @@ import {motion, AnimatePresence} from 'motion/react';
 
 
 import './Stepper.css';
+import Antigravity from "@/components/Antigravity/Antigravity";
 
 export default function Stepper({
                                     children,
@@ -60,7 +61,23 @@ export default function Stepper({
     };
 
     return (<div className="outer-container" {...rest}>
-        <div className={`step-circle-container ${stepCircleContainerClassName}`} style={{border: '1px solid #222'}}>
+        <Antigravity
+            count={300}
+            magnetRadius={6}
+            ringRadius={7}
+            waveSpeed={0.4}
+            waveAmplitude={1}
+            particleSize={1.5}
+            lerpSpeed={0.05}
+            color="#5227FF"
+            autoAnimate
+            particleVariance={1}
+            rotationSpeed={0}
+            depthFactor={1}
+            pulseSpeed={3}
+            particleShape="capsule"
+            fieldStrength={10}></Antigravity>
+        <div className={`step-circle-container ${stepCircleContainerClassName}`} style={{border: '1px solid #222', zIndex:3}}>
             <div className={`step-indicator-row ${stepContainerClassName}`}>
                 {stepsArray.map((_, index) => {
                     const stepNumber = index + 1;

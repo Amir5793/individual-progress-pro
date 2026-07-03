@@ -17,7 +17,7 @@
   box-shadow: 0 2px 14px rgba(0, 0, 0, 0.22);
   cursor: pointer;
   gap: 0;
-  z-index: 2;
+  /*z-index: 2;*/
   /*background-color: var(--card);*/
   /*border-radius: var(--radius-card);*/
 

@@ -1,10 +1,18 @@
-import React from "react";
+"use client"
+import {React, useState} from "react";
 import "@/components/Fab/Fab.css"
+import {StepperCaller} from "@/components/Stepper/StepperCaller";
+import Antigravity from "@/components/Antigravity/Antigravity";
 
 export default function Fab() {
+    const [mode, setMode] = useState("task");
+    const [showModal, setShowModal] = useState(false);
+
     return (
         <div>
-            <div className="fab" data-media-type="banani-button">
+            <div className="fab" data-media-type="banani-button" onClick={() => {
+                setShowModal(!showModal)
+            }}>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <g fill="none">
                         <path
@@ -15,6 +23,13 @@ export default function Fab() {
                 </svg>
 
             </div>
+
+
+            {showModal &&
+                <div className="stepper-wrapper">
+                    <StepperCaller></StepperCaller>
+                </div>
+            }
         </div>
     );
 }

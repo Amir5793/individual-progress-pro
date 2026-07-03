@@ -1,10 +1,10 @@
-/* Global CSS variables from preview.html */
+@import "tailwindcss";
 :root {
   --background: #0e1323;
   --foreground: #e6edf3;
   --border: #00000014;
   --input: #0f1726;
-  --primary: #4f8dff;
+  --primary: #0984e3;
   --primary-foreground: #ffffff;
   --secondary: #181f33;
   --secondary-foreground: #d6e0f2;
@@ -37,7 +37,7 @@
   --text-primary: #f0f2fa;
   --text-secondary: rgba(240, 242, 250, 0.55);
   --text-muted: rgba(240, 242, 250, 0.35);
-  --accent-purple: #7b61ff;
+  --accent-purple: #6c5ce7;
   --accent-blue: #4f8dff;
   --accent-green: #2ed47a;
   --accent-yellow: #f4c542;

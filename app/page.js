@@ -14,20 +14,19 @@ export default function Home() {
     return (
         <>
         <div className="export-wrapper">
-        {/*    <div className="app-wrapper" style={{position: "relative"}}>*/}
-        {/*        <Sidebar></Sidebar>*/}
-        {/*        <main className="main-area">*/}
-        {/*            <Header></Header>*/}
-        {/*            <Navbar></Navbar>*/}
-        {/*            <div className="content-grid">*/}
-        {/*                <Tasks></Tasks>*/}
-        {/*                <Habits></Habits>*/}
-        {/*            </div>*/}
-        {/*            <Progress></Progress>*/}
-        {/*            <Fab></Fab>*/}
-        {/*        </main>*/}
-        {/*    </div>*/}
-            <StepperCaller></StepperCaller>
+            <div className="app-wrapper" style={{position: "relative"}}>
+                <Sidebar></Sidebar>
+                <main className="main-area">
+                    <Header></Header>
+                    <Navbar></Navbar>
+                    <div className="content-grid">
+                        <Tasks></Tasks>
+                        <Habits></Habits>
+                    </div>
+                    <Progress></Progress>
+                </main>
+                    <Fab></Fab>
+            </div>
         </div>
         </>
     );

@@ -1,10 +1,11 @@
 import "./CheckBox.css"
 
-export const CheckBox = ({name, value, func = () => {console.log(value)}}) => {
+export const CheckBox = ({name, value, func = () => {console.log(value)}, checked}) => {
+    console.log(checked)
     return (
         <>
             <label className="cosmic-checkbox" onClick={() => {func()}}>
-                <input type="radio" name={name}/>
+                <input type="radio" name={name} defaultChecked={checked}/>
                 <div className="checkbox-container">
                     <div className="checkbox-box">
                         <div className="checkbox-bg"></div>

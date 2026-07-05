@@ -96,6 +96,7 @@ const datumHandler = (
     };
     const setter = setters[key];
     if (setter) {
+        console.log(setter, value)
         setter(value);
     }
 

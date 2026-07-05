@@ -12,8 +12,8 @@ h2{
 .date-picker-checkbox-container{
   display: flex;
   flex-direction: column;
-  height: 50vh;
-  justify-content: space-evenly;
+  height: 40vh;
+  justify-content: space-between;
 }
 
 .tags-container{

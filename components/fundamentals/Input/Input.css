@@ -2,7 +2,7 @@
 .input-container {
   position: relative;
 }
-input {
+input , textarea {
   width: 100%;
   height: 5vh;
   padding: 10px;
@@ -17,10 +17,16 @@ input {
   transition: border-color 0.3s, box-shadow 0.3s;
   animation: gradient 15s ease infinite;
 }
-input:focus {
+input , textarea:focus {
   outline: none;
   /*border-color: #007bff;*/
   box-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+}
+.large{
+  height: 10vh;
+  resize: none;
+  overflow: hidden;
+  line-break: strict;
 }
 .hint {
   position: absolute;
@@ -39,8 +45,8 @@ input:focus {
   transition: 0.2s;
   cursor: text;
 }
-input:focus + .placeholder,
-input:not(:placeholder-shown) + .placeholder {
+input:focus + .placeholder,textarea:focus + .placeholder,
+input:not(:placeholder-shown) + .placeholder, textarea:not(:placeholder-shown) + .placeholder {
   top: -10px;
   left: 5px;
   font-size: 12px;
@@ -59,7 +65,7 @@ input:not(:placeholder-shown) + .placeholder {
 }
 
 .about-svg{
-  bcolor: var(--accent-yellow);
+  /*background-color: var(--accent-yellow);*/
   width: 1.5vw;
   height: 1.5vw;
 }

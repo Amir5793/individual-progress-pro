@@ -23,6 +23,7 @@ export default function Stepper({
                                     nextButtonText = 'Continue',
                                     disableStepIndicators = false,
                                     renderStepIndicator,
+                                    handleCloseModal,
                                     ...rest
                                 }) {
     const [currentStep, setCurrentStep] = useState(initialStep);
@@ -32,12 +33,15 @@ export default function Stepper({
     const isCompleted = currentStep > totalSteps;
     const isLastStep = currentStep === totalSteps;
 
-    const updateStep = newStep => {
-        setCurrentStep(newStep);
-        if (newStep > totalSteps) {
-            onFinalStepCompleted();
-        } else {
-            onStepChange(newStep);
+    const updateStep = async newStep => {
+        // Call the validation callback and use its return value
+        const shouldChange = await onStepChange(currentStep, newStep);
+        console.log(shouldChange)
+        if (shouldChange) {
+            setCurrentStep(newStep);
+            if (newStep > totalSteps) {
+                onFinalStepCompleted();
+            }
         }
     };
 
@@ -60,7 +64,9 @@ export default function Stepper({
         updateStep(totalSteps + 1);
     };
 
-    return (<div className="outer-container" {...rest}>
+    return (<div className="outer-container" {...rest} onClick={() => {
+        handleCloseModal()
+    }}>
         <Antigravity
             count={300}
             magnetRadius={6}
@@ -77,7 +83,11 @@ export default function Stepper({
             pulseSpeed={3}
             particleShape="capsule"
             fieldStrength={10}></Antigravity>
-        <div className={`step-circle-container ${stepCircleContainerClassName}`} style={{border: '1px solid #222', zIndex:3}}>
+
+        <div className={`step-circle-container ${stepCircleContainerClassName}`}
+             style={{border: '1px solid #222', zIndex: 3}} onClick={e => {
+            e.stopPropagation()
+        }}>
             <div className={`step-indicator-row ${stepContainerClassName}`}>
                 {stepsArray.map((_, index) => {
                     const stepNumber = index + 1;
@@ -120,7 +130,7 @@ export default function Stepper({
                     >
                         {backButtonText}
                     </button>)}
-                    {currentStep !== 1 && !disableStepIndicators && <button className="skip-button">Skip</button>}
+                    {!disableStepIndicators && <button className="skip-button">Skip</button>}
                     <button onClick={isLastStep ? handleComplete : handleNext}
                             className={isLastStep ? "complete-button" : "next-button"} {...nextButtonProps} >
                         {isLastStep ? 'Complete' : nextButtonText}
@@ -211,7 +221,7 @@ function StepIndicator({step, currentStep, onClickStep, disableStepIndicators}) 
 
 function StepConnector({isComplete}) {
     const lineVariants = {
-        incomplete: {width: 0, backgroundColor: 'transparent'}, complete: {width: '100%', backgroundColor: '#5227FF'}
+        incomplete: {width: 0, backgroundColor: '#fff'}, complete: {width: '100%', backgroundColor: '#5227FF'}
     };
 
     return (<div className="step-connector">

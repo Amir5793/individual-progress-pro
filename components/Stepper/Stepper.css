@@ -23,8 +23,6 @@
 
 .step-circle-container {
   position: absolute;
-  top: 50%;
-  left: 50%;
   transform: translate(-50%, -50%);
   min-width: 50vw;
   max-width: 28rem;
@@ -46,7 +44,7 @@
   /*background-color: var(--primary);*/
   background: linear-gradient(-45deg, #3B3B98, #2C3A47, #182C61, #2f3640);
   background-size: 400% 400%;
-  animation: gradient 15s ease infinite;
+  animation: modalScaleIn 0.3s ease forwards, gradient 15s ease infinite; animation-delay: 0.05s;
 }
 
 .step-indicator-row {
@@ -54,6 +52,7 @@
   width: 100%;
   align-items: center;
   padding: 2rem;
+  margin-bottom: 2rem;
 }
 
 .step-content-default {
@@ -70,6 +69,7 @@
   gap: 2rem;
   padding-left: 2rem;
   padding-right: 2rem;
+  margin-bottom: 2rem;
 }
 
 .footer-container {
@@ -95,7 +95,7 @@
   transition: all 350ms;
   border-radius: 0.25rem;
   padding: 0.25rem 0.5rem;
-  background-color: transparent;
+  /*background-color: transparent;*/
   color: var(--destructive);
   cursor: pointer;
   border: none;
@@ -140,12 +140,11 @@
   transition: all 350ms;
   border-radius: 0.25rem;
   padding: 0.25rem 0.5rem;
-  background-color: transparent;
+  /*background-color: transparent;*/
   color: var(--input);
   cursor: pointer;
   border: none;
 }
-
 .skip-button:hover {
   color: var(--accent-purple);
 }
@@ -157,7 +156,7 @@
 }
 
 .complete-button {
-  transition: all 350ms;
+  /*transition: all 350ms;*/
   display: flex;
   align-items: center;
   justify-content: center;

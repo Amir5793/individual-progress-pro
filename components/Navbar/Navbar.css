@@ -1,3 +1,8 @@
+.navbar{
+  height: fit-content;
+  margin-bottom: 2vh;
+}
+
 .nav-tabs-section {
   margin-bottom: 2rem;
 }

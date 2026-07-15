@@ -2,7 +2,6 @@
 
 import styled, { css } from "styled-components";
 
-// ---------- Import shared base components ----------
 import {
   Card as BaseCard,
   LeftSection as BaseLeftSection,
@@ -14,7 +13,6 @@ import {
   IconButton,
 } from "../shared/index";
 
-// ---------- Override shared components with GoalItem-specific values ----------
 export const Card = styled(BaseCard).attrs({ $gap: "18px" })``;
 
 export const LeftSection = styled(BaseLeftSection).attrs({
@@ -34,12 +32,12 @@ export const Footer = styled(BaseFooter).attrs({
 
 export const Actions = styled(BaseActions).attrs({
   $align: "center",
-})``;
+})`
+  gap: 4px;
+`;
 
-// ---------- Re-export identical components ----------
 export { Header, CategoryIconWrapper, IconButton };
 
-// ---------- UNIQUE components (only in GoalItem) ----------
 export const Title = styled.h3`
   font-size: 1.15rem;
   font-weight: 700;
@@ -85,6 +83,22 @@ export const Checkbox = styled.button`
     width: 18px;
     height: 18px;
   }
+`;
+
+export const ProgressBar = styled.div`
+  width: 100%;
+  height: 4px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+`;
+
+export const ProgressFill = styled.div`
+  height: 100%;
+  border-radius: 4px;
+  width: ${({ $pct }) => $pct}%;
+  background: ${({ $color }) => $color};
+  transition: width 0.4s ease;
 `;
 
 export const CompletionSection = styled.div`
@@ -140,5 +154,115 @@ export const Chip = styled.div`
   svg {
     width: 14px;
     height: 14px;
+  }
+`;
+
+export const ActionsList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+export const ActionItemRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  transition: 0.15s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
+`;
+
+export const ActionDot = styled.div`
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: ${({ $completed, $color }) =>
+      $completed ? $color : "rgba(255,255,255,0.12)"};
+  flex-shrink: 0;
+  transition: 0.2s ease;
+`;
+
+export const ActionContent = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+`;
+
+export const ActionItemTitle = styled.div`
+  color: var(--text-primary);
+  font-size: 0.93rem;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  ${({ $completed }) =>
+      $completed &&
+      css`
+      text-decoration: line-through;
+      opacity: 0.65;
+    `}
+`;
+
+export const ActionItemMeta = styled.div`
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+export const ActionDuration = styled.span`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+`;
+
+export const ActionButton = styled.button`
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: ${({ $color }) => $color || "var(--text-secondary)"};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.15s ease;
+  position: relative;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.06);
+    transform: scale(1.1);
+  }
+
+  &[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.85);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 500;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
   }
 `;

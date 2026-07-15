@@ -1,11 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 
 import ItemsContainer from "./ItemsContainer/ItemsContainer";
 
+import { useCommitments } from "@/lib/store/CommitmentContext";
 import {
-    getCommitments,
     createCommitment,
     updateCommitment,
     deleteCommitment,
@@ -13,175 +13,82 @@ import {
     uncompleteGoal,
     updateHabitStatus,
 } from "@/lib/services/commitmentService";
+import {
+    COMMITMENT_CREATED,
+    COMMITMENT_DELETED,
+    GOAL_TOGGLED,
+    HABIT_STATUS_CHANGED,
+} from "@/lib/store/types";
 
 export default function ItemsManager({
                                          mode = "overview",
                                          sortBy = "priority",
                                      }) {
 
-    const [commitments, setCommitments] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const { commitments, loading, dispatch } = useCommitments();
 
-    /* -------------------------------------------------------------------------- */
-    /* LOAD                                                                        */
-    /* -------------------------------------------------------------------------- */
+    const handleCreate = useCallback((commitment) => {
+        const updated = createCommitment(commitment);
+        const created = updated.find(c => c.id === commitment.id) || commitment;
+        dispatch({ type: COMMITMENT_CREATED, payload: created });
+    }, [dispatch]);
 
-    const refresh = useCallback(() => {
+    const handleEdit = useCallback((updatedItem) => {
+        updateCommitment(updatedItem.id, updatedItem);
+        dispatch({ type: COMMITMENT_CREATED, payload: updatedItem });
+    }, [dispatch]);
 
-        setCommitments(getCommitments());
+    const handleComplete = useCallback((goal) => {
+        const updated = goal.completed
+            ? uncompleteGoal(goal.id)
+            : completeGoal(goal.id);
+        const toggled = updated.find(c => c.id === goal.id);
+        if (toggled) {
+            dispatch({
+                type: GOAL_TOGGLED,
+                payload: {
+                    id: toggled.id,
+                    completed: toggled.completed,
+                    completedAt: toggled.completedAt,
+                },
+            });
+        }
+    }, [dispatch]);
 
+    const handleStatusChange = useCallback((habit, status, completions, streak) => {
+        const updated = updateHabitStatus(habit.id, status, completions, streak);
+        dispatch({
+            type: HABIT_STATUS_CHANGED,
+            payload: { id: habit.id, status, completions, streak },
+        });
+    }, [dispatch]);
+
+    const handleDelete = useCallback((item) => {
+        deleteCommitment(item.id);
+        dispatch({ type: COMMITMENT_DELETED, payload: item.id });
+    }, [dispatch]);
+
+    const handleItemClick = useCallback((item) => {
+        console.log(item);
     }, []);
 
-    useEffect(() => {
-
-        refresh();
-
-        setLoading(false);
-
-    }, [refresh]);
-
-    /* -------------------------------------------------------------------------- */
-    /* CREATE                                                                      */
-    /* -------------------------------------------------------------------------- */
-
-    const handleCreate = (commitment) => {
-
-        const updated = createCommitment(commitment);
-
-        setCommitments(updated);
-
-    };
-
-    /* -------------------------------------------------------------------------- */
-    /* EDIT                                                                        */
-    /* -------------------------------------------------------------------------- */
-
-    const handleEdit = (updatedItem) => {
-
-        const updated = updateCommitment(
-            updatedItem.id,
-            updatedItem
-        );
-
-        setCommitments(updated);
-
-    };
-
-    /* -------------------------------------------------------------------------- */
-    /* COMPLETE TASK                                                               */
-    /* -------------------------------------------------------------------------- */
-
-    const handleComplete = (goal) => {
-
-        let updated;
-
-        if (goal.completed) {
-
-            updated = uncompleteGoal(goal.id);
-
-        } else {
-
-            updated = completeGoal(goal.id);
-
-        }
-
-        setCommitments(updated);
-
-    };
-
-    /* -------------------------------------------------------------------------- */
-    /* HABIT STATUS                                                                */
-    /* -------------------------------------------------------------------------- */
-
-    const handleStatusChange = (
-        habit,
-        status,
-        completions,
-        streak,
-    ) => {
-
-        const updated = updateHabitStatus(
-            habit.id,
-            status,
-            completions,
-            streak,
-        );
-
-        setCommitments(updated);
-
-    };
-
-    /* -------------------------------------------------------------------------- */
-    /* DELETE                                                                      */
-    /* -------------------------------------------------------------------------- */
-
-    const handleDelete = (item) => {
-
-        const updated = deleteCommitment(item.id);
-
-        setCommitments(updated);
-
-    };
-
-    /* -------------------------------------------------------------------------- */
-    /* ITEM CLICK                                                                  */
-    /* -------------------------------------------------------------------------- */
-
-    const handleItemClick = (item) => {
-
-        console.log(item);
-
-        // Future:
-        // Open Details Drawer
-        // Navigate
-        // Expand Card
-    };
-
-    /* -------------------------------------------------------------------------- */
-    /* MORE MENU                                                                   */
-    /* -------------------------------------------------------------------------- */
-
-    const handleMore = (item) => {
-
+    const handleMore = useCallback((item) => {
         console.log("More:", item);
-
-        // Future:
-        // Dropdown menu
-        // Duplicate
-        // Archive
-        // Delete
-    };
-
-    /* -------------------------------------------------------------------------- */
+    }, []);
 
     return (
-
         <ItemsContainer
-
             mode={mode}
-
             commitments={commitments}
-
             loading={loading}
-
             sortBy={sortBy}
-
             onItemClick={handleItemClick}
-
             onCreate={handleCreate}
-
             onEdit={handleEdit}
-
             onDelete={handleDelete}
-
             onComplete={handleComplete}
-
             onStatusChange={handleStatusChange}
-
             onMore={handleMore}
-
         />
-
     );
-
 }

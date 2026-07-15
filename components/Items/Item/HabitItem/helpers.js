@@ -1,54 +1,34 @@
 "use client";
 
-/* ==========================================================
-   HABIT STATUS
-========================================================== */
-
 export function getHabitStatus(habit) {
-    if (!habit.completions?.length) return "pending";
+    if (!habit.completions || habit.completions.length === 0) return "pending";
 
-    const today = new Date().toDateString();
+    const today = new Date();
+    const todayStr = today.toISOString().split("T")[0];
 
-    const todayCompletion = habit.completions.find((item) => new Date(item.date).toDateString() === today);
+    const todayCompletion = habit.completions.find(c => {
+        const dateStr = typeof c === "string" ? c.split("T")[0] : new Date(c).toISOString().split("T")[0];
+        return dateStr === todayStr;
+    });
 
     if (!todayCompletion) return "pending";
 
-    if (todayCompletion.status === "completed") return "completed";
-
-    if (todayCompletion.status === "progress") return "progress";
-
-    return "pending";
+    const status = typeof todayCompletion === "object" ? todayCompletion.status : "completed";
+    return status;
 }
-
-/* ==========================================================
-   PROGRESS LABEL
-========================================================== */
 
 export function getProgressLabel(status) {
-
     switch (status) {
-
         case "completed":
-            return "Done";
-
+            return "Mark as done";
         case "progress":
-            return "Continue";
-
+            return "Continue habit";
         default:
-            return "Start";
-
+            return "Start habit";
     }
-
 }
 
-/* ==========================================================
-   OPTIONAL
-========================================================== */
-
 export function formatPreferredTime(time) {
-
     if (!time) return "";
-
     return time.charAt(0).toUpperCase() + time.slice(1);
-
 }

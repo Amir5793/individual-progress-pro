@@ -1,5 +1,6 @@
 import React from "react";
 import "@/components/Sidebar/Sidebar.css";
+import Link from "next/link";
 
 export default function Sidebar() {
   return (
@@ -8,7 +9,7 @@ export default function Sidebar() {
         <div className="sidebar-logo">
           <div className="logo-icon">
             <div>
-              <button icon="lucide:user-circle-2"></button>
+              <button></button>
             </div>
           </div>
           <div className="logo-text">
@@ -27,7 +28,7 @@ export default function Sidebar() {
                 </g>
               </svg>
 
-            Overview
+            <Link href={"./"}>Overview</Link>
           </div>
           <div className="nav-item" data-media-type="banani-button">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -38,7 +39,7 @@ export default function Sidebar() {
                       d="M12 4a2 2 0 0 0-2 2h4a2 2 0 0 0-2-2M9.354 3c.705-.622 1.632-1 2.646-1s1.94.378 2.646 1H18a2 2 0 0 1 2 2v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zM8.126 5H6v15h12V5h-2.126q.124.481.126 1v1a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V6q.002-.519.126-1M8 11a1 1 0 0 1 1-1h6a1 1 0 1 1 0 2H9a1 1 0 0 1-1-1m0 4a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2H9a1 1 0 0 1-1-1"/>
               </g>
             </svg>
-            Tasks
+            <Link href={"/goals"}>Goals</Link>
           </div>
           <div className="nav-item" data-media-type="banani-button">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
@@ -75,11 +76,11 @@ export default function Sidebar() {
         <div className="sidebar-bottom">
           <div className="theme-selector" data-media-type="banani-button">
             <div>
-              <button icon="lucide:moon"></button>
+              <button></button>
             </div>
             <span>Dark</span>
             <div className="chevron">
-              <button icon="lucide:chevron-down"></button>
+              <button></button>
             </div>
           </div>
         </div>

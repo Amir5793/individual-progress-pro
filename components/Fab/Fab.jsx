@@ -3,25 +3,25 @@ import React, {useState} from "react";
 import "@/components/Fab/Fab.css";
 import {StepperCaller} from "@/components/Stepper/StepperCaller";
 
-export default function Fab() {
+export default function Fab({givenMode}) {
     const [isExpanded, setIsExpanded] = useState(false);
-    const [mode, setMode] = useState("task");
+    const [mode, setMode] = useState(givenMode);
     const [showModal, setShowModal] = useState(false);
     // Base Commitment fields
-    const BaseCommitment = {
+    const BaseItem = {
         id: "",             // e.g. UUID or crypto.randomUUID()
-        type: "",           // "task" or "habit"
+        type: "",           // "goal" or "habit"
         period: "",         // "daily"/"weekly"/"monthly"
         title: "",
-        reason: "",
         category: "",
         createdAt: new Date(),
     };
 
-    // Task extension
-    const Task = {
-        ...BaseCommitment,
-        type: "task",
+    // Goal extension
+    const Goal = {
+        ...BaseItem,
+        type: "goal",
+        reason: {},
         completionCriteria: "",
         difficulty: "",
         energy: "",
@@ -34,8 +34,9 @@ export default function Fab() {
 
     // Habit extension
     const Habit = {
-        ...BaseCommitment,
+        ...BaseItem,
         type: "habit",
+        reason: {},
         identity: "",
         minimumAction: "",
         target: "",
@@ -56,7 +57,7 @@ export default function Fab() {
 
     const handleOptionClick = (selectedMode) => {
         setMode(selectedMode);
-        setDatum(selectedMode === "task" ? Task : Habit)
+        setDatum(selectedMode === "goal" ? Goal : Habit)
         setShowModal(true);
         setIsExpanded(false); // hide options when modal opens
     };
@@ -70,7 +71,7 @@ export default function Fab() {
             {/* Main FAB */}
             <div
                 className={`fab ${isExpanded ? "fab-expanded" : ""}`}
-                onClick={handleFabClick}
+                onClick={mode === "goal" || mode === "habit" ? () => {handleOptionClick(givenMode)} : handleFabClick }
             >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     {isExpanded ? (
@@ -99,13 +100,13 @@ export default function Fab() {
                 </svg>
             </div>
 
-            {/* Task button (left of FAB) */}
+            {/* Goal button (left of FAB) */}
             {isExpanded && (
                 <div
                     className="fab-option fab-option-left"
-                    onClick={() => handleOptionClick("task")}
+                    onClick={() => handleOptionClick("goal")}
                 >
-                    <span>Task</span>
+                    <span>Goal</span>
                 </div>
             )}
 

@@ -1,6 +1,15 @@
+import localFont from "next/font/local";
 import {Geist, Geist_Mono} from "next/font/google";
+// import "@/fonts/Inter-VariableFont_opsz,wght.ttf"
 import "./globals.css";
 // import * as Icon from "https://cdn.jsdelivr.net/npm/button@1.0.8/dist/button.min.js"
+
+
+const inter = localFont({
+    src: "../fonts/Inter-VariableFont_opsz,wght.ttf",
+    variable: "--font-inter",
+    display: "swap",
+});
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -19,18 +28,7 @@ export const metadata = {
 
 export default function RootLayout({children}) {
     return (
-        <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-        <head>
-
-            <link rel="preconnect" href="https://fonts.googleapis.com"/>
-            <link rel="preconnect" href="https://fonts.gstatic.com"/>
-            <link
-                href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@100;200;300;400;500;600;700;800;900&family=Geist:wght@100;200;300;400;500;600;700;800;900&family=IBM+Plex+Mono:wght@100;200;300;400;500;600;700&family=IBM+Plex+Sans:wght@100;200;300;400;500;600;700&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Nunito:wght@200;300;400;500;600;700;800;900&family=PT+Serif:wght@400;700&family=Roboto+Slab:wght@100;200;300;400;500;600;700;800;900&family=Roboto:wght@100;300;400;500;700;900&family=Shantell+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
-                rel="stylesheet"
-            />
-        {/*<script src=""></script>*/}
-        <link href="https://code.iconify.design/button/3.0.0/button.min.js" rel="script" />
-        </head>
+        <html lang="en" className={`${inter.variable} ${geistSans.variable} ${geistMono.variable}`}>
         <body>{children}</body>
         </html>
     );

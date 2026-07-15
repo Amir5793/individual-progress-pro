@@ -1,4 +1,4 @@
-export const Item = () => {
+export const EmptyState = () => {
     return (
         <></>
     )

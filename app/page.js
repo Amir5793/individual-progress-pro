@@ -1,13 +1,9 @@
-import Image from "next/image";
-import styles from "./page.module.css";
 import Header from "@/components/Header/Header";
 import Navbar from "@/components/Navbar/Navbar";
-import Tasks from "@/components/Tasks/Tasks";
-import Habits from "@/components/Habits/Habits";
 import Progress from "@/components/Progress/Progress";
 import Fab from "@/components/Fab/Fab";
 import Sidebar from "@/components/Sidebar/Sidebar";
-import {StepperCaller} from "@/components/Stepper/StepperCaller";
+import ItemsManager from "@/components/Items/ItemsManager";
 
 
 export default function Home() {
@@ -20,12 +16,11 @@ export default function Home() {
                     <Header></Header>
                     <Navbar></Navbar>
                     <div className="content-grid">
-                        <Tasks></Tasks>
-                        <Habits></Habits>
+                        <ItemsManager mode="overview"></ItemsManager>
                     </div>
                     <Progress></Progress>
                 </main>
-                    <Fab></Fab>
+                    <Fab givenMode="overview"></Fab>
             </div>
         </div>
         </>

@@ -8,7 +8,7 @@ const Radio = ({values, size, name, checked}) => {
             <div className={size === "large" ? "radio-inputs large" : "radio-inputs medium"}>
                 {values.map(value => {
                     return (
-                        <label key={values.indexOf(value)} className="radio">
+                        <label key={values.indexOf(value)} className={size === "medium" ? "radio medium" : "radio"}>
                             <input defaultChecked={checked === value} name={name} type="radio"/>
                             <span className="name">{value}</span>
                         </label>
@@ -178,7 +178,11 @@ const StyledWrapper = styled.div`
   }
   .medium{
     width: 100%;
-    height: calc(100% + 2vh) !important;
+    //height: 50% !important;
+  }
+  .radio-inputs .medium{
+    width: fit-content;
+    height: 7vh;
   }
 
   @keyframes select {

@@ -31,7 +31,7 @@
   --font-family-body: Inter;
   --bg: #0e1323;
   --bg-radial: radial-gradient(ellipse at 30% 20%, #131b32 0%, #0e1323 70%);
-  --card: #181f33;
+  /*--card: #181f33;*/
   --card-border: rgba(255, 255, 255, 0.07);
   --sidebar-bg: #0b1020;
   --text-primary: #f0f2fa;
@@ -43,7 +43,7 @@
   --accent-yellow: #f4c542;
   --accent-red: #ff5c70;
   --radius-card: 18px;
-  --radius-sm: 8px;
+  /*--radius-sm: 8px;*/
   --radius-pill: 50px;
 }
 
@@ -74,6 +74,15 @@
   font-weight: 500;
 }
 
+.tasks-container{
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  padding-left: 5vw;
+  padding-right: 5vw;
+  margin-top: 5vh;
+}
+
 .main-area {
   flex: 1;
   display: flex;
@@ -87,11 +96,12 @@
 
 .content-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  /*grid-template-columns: 1fr 1fr;*/
   gap: 14px;
   flex: 1;
   margin-bottom: 14px;
   min-height: 0;
+  width: 100%;
 }
 
 .content-col {

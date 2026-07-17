@@ -49,7 +49,7 @@ export default function Sidebar() {
                 <path d="m13.412 25.03l6.922 7.06L34.907 17.1"/>
               </g>
             </svg>
-            Habits
+            <Link href="/habits">Habits</Link>
           </div>
           <br/>
           <hr/>

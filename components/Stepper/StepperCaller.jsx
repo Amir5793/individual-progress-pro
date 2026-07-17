@@ -5,6 +5,8 @@ import Stepper from "./Stepper";
 import {datumHandler} from "./utils/datumHandler";
 import {validateStepInput, validateGoalData} from "@/components/Stepper/utils/validation";
 import {localStorageHandler} from "@/backend/local_storage/loacl_storage_api";
+import {CommitmentProvider, useCommitments} from "@/lib/store/CommitmentContext";
+import {COMMITMENT_CREATED} from "@/lib/store/types";
 import {GoalOrTask} from "@/components/Stepper/steps/GoalOrTask/GoalOrTask";
 import {Name} from "@/components/Stepper/steps/Name/Name";
 import {Reason} from "@/components/Stepper/steps/Reason/Reason";
@@ -17,7 +19,8 @@ import {CategoryOrReason} from "@/components/Stepper/steps/CategoryOrReason/Cate
 import {Obstacles} from "@/components/Stepper/steps/Obstacles/Obstacles";
 import {Review} from "@/components/Stepper/steps/Review/Review";
 
-export const StepperCaller = ({mode, datum, handleCloseModal}) => {
+export const StepperCaller = ({mode, datum, handleCloseModal, onCommitmentCreated}) => {
+    const { dispatch, refresh } = useCommitments();
     // ---------- Datum copy state (the full object) ----------
     const [datumCopy, setDatumCopy] = useState(datum);
 
@@ -211,105 +214,66 @@ export const StepperCaller = ({mode, datum, handleCloseModal}) => {
     const handleGoalOrTask = (option) => {
         if (option === "Yes") {
             setIsAchieveAbleInOneAction(true)
+            setActions([])
+            setDatumCopy((prev) => ({...prev, actions: []}))
         } else if (option === "No") {
             setIsAchieveAbleInOneAction(false)
         }
     }
 
+    // ---------- Dynamic step→field/value mapping ----------
+    // The rendered <Step> children are conditionally included, so actual
+    // step numbers depend on mode and isAchieveAbleInOneAction.  We build
+    // the mapping at call-time so it always matches the real DOM order.
+    const buildStepMap = () => {
+        if (mode === "goal") {
+            const map = [];
+            map.push({field: "_goalOrTask", getValue: () => isAchieveAbleInOneAction});   // step 1
+            map.push({field: "title",        getValue: () => title});                      // step 2
+            map.push({field: "reason",       getValue: () => ({mainReason: reason, nowReason: reasonNow, succeedReason: reasonSucceed})}); // step 3
+            map.push({field: "completionCriteria", getValue: () => completionCriteria});   // step 4
+            if (!isAchieveAbleInOneAction) {
+                map.push({field: "plan", getValue: () => actions});                        // step 5 (conditional)
+            }
+            map.push({field: "difficulty",   getValue: () => difficulty});                  // next step
+            map.push({field: "energy",       getValue: () => energy});
+            map.push({field: "deadline",     getValue: () => deadline});
+            map.push({field: "category",     getValue: () => category});
+            map.push({field: "obstacle",     getValue: () => ({obstacle, fallbackPlan})});
+            map.push({field: "review",       getValue: () => null});                       // last step
+            return map;
+        } else {
+            return [
+                {field: "identity",       getValue: () => identity},
+                {field: "title",          getValue: () => title},
+                {field: "minimumAction",  getValue: () => minimumAction},
+                {field: "target",         getValue: () => target},
+                {field: "trigger",        getValue: () => trigger},
+                {field: "obstacle",       getValue: () => obstacle},
+                {field: "reason",         getValue: () => reasonNow},
+                {field: "review",         getValue: () => null},
+            ];
+        }
+    };
+
     // ---------- Field name mapping ----------
     const getFieldNameForStep = (step) => {
-        const map = mode === "goal" ? {
-            2: "title",
-            3: "reason",
-            4: "completionCriteria",   // now matches step 4
-            5: "plan",                 // now matches step 5
-            6: "difficulty",
-            7: "energy",
-            8: "deadline",
-            9: "category",
-            10: "obstacle",
-        } : {
-            1: "identity", 2: "title", 3: "minimumAction", 4: "target", 5: "trigger", 6: "obstacle", 7: "reason",
-        };
-        return map[step] || "general";
+        const map = buildStepMap();
+        const entry = map[step - 1]; // 1-indexed → 0-indexed
+        return entry ? entry.field : "general";
     };
+
     // ---------- Validation ----------
     const validateAndMove = (previousStep, nextStep) => {
         if (nextStep < previousStep) return true;
 
-        let value;
-
-        if (mode === "goal") {
-            switch (previousStep) {
-                case 1:
-                    value = isAchieveAbleInOneAction;
-                    break;
-                case 2:
-                    value = title;
-                    break;
-                case 3:
-                    value = {mainReason: reason, nowReason: reasonNow, succeedReason: reasonSucceed};
-                    break;
-                case 4:
-                    value = completionCriteria;
-                    break;   // ← step 4 = completion criteria
-                case 5:
-                    value = actions;
-                    break;              // ← step 5 = plan
-                case 6:
-                    value = difficulty;
-                    break;
-                case 7:
-                    value = energy;
-                    break;
-                case 8:
-                    value = deadline;
-                    break;
-                case 9:
-                    value = category;
-                    break;
-                case 10:
-                    value = {obstacle, fallbackPlan};
-                    break;
-                case 11:
-                    value = null;
-                    break;
-                default:
-                    value = null;
-            }
-        } else if (mode === "habit") {
-            switch (previousStep) {
-                case 1:
-                    value = identity;
-                    break;
-                case 2:
-                    value = title;
-                    break;
-                case 3:
-                    value = minimumAction;
-                    break;
-                case 4:
-                    value = target;
-                    break;
-                case 5:
-                    value = trigger;
-                    break;
-                case 6:
-                    value = obstacle;
-                    break;
-                case 7:
-                    value = reasonNow;
-                    break;
-                default:
-                    value = null;
-            }
-        } else {
-            value = null;
-        }
+        const map = buildStepMap();
+        const entry = map[previousStep - 1]; // 1-indexed → 0-indexed
+        const value = entry ? entry.getValue() : null;
 
         console.log(`validateAndMove: step ${previousStep}, value:`, value);
 
-        const result = validateStepInput(previousStep, value, mode);
+        const result = validateStepInput(previousStep, value, mode, isAchieveAbleInOneAction);
         console.log("Validation result:", result);
 
         if (!result.valid) {
@@ -330,7 +294,7 @@ export const StepperCaller = ({mode, datum, handleCloseModal}) => {
         console.log("Final datumCopy:", datumCopy);
 
         // 1. Validate the new goal
-        const validationResult = validateGoalData(datumCopy, mode);
+        const validationResult = validateGoalData(datumCopy, mode, isAchieveAbleInOneAction);
         if (!validationResult.valid) {
             console.error("Validation failed:", validationResult.errors);
             // Show errors to the user (you can replace with a nicer UI)
@@ -379,7 +343,7 @@ export const StepperCaller = ({mode, datum, handleCloseModal}) => {
 
         if (saveResult.success) {
             console.log('✅ Goal saved successfully!');
-            // Close the modal
+            refresh();
             handleCloseModal?.();
         } else {
             console.error('❌ Failed to save goal:', saveResult.error);
@@ -411,7 +375,7 @@ export const StepperCaller = ({mode, datum, handleCloseModal}) => {
         <MinimumAction mode={mode} completionCriteria={completionCriteria} minimumAction={minimumAction}
                        handleFieldChange={handleFieldChange} errors={errors}></MinimumAction>
 
-        {mode === "goal" && (
+        {mode === "goal" && !isAchieveAbleInOneAction && (
             <Plan title={title} actions={actions} errors={errors}
                   startEdit={startEdit} deleteAction={deleteAction}
                   setIsEditing={setIsEditing} setEditingIndex={setEditingIndex}
@@ -432,7 +396,7 @@ export const StepperCaller = ({mode, datum, handleCloseModal}) => {
                             obstacle={obstacle} fallbackPlan={fallbackPlan}
                             handleFieldChange={handleFieldChange} errors={errors}></DeadlineOrObstacle>
 
-        <CategoryOrReason mode={mode} category={category} reasonNow={reasonNow}
+        <CategoryOrReason mode={mode} category={category} reason={reason}
                           handleFieldChange={handleFieldChange} errors={errors}></CategoryOrReason>
 
         {mode === "goal" && (

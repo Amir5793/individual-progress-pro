@@ -3,7 +3,7 @@ import {TagsCard} from "@/components/fundamentals/TagsCard/TagsCard";
 import {Step} from "@/components/Stepper/Stepper";
 import React from "react";
 
-export const CategoryOrReason = ({mode, category, reasonNow, handleFieldChange, errors}) => {
+export const CategoryOrReason = ({mode, category, reason, handleFieldChange, errors}) => {
     return (
         <Step>
             <h1>{mode === "goal" ? "Which area of life does this belong to?" : "Why does this matter? (Your reason)"}</h1>
@@ -20,7 +20,7 @@ export const CategoryOrReason = ({mode, category, reasonNow, handleFieldChange, 
                 <Input
                     placeholder="e.g. I want to be a healthy person for my family."
                     hintTxt="This will remind Future You of your motivation."
-                    value={reasonNow}
+                    value={reason}
                     onValueChange={(val) => handleFieldChange("reason", val)}
                     size="large"
                 />

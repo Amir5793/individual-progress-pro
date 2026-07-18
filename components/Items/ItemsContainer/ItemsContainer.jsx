@@ -27,6 +27,7 @@ export default function ItemsContainer({
                                            onEdit,
                                            onDelete,
                                            onMore,
+                                           onActionComplete,
                                        }) {
 
     /* -------------------------------------------------------------------------- */
@@ -106,6 +107,8 @@ export default function ItemsContainer({
                 onDelete={onDelete}
 
                 onMore={onMore}
+
+                onActionComplete={onActionComplete}
 
             />
 

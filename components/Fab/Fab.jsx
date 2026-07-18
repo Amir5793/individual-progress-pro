@@ -1,75 +1,30 @@
+// Fab.jsx
 "use client";
 import React, { useState } from "react";
-import "@/components/Fab/Fab.css";
-import { StepperCaller } from "@/components/Stepper/StepperCaller";
+import styled from "styled-components";
 
-const BASE_GOAL = {
-    id: "",
-    type: "goal",
-    period: "daily",
-    title: "",
-    category: "",
-    reason: {},
-    completionCriteria: "",
-    difficulty: "",
-    energy: "",
-    deadline: null,
-    obstacle: "",
-    fallbackPlan: "",
-    completed: false,
-    completedAt: null,
-    createdAt: new Date(),
-    actions: [],
-};
-
-const BASE_HABIT = {
-    id: "",
-    type: "habit",
-    period: "daily",
-    title: "",
-    category: "",
-    reason: {},
-    identity: "",
-    minimumAction: "",
-    target: "",
-    trigger: "",
-    preferredTime: "",
-    obstacle: "",
-    fallbackPlan: "",
-    streak: 0,
-    completions: [],
-    createdAt: new Date(),
-};
-
-export default function Fab({ givenMode }) {
+export default function Fab({ givenMode, onLaunchCreator }) {
     const [isExpanded, setIsExpanded] = useState(false);
-    const [mode, setMode] = useState(givenMode);
-    const [showModal, setShowModal] = useState(false);
-    const [datum, setDatum] = useState({});
 
     const handleFabClick = () => {
         setIsExpanded(!isExpanded);
     };
 
     const handleOptionClick = (selectedMode) => {
-        setMode(selectedMode);
-        setDatum(selectedMode === "goal" ? { ...BASE_GOAL } : { ...BASE_HABIT });
-        setShowModal(true);
+        if (onLaunchCreator) {
+            onLaunchCreator(selectedMode);
+        }
         setIsExpanded(false);
     };
 
-    const handleCloseModal = () => {
-        setShowModal(false);
-    };
-
     return (
-        <div className="fab-container">
+        <StyledWrapper className="fab-container">
             <div
                 className={`fab ${isExpanded ? "fab-expanded" : ""}`}
-                onClick={mode === "goal" || mode === "habit" ? () => handleOptionClick(givenMode) : handleFabClick}
+                onClick={givenMode === "goal" || givenMode === "habit" ? () => handleOptionClick(givenMode) : handleFabClick}
             >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    {isExpanded ? (
+                    {!isExpanded ? (
                         <g fill="none">
                             <path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" />
                             <path fill="currentColor" d="M10.5 20a1.5 1.5 0 0 0 3 0v-6.5H20a1.5 1.5 0 0 0 0-3h-6.5V4a1.5 1.5 0 0 0-3 0v6.5H4a1.5 1.5 0 0 0 0 3h6.5z" />
@@ -93,12 +48,95 @@ export default function Fab({ givenMode }) {
                     <span>Habit</span>
                 </div>
             )}
-
-            {showModal && (
-                <div className="stepper-wrapper">
-                    <StepperCaller mode={mode} handleCloseModal={handleCloseModal} datum={datum} />
-                </div>
-            )}
-        </div>
+        </StyledWrapper>
     );
 }
+
+const StyledWrapper = styled.div`
+  /* Main FAB */
+  .fab {
+    position: absolute;
+    bottom: 32px;
+    right: 40px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 8px 28px rgba(79, 141, 255, 0.45);
+    z-index: 10;
+    animation: fabPop 0.2s ease, glowPulse 2.5s infinite ease-in-out;
+  }
+
+  .fab:hover {
+    transform: scale(1.05);
+  }
+
+  .fab svg {
+    width: 80%;
+    color: #fff;
+    transition: 0.3s ease;
+  }
+
+  .fab-option {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(79, 141, 255, 0.35);
+    z-index: 9;
+    transition: all 0.2s ease;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    user-select: none;
+  }
+
+  .fab-option:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 32px rgba(79, 141, 255, 0.6);
+  }
+
+  .fab-option-left {
+    bottom: 32px;
+    right: 112px;
+    animation: slideLeft 1s ease forwards;
+  }
+
+  .fab-option-top {
+    bottom: 104px;
+    right: 40px;
+    animation: slideTop 1s ease forwards;
+  }
+
+  @keyframes fabPop {
+    0% { transform: scale(1); }
+    40% { transform: scale(0.9); }
+    70% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+
+  @keyframes slideLeft {
+    0% { opacity: 0; transform: scale(0.4); right: 0px; }
+    100% { opacity: 1; transform: scale(1) translate(-16px, 0); right: 112px; }
+  }
+
+  @keyframes slideTop {
+    0% { opacity: 0; transform: scale(0.4); bottom: 0; }
+    100% { opacity: 1; transform: scale(1) translate(0, -16px); bottom: 104px; }
+  }
+
+  @keyframes glowPulse {
+    0% { box-shadow: 0 8px 28px rgba(79, 141, 255, 0.45); }
+    50% { box-shadow: 0 8px 48px rgba(79, 141, 255, 0.75); }
+    100% { box-shadow: 0 8px 28px rgba(79, 141, 255, 0.45); }
+  }
+`;

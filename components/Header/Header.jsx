@@ -1,10 +1,9 @@
 import React from "react";
-import "@/components/Header/Header.css";
+import styled from "styled-components";
 
 export default function Header() {
     return (
-        <div>
-            {" "}
+        <StyledWrapper>
             <header className="header">
                 <div className="greeting-block">
                     <div className="greeting-title">Good evening, AmirAli 👋</div>
@@ -14,12 +13,10 @@ export default function Header() {
                 </div>
                 <div className="header-actions">
                     <div className="icon-btn" data-media-type="banani-button">
-
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                             <path fill="currentColor"
                                   d="M6.187 8h11.625l-.695 11.125A2 2 0 0 1 15.121 21H8.879a2 2 0 0 1-1.996-1.875zM19 5v2H5V5h3V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1zm-9 0h4V4h-4z"/>
                         </svg>
-
                     </div>
                     <div className="icon-btn" data-media-type="banani-button">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -31,6 +28,56 @@ export default function Header() {
                     </div>
                 </div>
             </header>
-        </div>
+        </StyledWrapper>
     );
 }
+
+const StyledWrapper = styled.div`
+  .header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+
+  .greeting-block .greeting-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.6px;
+    margin-bottom: 6px;
+  }
+
+  .greeting-block .greeting-sub {
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-style: italic;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding-top: 4px;
+  }
+
+  .icon-btn {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-secondary);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  }
+
+  .icon-btn svg {
+    width: 1rem;
+    height: 1rem;
+  }
+`;

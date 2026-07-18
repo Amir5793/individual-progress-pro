@@ -105,3 +105,4 @@ export function getFocusLabel(energy) {
             return "Focus";
     }
 }
+

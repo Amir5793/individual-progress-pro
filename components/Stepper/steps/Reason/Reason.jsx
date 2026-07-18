@@ -1,13 +1,16 @@
 import {Input} from "@/components/fundamentals/Input/Input";
 import {Step} from "@/components/Stepper/Stepper";
 import React from "react";
+import styled from "styled-components";
 
 export const Reason = ({mode, reason, reasonNow, reasonSucceed, title, handleFieldChange, errors}) => {
     return (
+        <StyledWrapper>
         <Step>
-            <h1>{mode === "goal" ? "Why does this matter?" : "What action represents that person?"}</h1>
+            <h1>{mode === "goal" ? "If you do not do this, what will you lose?" : "What action represents that person?"}</h1>
 
             <Input
+                autoFocus
                 placeholder={mode === "goal" ? "e.g. Needed for my portfolio to get a job" : "e.g. Run 5 km"}
                 hintTxt={mode === "goal" ? "Write a short reason that reminds you of your motivation." : "Describe a specific daily/weekly action."}
                 value={mode === "goal" ? reason : title}
@@ -38,5 +41,12 @@ export const Reason = ({mode, reason, reasonNow, reasonSucceed, title, handleFie
                 {errors.reason && <div className="error">{errors.reason}</div>}
             </>)}
         </Step>
+        </StyledWrapper>
     )
 }
+
+const StyledWrapper = styled.div`
+  .error {
+    color: var(--accent-red);
+  }
+`;

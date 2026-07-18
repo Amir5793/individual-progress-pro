@@ -13,7 +13,7 @@ import {
     IconButton,
 } from "../shared";
 
-export const Card = styled(BaseCard).attrs({ $gap: "20px" })``;
+export const Card = styled(BaseCard).attrs({ $gap: "16px" })``;
 
 export const LeftSection = styled(BaseLeftSection).attrs({
     $minWidth: "auto",
@@ -40,6 +40,7 @@ export const Identity = styled.div`
   color: var(--text-secondary);
   font-size: 0.88rem;
   font-weight: 500;
+  font-style: italic;
 `;
 
 export const HabitName = styled.h3`
@@ -48,46 +49,101 @@ export const HabitName = styled.h3`
   font-weight: 700;
 `;
 
+/* ---------------------------------------------------------- */
+/* THREE-TIER STATUS BUTTONS                                   */
+/* ---------------------------------------------------------- */
+
+export const StatusButtonGroup = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+`;
+
 export const StatusButton = styled.button`
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
-  border-radius: 999px;
-  border: none;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 8px;
+  border-radius: 10px;
+  border: 1.5px solid transparent;
   cursor: pointer;
   font-weight: 600;
-  transition: 0.18s ease;
-  color: white;
+  font-size: 0.82rem;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-muted);
 
-  ${({ $status, $color }) => {
-    switch ($status) {
-        case "completed":
-            return css`
-          background: ${$color};
-        `;
-        case "progress":
-            return css`
-          background: rgba(255, 255, 255, 0.08);
-          border: 2px solid ${$color};
-        `;
-        default:
-            return css`
-          background: transparent;
-          border: 2px solid ${$color};
-        `;
-    }
-}}
+  .status-icon {
+    font-size: 0.9rem;
+    font-weight: 800;
+  }
+
+  /* --- FAILED variant --- */
+  ${({ $variant, $active }) => $variant === "failed" && css`
+    ${$active ? css`
+      background: rgba(244, 63, 94, 0.12);
+      border-color: rgba(244, 63, 94, 0.4);
+      color: var(--accent-red, #f43f5e);
+      box-shadow: 0 0 12px rgba(244, 63, 94, 0.1);
+    ` : css`
+      &:hover {
+        background: rgba(244, 63, 94, 0.06);
+        border-color: rgba(244, 63, 94, 0.15);
+        color: var(--accent-red, #f43f5e);
+      }
+    `}
+  `}
+
+  /* --- MINIMUM variant --- */
+  ${({ $variant, $active }) => $variant === "minimum" && css`
+    ${$active ? css`
+      background: rgba(245, 158, 11, 0.12);
+      border-color: rgba(245, 158, 11, 0.4);
+      color: #f59e0b;
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.1);
+    ` : css`
+      &:hover {
+        background: rgba(245, 158, 11, 0.06);
+        border-color: rgba(245, 158, 11, 0.15);
+        color: #f59e0b;
+      }
+    `}
+  `}
+
+  /* --- IDEAL variant --- */
+  ${({ $variant, $active }) => $variant === "ideal" && css`
+    ${$active ? css`
+      background: rgba(16, 185, 129, 0.12);
+      border-color: rgba(16, 185, 129, 0.4);
+      color: #10b981;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.1);
+    ` : css`
+      &:hover {
+        background: rgba(16, 185, 129, 0.06);
+        border-color: rgba(16, 185, 129, 0.15);
+        color: #10b981;
+      }
+    `}
+  `}
 
   &:hover {
-    transform: scale(1.03);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: scale(0.97);
   }
 
   svg {
-    width: 18px;
-    height: 18px;
+    width: 14px;
+    height: 14px;
   }
 `;
+
+/* ---------------------------------------------------------- */
+/* STREAK BADGE                                                */
+/* ---------------------------------------------------------- */
 
 export const StreakBadge = styled.div`
   display: flex;
@@ -107,40 +163,112 @@ export const StreakBadge = styled.div`
   }
 `;
 
-export const ActionSection = styled.div`
+/* ---------------------------------------------------------- */
+/* CONTEXT SECTION (TRIGGER + FALLBACK)                        */
+/* ---------------------------------------------------------- */
+
+export const ContextSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
 `;
 
-export const SectionLabel = styled.div`
+export const ContextRow = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+
+  ${({ $variant }) => $variant === "fallback" && css`
+    background: rgba(244, 63, 94, 0.03);
+    border-color: rgba(244, 63, 94, 0.08);
+  `}
+`;
+
+export const ContextLabel = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
   color: var(--text-muted);
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+
+  svg {
+    width: 13px;
+    height: 13px;
+  }
 `;
 
-export const ActionText = styled.div`
+export const ContextText = styled.div`
   color: var(--text-primary);
-  font-size: 1rem;
+  font-size: 0.92rem;
   font-weight: 500;
 `;
+
+/* ---------------------------------------------------------- */
+/* TARGETS (MINIMUM + IDEAL)                                   */
+/* ---------------------------------------------------------- */
 
 export const Targets = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 10px;
 `;
 
 export const TargetItem = styled.div`
-  padding: 16px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.04);
+  padding: 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.04);
   display: flex;
   flex-direction: column;
   gap: 8px;
+
+  ${({ $variant }) => $variant === "minimum" && css`
+    border-left: 3px solid rgba(245, 158, 11, 0.4);
+  `}
+
+  ${({ $variant }) => $variant === "ideal" && css`
+    border-left: 3px solid rgba(16, 185, 129, 0.4);
+  `}
 `;
+
+export const TargetBadge = styled.span`
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 2px 8px;
+  border-radius: 4px;
+  width: fit-content;
+
+  ${({ $variant }) => $variant === "minimum" && css`
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.2);
+  `}
+
+  ${({ $variant }) => $variant === "ideal" && css`
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+  `}
+`;
+
+export const ActionText = styled.div`
+  color: var(--text-primary);
+  font-size: 0.92rem;
+  font-weight: 500;
+`;
+
+/* ---------------------------------------------------------- */
+/* WEEK TRACKER                                                */
+/* ---------------------------------------------------------- */
 
 export const TrackerSection = styled.div`
   display: flex;
@@ -151,7 +279,7 @@ export const TrackerSection = styled.div`
 export const TrackerRow = styled.div`
   display: flex;
   justify-content: space-between;
-  gap: 8px;
+  gap: 6px;
 `;
 
 export const TrackerDay = styled.div`
@@ -171,12 +299,19 @@ export const TrackerDay = styled.div`
             return css`
           background: ${$color};
           color: white;
+          box-shadow: 0 0 8px ${$color}44;
         `;
-        case "progress":
+        case "minimum":
             return css`
-          border: 2px solid ${$color};
-          background: rgba(255, 255, 255, 0.05);
-          color: white;
+          background: rgba(245, 158, 11, 0.2);
+          color: #f59e0b;
+          border: 1.5px solid rgba(245, 158, 11, 0.4);
+        `;
+        case "failed":
+            return css`
+          background: rgba(244, 63, 94, 0.1);
+          color: var(--accent-red, #f43f5e);
+          border: 1.5px solid rgba(244, 63, 94, 0.2);
         `;
         default:
             return css`
@@ -187,9 +322,20 @@ export const TrackerDay = styled.div`
 }}
 `;
 
+/* ---------------------------------------------------------- */
+/* FOOTER                                                      */
+/* ---------------------------------------------------------- */
+
 export const Consistency = styled.div`
   color: var(--text-secondary);
   font-weight: 600;
+  font-size: 0.88rem;
+
+  .stats-detail {
+    color: var(--text-muted);
+    font-weight: 400;
+    font-size: 0.82rem;
+  }
 `;
 
 export const ActionButton = styled.button`

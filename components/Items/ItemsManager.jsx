@@ -1,42 +1,35 @@
+// ItemsManager.jsx
 "use client";
-
-import { useCallback } from "react";
-
+import React, { useCallback } from "react";
 import ItemsContainer from "./ItemsContainer/ItemsContainer";
-
 import { useCommitments } from "@/lib/store/CommitmentContext";
 import {
-    createCommitment,
-    updateCommitment,
     deleteCommitment,
     completeGoal,
     uncompleteGoal,
     updateHabitStatus,
+    toggleActionComplete,
 } from "@/lib/services/commitmentService";
 import {
-    COMMITMENT_CREATED,
     COMMITMENT_DELETED,
     GOAL_TOGGLED,
     HABIT_STATUS_CHANGED,
+    COMMITMENT_UPDATED // Ensure this type matches exactly
 } from "@/lib/store/types";
 
 export default function ItemsManager({
                                          mode = "overview",
                                          sortBy = "priority",
+                                         onEditOverride // Callback passed down from page.js
                                      }) {
-
     const { commitments, loading, dispatch } = useCommitments();
 
-    const handleCreate = useCallback((commitment) => {
-        const updated = createCommitment(commitment);
-        const created = updated.find(c => c.id === commitment.id) || commitment;
-        dispatch({ type: COMMITMENT_CREATED, payload: created });
-    }, [dispatch]);
-
-    const handleEdit = useCallback((updatedItem) => {
-        updateCommitment(updatedItem.id, updatedItem);
-        dispatch({ type: COMMITMENT_CREATED, payload: updatedItem });
-    }, [dispatch]);
+    // Launch the edit modal in StepperCaller
+    const handleEdit = useCallback((item) => {
+        if (onEditOverride) {
+            onEditOverride(item);
+        }
+    }, [onEditOverride]);
 
     const handleComplete = useCallback((goal) => {
         const updated = goal.completed
@@ -56,7 +49,7 @@ export default function ItemsManager({
     }, [dispatch]);
 
     const handleStatusChange = useCallback((habit, status, completions, streak) => {
-        const updated = updateHabitStatus(habit.id, status, completions, streak);
+        updateHabitStatus(habit.id, status, completions, streak);
         dispatch({
             type: HABIT_STATUS_CHANGED,
             payload: { id: habit.id, status, completions, streak },
@@ -68,13 +61,16 @@ export default function ItemsManager({
         dispatch({ type: COMMITMENT_DELETED, payload: item.id });
     }, [dispatch]);
 
-    const handleItemClick = useCallback((item) => {
-        console.log(item);
-    }, []);
-
-    const handleMore = useCallback((item) => {
-        console.log("More:", item);
-    }, []);
+    const handleActionComplete = useCallback((goal, actionIdOrIndex) => {
+        const updated = toggleActionComplete(goal.id, actionIdOrIndex);
+        const patched = updated.find(c => c.id === goal.id);
+        if (patched) {
+            dispatch({
+                type: COMMITMENT_UPDATED,
+                payload: patched,
+            });
+        }
+    }, [dispatch]);
 
     return (
         <ItemsContainer
@@ -82,13 +78,13 @@ export default function ItemsManager({
             commitments={commitments}
             loading={loading}
             sortBy={sortBy}
-            onItemClick={handleItemClick}
-            onCreate={handleCreate}
+            onItemClick={(item) => console.log(item)}
             onEdit={handleEdit}
             onDelete={handleDelete}
             onComplete={handleComplete}
             onStatusChange={handleStatusChange}
-            onMore={handleMore}
+            onActionComplete={handleActionComplete}
+            onMore={(item) => console.log("More:", item)}
         />
     );
 }

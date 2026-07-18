@@ -13,6 +13,23 @@ export const Container = styled.div`
 
     width: 100%;
     min-width: 0;
+
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,.15) transparent;
+
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: rgba(255,255,255,.15);
+        border-radius: 3px;
+    }
 `;
 
 /* ==========================================================

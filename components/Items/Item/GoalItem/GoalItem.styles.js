@@ -13,7 +13,14 @@ import {
   IconButton,
 } from "../shared/index";
 
-export const Card = styled(BaseCard).attrs({ $gap: "18px" })``;
+export const Card = styled(BaseCard).attrs({ $gap: "18px" })`
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+  }
+`;
 
 export const LeftSection = styled(BaseLeftSection).attrs({
   $minWidth: "0",
@@ -49,9 +56,9 @@ export const Title = styled.h3`
   ${({ $completed }) =>
       $completed &&
       css`
-      text-decoration: line-through;
-      opacity: 0.75;
-    `}
+        text-decoration: line-through;
+        opacity: 0.6;
+      `}
 `;
 
 export const Reason = styled.p`
@@ -72,7 +79,7 @@ export const Checkbox = styled.button`
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: 0.2s ease;
+  transition: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   flex-shrink: 0;
 
   &:hover {
@@ -98,7 +105,7 @@ export const ProgressFill = styled.div`
   border-radius: 4px;
   width: ${({ $pct }) => $pct}%;
   background: ${({ $color }) => $color};
-  transition: width 0.4s ease;
+  transition: width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
 `;
 
 export const CompletionSection = styled.div`
@@ -107,7 +114,8 @@ export const CompletionSection = styled.div`
   gap: 8px;
   padding: 16px;
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.035);
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.04);
 `;
 
 export const CompletionLabel = styled.div`
@@ -115,10 +123,10 @@ export const CompletionLabel = styled.div`
   align-items: center;
   gap: 8px;
   color: var(--text-muted);
-  font-size: 0.82rem;
-  font-weight: 600;
+  font-size: 0.78rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
 
   svg {
     width: 15px;
@@ -128,13 +136,13 @@ export const CompletionLabel = styled.div`
 
 export const CompletionText = styled.div`
   color: var(--text-primary);
-  font-size: 0.97rem;
+  font-size: 0.94rem;
   line-height: 1.45;
 `;
 
 export const ChipGroup = styled.div`
   display: flex;
-  gap: 10px;
+  gap: 8px;
   flex-wrap: wrap;
   flex: 1;
 `;
@@ -143,13 +151,14 @@ export const Chip = styled.div`
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 7px 12px;
+  padding: 6px 12px;
   border-radius: 999px;
-  background: ${({ $color }) => $color || "rgba(255,255,255,.06)"};
-  color: white;
-  font-size: 0.82rem;
+  background: ${({ $color }) => $color || "rgba(255,255,255,.05)"};
+  color: var(--text-primary);
+  font-size: 0.8rem;
   font-weight: 600;
   white-space: nowrap;
+  border: 1px solid rgba(255, 255, 255, 0.02);
 
   svg {
     width: 14px;
@@ -161,6 +170,28 @@ export const ActionsList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
+
+  .all-actions-done-teaser {
+    font-size: 0.85rem;
+    color: var(--accent-green, #2ed47a);
+    padding: 8px 12px;
+    background: rgba(46, 212, 122, 0.06);
+    border-radius: 10px;
+    text-align: center;
+  }
+`;
+
+export const NextStepLabel = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: ${({ $color }) => $color || "var(--accent-purple)"};
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: -2px;
+  color: ${({ $color }) => $color || "var(--accent-purple)"};
 `;
 
 export const ActionItemRow = styled.div`
@@ -169,22 +200,36 @@ export const ActionItemRow = styled.div`
   gap: 12px;
   padding: 12px 14px;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.03);
-  transition: 0.15s ease;
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  transition: all 0.2s ease;
+  cursor: pointer;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.1);
+
+    .check-action-subtle {
+      opacity: 1 !important;
+      color: var(--text-primary) !important;
+    }
+  }
+
+  &:active {
+    transform: scale(0.995);
   }
 `;
 
 export const ActionDot = styled.div`
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: ${({ $completed, $color }) =>
-      $completed ? $color : "rgba(255,255,255,0.12)"};
+      $completed ? $color : "rgba(255,255,255,0.15)"};
   flex-shrink: 0;
   transition: 0.2s ease;
+  box-shadow: 0 0 8px ${({ $completed, $color }) =>
+      $completed ? $color : "transparent"};
 `;
 
 export const ActionContent = styled.div`
@@ -217,6 +262,7 @@ export const ActionItemMeta = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-wrap: wrap;
 `;
 
 export const ActionDuration = styled.span`
@@ -240,8 +286,8 @@ export const ActionButton = styled.button`
   position: relative;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.06);
-    transform: scale(1.1);
+    background: rgba(255, 255, 255, 0.05);
+    transform: scale(1.08);
   }
 
   &[data-tooltip]:hover::after {
@@ -250,19 +296,162 @@ export const ActionButton = styled.button`
     bottom: calc(100% + 6px);
     left: 50%;
     transform: translateX(-50%);
-    padding: 4px 10px;
+    padding: 6px 10px;
     border-radius: 6px;
-    background: rgba(0, 0, 0, 0.85);
+    background: #0b0c10;
+    border: 1px solid rgba(255, 255, 255, 0.08);
     color: white;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 500;
     white-space: nowrap;
     pointer-events: none;
     z-index: 10;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   }
 
   svg {
     width: 16px;
     height: 16px;
+  }
+`;
+/* Append these exports to GoalItem.styles.js */
+
+
+export const ModalOverlay = styled.div`
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 5, 8, 0.75);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 1.5rem;
+  animation: overlayFadeIn 0.25s ease-out;
+
+  @keyframes overlayFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+`;
+
+export const ModalCard = styled.div`
+  background: #14161f;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
+  padding: 1.75rem;
+  width: 100%;
+  max-width: 520px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8);
+  animation: cardSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+  @keyframes cardSlideUp {
+    from { transform: scale(0.96) translateY(16px); opacity: 0; }
+    to { transform: scale(1) translateY(0); opacity: 1; }
+  }
+  
+  .confirm-close-btn {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+    padding: 0.75rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.2s;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+  }
+`;
+
+export const ModalHeader = styled.div`
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  padding-bottom: 0.75rem;
+`;
+
+export const ModalHeaderRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+`;
+
+export const ModalTitle = styled.h4`
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+`;
+
+export const ModalTeaser = styled.p`
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 4px 0 0 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+export const CloseXBtn = styled.button`
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 4px;
+  line-height: 1;
+  
+  &:hover {
+    color: var(--accent-red);
+  }
+`;
+
+export const ModalBodyScroll = styled.div`
+  overflow-y: auto;
+  flex: 1;
+  padding-right: 0.25rem;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 99px;
+  }
+`;
+
+export const ModalFooterButtons = styled.div`
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  padding-top: 0.75rem;
+`;
+
+export const PriorityAlertBanner = styled.div`
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: rgba(255, 92, 112, 0.05);
+  border: 1px solid rgba(255, 92, 112, 0.15);
+  border-radius: 12px;
+  padding: 12px;
+  color: var(--accent-red, #ff5c70);
+  font-size: 0.8rem;
+  
+  strong {
+    display: block;
+    font-weight: 600;
+  }
+  p {
+    margin: 2px 0 0 0;
+    opacity: 0.8;
   }
 `;

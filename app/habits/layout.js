@@ -1,5 +1,4 @@
 import "@/app/globals.css"
-import "./page.module.css"
 
 export const metadata = {
     title: "Create Next App",

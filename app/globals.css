@@ -82,7 +82,6 @@
   padding-right: 5vw;
   margin-top: 5vh;
 }
-
 .main-area {
   flex: 1;
   display: flex;
@@ -90,8 +89,12 @@
   padding: 32px 40px 28px 40px;
   overflow: hidden;
   min-width: 0;
-  width: 100vw;
-  height: 100vh;
+
+  /* BUG FIX: Removed 'width: 100vw' and 'height: 100vh' */
+  /* Using 100vw here alongside a Sidebar breaks flex layout calculations, causing a major horizontal overflow/clipping issue. */
+  width: 100%;
+  height: auto;
+  min-height: 100vh;
 }
 
 .content-grid {

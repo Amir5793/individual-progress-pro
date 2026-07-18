@@ -1,6 +1,6 @@
 // components/DatePicker/DatePicker.jsx
 import React, { useState, useEffect, useRef } from 'react';
-import styles from './DatePicker.module.css';
+import styled from 'styled-components';
 
 const DatePicker = ({ onDateSelect, initialDate = null, placeholder = 'Select date' }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -9,7 +9,6 @@ const DatePicker = ({ onDateSelect, initialDate = null, placeholder = 'Select da
     const [viewDate, setViewDate] = useState(new Date());
     const pickerRef = useRef(null);
 
-    // Sync with initialDate prop
     useEffect(() => {
         if (initialDate) {
             const date = new Date(initialDate);
@@ -19,7 +18,6 @@ const DatePicker = ({ onDateSelect, initialDate = null, placeholder = 'Select da
         }
     }, [initialDate]);
 
-    // Close picker when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (pickerRef.current && !pickerRef.current.contains(event.target)) {
@@ -30,17 +28,14 @@ const DatePicker = ({ onDateSelect, initialDate = null, placeholder = 'Select da
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    // Get days in month
     const getDaysInMonth = (year, month) => {
         return new Date(year, month + 1, 0).getDate();
     };
 
-    // Get first day of month (0 = Sunday, 1 = Monday, etc.)
     const getFirstDayOfMonth = (year, month) => {
         return new Date(year, month, 1).getDay();
     };
 
-    // Navigate months
     const goToPreviousMonth = () => {
         setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() - 1, 1));
     };
@@ -57,7 +52,6 @@ const DatePicker = ({ onDateSelect, initialDate = null, placeholder = 'Select da
         setViewDate(new Date(viewDate.getFullYear() + 1, viewDate.getMonth(), 1));
     };
 
-    // Handle date selection
     const handleDateSelect = (day) => {
         const newDate = new Date(viewDate.getFullYear(), viewDate.getMonth(), day);
         setSelectedDate(newDate);
@@ -68,7 +62,6 @@ const DatePicker = ({ onDateSelect, initialDate = null, placeholder = 'Select da
         }
     };
 
-    // Check if a date is today
     const isToday = (day) => {
         const today = new Date();
         return (
@@ -78,7 +71,6 @@ const DatePicker = ({ onDateSelect, initialDate = null, placeholder = 'Select da
         );
     };
 
-    // Check if a date is selected
     const isSelected = (day) => {
         if (!selectedDate) return false;
         return (
@@ -88,7 +80,6 @@ const DatePicker = ({ onDateSelect, initialDate = null, placeholder = 'Select da
         );
     };
 
-    // Format date for display
     const formatDate = (date) => {
         if (!date) return placeholder;
         return date.toLocaleDateString('en-US', {
@@ -99,7 +90,6 @@ const DatePicker = ({ onDateSelect, initialDate = null, placeholder = 'Select da
         });
     };
 
-    // Render calendar days
     const renderDays = () => {
         const year = viewDate.getFullYear();
         const month = viewDate.getMonth();
@@ -107,19 +97,17 @@ const DatePicker = ({ onDateSelect, initialDate = null, placeholder = 'Select da
         const firstDay = getFirstDayOfMonth(year, month);
         const days = [];
 
-        // Empty cells for days before the first day of month
         for (let i = 0; i < firstDay; i++) {
-            days.push(<div key={`empty-${i}`} className={styles.emptyDay} />);
+            days.push(<div key={`empty-${i}`} className="emptyDay" />);
         }
 
-        // Days of the month
         for (let day = 1; day <= daysInMonth; day++) {
             const isTodayDate = isToday(day);
             const isSelectedDate = isSelected(day);
             days.push(
                 <button
                     key={day}
-                    className={`${styles.day} ${isTodayDate ? styles.today : ''} ${isSelectedDate ? styles.selected : ''}`}
+                    className={`day ${isTodayDate ? 'today' : ''} ${isSelectedDate ? 'selected' : ''}`}
                     onClick={() => handleDateSelect(day)}
                 >
                     {day}
@@ -130,24 +118,21 @@ const DatePicker = ({ onDateSelect, initialDate = null, placeholder = 'Select da
         return days;
     };
 
-    // Month names
     const monthNames = [
         'January', 'February', 'March', 'April', 'May', 'June',
         'July', 'August', 'September', 'October', 'November', 'December'
     ];
 
-    // Day names (short)
     const dayNames = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
     return (
-        <div className={styles.datePicker} ref={pickerRef}>
-            {/* Trigger Button */}
+        <StyledWrapper className="datePicker" ref={pickerRef}>
             <button
-                className={`${styles.triggerButton} ${isOpen ? styles.open : ''}`}
+                className={`triggerButton ${isOpen ? 'open' : ''}`}
                 onClick={() => setIsOpen(!isOpen)}
                 type="button"
             >
-                <span className={styles.triggerIcon}>
+                <span className="triggerIcon">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
                         <line x1="16" y1="2" x2="16" y2="6" />
@@ -155,62 +140,40 @@ const DatePicker = ({ onDateSelect, initialDate = null, placeholder = 'Select da
                         <line x1="3" y1="10" x2="21" y2="10" />
                     </svg>
                 </span>
-                <span className={styles.triggerText}>
+                <span className="triggerText">
                     {formatDate(selectedDate)}
                 </span>
-                <span className={styles.triggerArrow}>
+                <span className="triggerArrow">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <polyline points="6 9 12 15 18 9" />
                     </svg>
                 </span>
             </button>
 
-            {/* Calendar Dropdown */}
             {isOpen && (
-                <div className={styles.calendarContainer}>
-                    {/* Header */}
-                    <div className={styles.calendarHeader}>
-                        <div className={styles.monthYear}>
-                            <button
-                                className={styles.navButton}
-                                onClick={goToPreviousYear}
-                                aria-label="Previous year"
-                                type="button"
-                            >
+                <div className="calendarContainer">
+                    <div className="calendarHeader">
+                        <div className="monthYear">
+                            <button className="navButton" onClick={goToPreviousYear} aria-label="Previous year" type="button">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                     <polyline points="15 18 9 12 15 6" />
                                     <polyline points="19 18 13 12 19 6" />
                                 </svg>
                             </button>
-                            <button
-                                className={styles.navButton}
-                                onClick={goToPreviousMonth}
-                                aria-label="Previous month"
-                                type="button"
-                            >
+                            <button className="navButton" onClick={goToPreviousMonth} aria-label="Previous month" type="button">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                     <polyline points="15 18 9 12 15 6" />
                                 </svg>
                             </button>
-                            <span className={styles.monthYearText}>
+                            <span className="monthYearText">
                                 {monthNames[viewDate.getMonth()]} {viewDate.getFullYear()}
                             </span>
-                            <button
-                                className={styles.navButton}
-                                onClick={goToNextMonth}
-                                aria-label="Next month"
-                                type="button"
-                            >
+                            <button className="navButton" onClick={goToNextMonth} aria-label="Next month" type="button">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                     <polyline points="9 18 15 12 9 6" />
                                 </svg>
                             </button>
-                            <button
-                                className={styles.navButton}
-                                onClick={goToNextYear}
-                                aria-label="Next year"
-                                type="button"
-                            >
+                            <button className="navButton" onClick={goToNextYear} aria-label="Next year" type="button">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                     <polyline points="9 18 15 12 9 6" />
                                     <polyline points="5 18 11 12 5 6" />
@@ -219,54 +182,312 @@ const DatePicker = ({ onDateSelect, initialDate = null, placeholder = 'Select da
                         </div>
                     </div>
 
-                    {/* Day Names */}
-                    <div className={styles.dayNames}>
+                    <div className="dayNames">
                         {dayNames.map((name) => (
-                            <div key={name} className={styles.dayName}>
-                                {name}
-                            </div>
+                            <div key={name} className="dayName">{name}</div>
                         ))}
                     </div>
 
-                    {/* Days Grid */}
-                    <div className={styles.daysGrid}>
+                    <div className="daysGrid">
                         {renderDays()}
                     </div>
 
-                    {/* Footer with today button */}
-                    <div className={styles.calendarFooter}>
-                        <button
-                            className={styles.todayButton}
-                            onClick={() => {
-                                const today = new Date();
-                                setViewDate(today);
-                                setCurrentMonth(today);
-                                handleDateSelect(today.getDate());
-                            }}
-                            type="button"
-                        >
+                    <div className="calendarFooter">
+                        <button className="todayButton" onClick={() => {
+                            const today = new Date();
+                            setViewDate(today);
+                            setCurrentMonth(today);
+                            handleDateSelect(today.getDate());
+                        }} type="button">
                             Today
                         </button>
                         {selectedDate && (
-                            <button
-                                className={styles.clearButton}
-                                onClick={() => {
-                                    setSelectedDate(null);
-                                    if (onDateSelect) {
-                                        onDateSelect(null);
-                                    }
-                                    setIsOpen(false);
-                                }}
-                                type="button"
-                            >
+                            <button className="clearButton" onClick={() => {
+                                setSelectedDate(null);
+                                if (onDateSelect) {
+                                    onDateSelect(null);
+                                }
+                                setIsOpen(false);
+                            }} type="button">
                                 Clear
                             </button>
                         )}
                     </div>
                 </div>
             )}
-        </div>
+        </StyledWrapper>
     );
 };
 
 export default DatePicker;
+
+const StyledWrapper = styled.div`
+  position: relative;
+  display: inline-block;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  width: 280px;
+
+  .triggerButton {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 12px 16px;
+    background: #0D0D0D;
+    color: #F0F0F0;
+    border: 2px solid #3A3A3A;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    gap: 10px;
+  }
+
+  .triggerButton:hover {
+    border-color: #6A1B9A;
+    background: #1A1A1A;
+  }
+
+  .triggerButton.open {
+    border-color: #AB47BC;
+    box-shadow: 0 0 0 3px rgba(106, 27, 154, 0.4);
+  }
+
+  .triggerIcon {
+    display: flex;
+    align-items: center;
+    color: #AB47BC;
+    flex-shrink: 0;
+  }
+
+  .triggerText {
+    flex: 1;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .triggerText:empty::before {
+    content: attr(data-placeholder);
+    color: #B0B0B0;
+  }
+
+  .triggerArrow {
+    display: flex;
+    align-items: center;
+    color: #B0B0B0;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+  }
+
+  .triggerButton.open .triggerArrow {
+    transform: rotate(180deg);
+    color: #AB47BC;
+  }
+
+  .calendarContainer {
+    position: absolute;
+    top: calc(5vh + 10px);
+    left: 0;
+    width: 100%;
+    min-width: 280px;
+    background: #1A1A1A;
+    border: 1px solid #3A3A3A;
+    border-radius: 12px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7);
+    padding: 16px;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+    animation: slideDown 0.2s ease-out;
+  }
+
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-8px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .calendarHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .monthYear {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .navButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    color: #B0B0B0;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 0;
+    flex-shrink: 0;
+  }
+
+  .navButton:hover {
+    background: #2A2A2A;
+    color: #F0F0F0;
+  }
+
+  .navButton:active {
+    transform: scale(0.92);
+  }
+
+  .monthYearText {
+    font-weight: 600;
+    font-size: 1rem;
+    color: #F0F0F0;
+    letter-spacing: 0.3px;
+    flex: 1;
+    text-align: center;
+  }
+
+  .dayNames {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+
+  .dayName {
+    text-align: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #B0B0B0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 4px 0;
+  }
+
+  .daysGrid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+  }
+
+  .emptyDay {
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .day {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: #F0F0F0;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 400;
+    position: relative;
+  }
+
+  .day:hover {
+    background: #2A2A2A;
+    color: white;
+  }
+
+  .day:active {
+    transform: scale(0.92);
+  }
+
+  .day.today {
+    font-weight: 600;
+    color: #AB47BC;
+  }
+
+  .day.today::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #AB47BC;
+  }
+
+  .day.selected {
+    background: #6A1B9A;
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(106, 27, 154, 0.4);
+  }
+
+  .day.selected:hover {
+    background: #4A148C;
+  }
+
+  .day.selected.today::after {
+    background: white;
+  }
+
+  .calendarFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid #3A3A3A;
+  }
+
+  .todayButton,
+  .clearButton {
+    background: transparent;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #B0B0B0;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .todayButton:hover,
+  .clearButton:hover {
+    background: #2A2A2A;
+    color: #F0F0F0;
+  }
+
+  .clearButton {
+    color: #EF5350;
+  }
+
+  .clearButton:hover {
+    background: rgba(239, 83, 80, 0.15);
+    color: #FF8A80;
+  }
+
+  @media (max-width: 360px) {
+    width: 100%;
+    min-width: unset;
+
+    .calendarContainer {
+      min-width: unset;
+      width: 100%;
+    }
+  }
+`;

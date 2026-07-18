@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import {
     Card,
     Header,
@@ -8,189 +9,239 @@ import {
     TitleSection,
     Identity,
     HabitName,
+    StatusButtonGroup,
     StatusButton,
-    ActionSection,
-    SectionLabel,
-    ActionText,
+    StreakBadge,
+    ContextSection,
+    ContextRow,
+    ContextLabel,
+    ContextText,
     Targets,
     TargetItem,
+    TargetBadge,
     TrackerSection,
     TrackerRow,
     TrackerDay,
     Footer,
     Consistency,
-    StreakBadge,
     Actions,
     IconButton,
     ActionButton,
+    ActionText,
 } from "./HabitItem.styles";
 
 import {
-    CalendarDays, Check, MoreHorizontal, Pencil, Trash2,
-    Play, Pause, Flame,
+    CalendarDays, MoreHorizontal, Pencil, Trash2,
+    Flame, Zap, Target, AlertCircle, Clock,
 } from "lucide-react";
 
 import {
-    getHabitStatus, getProgressLabel
+    getTodayStatus,
+    getCompletionStats,
+    buildUpdatedCompletions,
+    computeNewStreak,
 } from "./helpers";
-import {getConsistency} from "@/lib/habits/consistency";
-import {getWeekTracker} from "@/lib/habits/tracker";
-import {calculateStreak} from "@/lib/habits/streak";
-import {getCategoryColor, getCategoryIcon} from "@/constants/categories";
+import { getConsistency } from "@/lib/habits/consistency";
+import { getWeekTracker } from "@/lib/habits/tracker";
+import { calculateStreak } from "@/lib/habits/streak";
+import { getCategoryColor, getCategoryIcon } from "@/constants/categories";
 
 export default function HabitItem({
                                        item, onStatusChange, onEdit, onDelete, onMore, onClick
                                    }) {
 
     const {
-        identity, title, category, minimumAction, target, completions,
+        identity, title, category, minimumAction, target,
+        trigger, fallbackPlan, completions = [],
     } = item;
 
     const color = getCategoryColor(category);
     const CategoryIcon = getCategoryIcon(category);
-    const status = getHabitStatus(item);
+    const todayStatus = getTodayStatus(completions);
     const tracker = getWeekTracker(completions);
     const consistency = getConsistency(completions);
     const streak = calculateStreak(completions);
+    const stats = getCompletionStats(completions);
+
+    const handleStatusSelect = (newStatus) => {
+        const updatedCompletions = buildUpdatedCompletions(completions, newStatus);
+        const newStreak = computeNewStreak(completions, newStatus);
+        onStatusChange?.(item, newStatus, updatedCompletions, newStreak);
+    };
 
     return (
         <Card onClick={() => onClick?.(item)}>
 
-        {/* ---------------- HEADER ---------------- */}
-        <Header>
-            <LeftSection>
-                <CategoryIconWrapper $color={color}>
-                    <CategoryIcon size={22}/>
-                </CategoryIconWrapper>
-                <TitleSection>
-                    <Identity>
-                        Become a {identity}
-                    </Identity>
-                    <HabitName>
-                        {title}
-                    </HabitName>
-                </TitleSection>
-            </LeftSection>
-            <StatusButton
-                $status={status}
-                $color={color}
-                aria-label={getProgressLabel(status)}
-                onClick={(e) => {
-                    e.stopPropagation();
-                    onStatusChange?.(item);
-                }}
-            >
-                {status === "completed" && (<>
-                    <Check size={18}/>
-                    Done
-                </>)}
-                {status === "progress" && (<>
-                    <Pause size={18}/>
-                    Continue
-                </>)}
-                {status === "pending" && (<>
-                    <Play size={18}/>
-                    Start
-                </>)}
-            </StatusButton>
-        </Header>
+            {/* ---------------- HEADER ---------------- */}
+            <Header>
+                <LeftSection>
+                    <CategoryIconWrapper $color={color}>
+                        <CategoryIcon size={22}/>
+                    </CategoryIconWrapper>
+                    <TitleSection>
+                        <Identity>
+                            Become a {identity}
+                        </Identity>
+                        <HabitName>
+                            {title}
+                        </HabitName>
+                    </TitleSection>
+                </LeftSection>
+            </Header>
 
-        {/* ---------------- STREAK ---------------- */}
-        {streak > 0 && (
-            <StreakBadge $color={color}>
-                <Flame size={16}/>
-                {streak}-day streak
-            </StreakBadge>
-        )}
+            {/* ---------------- STREAK ---------------- */}
+            {streak > 0 && (
+                <StreakBadge $color={color}>
+                    <Flame size={16}/>
+                    {streak}-day streak
+                </StreakBadge>
+            )}
 
-        {/* ---------------- TODAY ---------------- */}
-        <ActionSection>
-            <SectionLabel>
-                Today's Action
-            </SectionLabel>
-            <ActionText>
-                {title}
-            </ActionText>
-        </ActionSection>
+            {/* ---------------- THREE-TIER STATUS BUTTONS ---------------- */}
+            <StatusButtonGroup>
+                <StatusButton
+                    $active={todayStatus === "failed"}
+                    $variant="failed"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        handleStatusSelect("failed");
+                    }}
+                >
+                    <span className="status-icon">✕</span>
+                    Missed
+                </StatusButton>
 
-        {/* ---------------- TARGETS ---------------- */}
-        <Targets>
-            <TargetItem>
-                <SectionLabel>
+                <StatusButton
+                    $active={todayStatus === "minimum"}
+                    $variant="minimum"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        handleStatusSelect("minimum");
+                    }}
+                >
+                    <Zap size={14}/>
                     Minimum
-                </SectionLabel>
-                <ActionText>
-                    {minimumAction}
-                </ActionText>
-            </TargetItem>
-            <TargetItem>
-                <SectionLabel>
+                </StatusButton>
+
+                <StatusButton
+                    $active={todayStatus === "completed"}
+                    $variant="ideal"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        handleStatusSelect("completed");
+                    }}
+                >
+                    <Target size={14}/>
                     Ideal
-                </SectionLabel>
-                <ActionText>
-                    {target}
-                </ActionText>
-            </TargetItem>
-        </Targets>
+                </StatusButton>
+            </StatusButtonGroup>
 
-        {/* ---------------- WEEK TRACKER ---------------- */}
-        <TrackerSection>
-            <TrackerRow>
-                {tracker.map(day => (
-                    <TrackerDay
-                        key={day.day}
-                        $state={day.state}
+            {/* ---------------- CONTEXT: TRIGGER & FALLBACK ---------------- */}
+            {(trigger || fallbackPlan) && (
+                <ContextSection>
+                    {trigger && (
+                        <ContextRow>
+                            <ContextLabel>
+                                <Clock size={13}/>
+                                Trigger
+                            </ContextLabel>
+                            <ContextText>{trigger}</ContextText>
+                        </ContextRow>
+                    )}
+                    {fallbackPlan && (
+                        <ContextRow $variant="fallback">
+                            <ContextLabel>
+                                <AlertCircle size={13}/>
+                                Fallback
+                            </ContextLabel>
+                            <ContextText>{fallbackPlan}</ContextText>
+                        </ContextRow>
+                    )}
+                </ContextSection>
+            )}
+
+            {/* ---------------- TARGETS ---------------- */}
+            <Targets>
+                <TargetItem $variant="minimum">
+                    <TargetBadge $variant="minimum">MIN</TargetBadge>
+                    <div>
+                        <ContextLabel>Minimum Action</ContextLabel>
+                        <ActionText>{minimumAction}</ActionText>
+                    </div>
+                </TargetItem>
+                <TargetItem $variant="ideal">
+                    <TargetBadge $variant="ideal">IDEAL</TargetBadge>
+                    <div>
+                        <ContextLabel>Target</ContextLabel>
+                        <ActionText>{target || "No target set"}</ActionText>
+                    </div>
+                </TargetItem>
+            </Targets>
+
+            {/* ---------------- WEEK TRACKER ---------------- */}
+            <TrackerSection>
+                <TrackerRow>
+                    {tracker.map(day => (
+                        <TrackerDay
+                            key={day.day}
+                            $state={day.state}
+                            $color={color}
+                            aria-label={`${day.label}: ${day.state}`}
+                        >
+                            {day.label}
+                        </TrackerDay>
+                    ))}
+                </TrackerRow>
+            </TrackerSection>
+
+            {/* ---------------- FOOTER ---------------- */}
+            <Footer>
+                <Consistency>
+                    {consistency}% consistency
+                    {stats.total > 0 && (
+                        <span className="stats-detail">
+                            {" "}· {stats.idealCount} ideal · {stats.minimumCount} min
+                        </span>
+                    )}
+                </Consistency>
+                <Actions>
+                    <ActionButton
+                        as="button"
                         $color={color}
-                        aria-label={`${day.label}: ${day.state}`}
+                        aria-label="Edit habit"
+                        data-tooltip="Edit habit"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onEdit?.(item);
+                        }}
                     >
-                        {day.label}
-                    </TrackerDay>
-                ))}
-            </TrackerRow>
-        </TrackerSection>
-
-        {/* ---------------- FOOTER ---------------- */}
-        <Footer>
-            <Consistency>
-                {consistency}% consistency
-            </Consistency>
-            <Actions>
-                <ActionButton
-                    as="button"
-                    $color={color}
-                    aria-label="Edit habit"
-                    data-tooltip="Edit habit"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        onEdit?.(item);
-                    }}
-                >
-                    <Pencil size={16}/>
-                </ActionButton>
-                <ActionButton
-                    as="button"
-                    $color="var(--accent-red)"
-                    aria-label="Delete habit"
-                    data-tooltip="Delete habit"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        onDelete?.(item);
-                    }}
-                >
-                    <Trash2 size={16}/>
-                </ActionButton>
-                <IconButton
-                    as="button"
-                    aria-label="More options"
-                    data-tooltip="More options"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        onMore?.(item);
-                    }}
-                >
-                    <MoreHorizontal size={18}/>
-                </IconButton>
-            </Actions>
-        </Footer>
-    </Card>);
+                        <Pencil size={16}/>
+                    </ActionButton>
+                    <ActionButton
+                        as="button"
+                        $color="var(--accent-red)"
+                        aria-label="Delete habit"
+                        data-tooltip="Delete habit"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onDelete?.(item);
+                        }}
+                    >
+                        <Trash2 size={16}/>
+                    </ActionButton>
+                    <IconButton
+                        as="button"
+                        aria-label="More options"
+                        data-tooltip="More options"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onMore?.(item);
+                        }}
+                    >
+                        <MoreHorizontal size={18}/>
+                    </IconButton>
+                </Actions>
+            </Footer>
+        </Card>
+    );
 }

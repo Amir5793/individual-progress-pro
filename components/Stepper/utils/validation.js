@@ -137,10 +137,14 @@ export const validateDeadline = (value) => {
   if (value === null || value === undefined) {
     return { valid: true }; // "No deadline" is allowed
   }
-  if (!isDate(value)) {
-    return { valid: false, error: "Invalid date." };
+  if (isDate(value)) {
+    return { valid: true };
   }
-  return { valid: true };
+  if (typeof value === "string") {
+    const d = new Date(value);
+    if (!isNaN(d.getTime())) return { valid: true };
+  }
+  return { valid: false, error: "Invalid date." };
 };
 
 /**
@@ -521,8 +525,30 @@ const validateHabitStep = (currentStep, value) => {
       return runSingleValidator(value, validateTarget, "target");
     case 5: // Cue/Trigger (optional)
       return runSingleValidator(value, validateTrigger, "trigger");
-    case 6: // Obstacles (optional – single field, no fallback)
-      return runSingleValidator(value, validateObstacle, "obstacle");
+    case 6: // Obstacles (optional – IF/THEN pattern)
+    {
+      const errors = {};
+      let valid = true;
+
+      if (value?.obstacle !== undefined && value.obstacle !== null) {
+        const result = validateObstacle(value.obstacle);
+        if (!result.valid) {
+          errors.obstacle = result.error;
+          valid = false;
+        }
+      }
+      if (value?.fallbackPlan !== undefined && value.fallbackPlan !== null) {
+        const result = validateFallbackPlan(value.fallbackPlan);
+        if (!result.valid) {
+          errors.fallbackPlan = result.error;
+          valid = false;
+        }
+      }
+      return {
+        valid,
+        errors: Object.keys(errors).length ? errors : undefined,
+      };
+    }
     case 7: // Motivation & Review (reason + summary)
       return runSingleValidator(value, validateReason, "reason");
     case 8:

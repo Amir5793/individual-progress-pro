@@ -23,6 +23,8 @@ const handleMore = (item) => { /* reserved for future context menu */ };
 export default function ItemsManager({
                                          mode = "overview",
                                          sortBy = "priority",
+                                         goalLimit,
+                                         habitLimit,
                                          onEditOverride // Callback passed down from page.js
                                      }) {
     const { commitments, loading, dispatch } = useCommitments();
@@ -80,6 +82,8 @@ export default function ItemsManager({
             commitments={commitments}
             loading={loading}
             sortBy={sortBy}
+            goalLimit={goalLimit}
+            habitLimit={habitLimit}
             onItemClick={handleItemClick}
             onEdit={handleEdit}
             onDelete={handleDelete}

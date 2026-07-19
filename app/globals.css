@@ -1,4 +1,5 @@
 @import "tailwindcss";
+
 :root {
   /* ---- Surfaces ---- */
   --background: #0e1323;
@@ -150,7 +151,7 @@
 
   --overlay-bg: rgba(0, 0, 0, 0.4);
   --modal-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.25);
-  --tooltip-bg: #1a1d2e;
+  --tooltip-bg: #0984e3;
   --tooltip-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 
   --track-bg: rgba(0, 0, 0, 0.08);
@@ -181,7 +182,7 @@
   width: 100%;
   min-height: 100dvh;
   position: relative;
-  font-family: var(--font-family-body);
+  font-family: var(--font-family-body), serif;
   background-color: var(--background);
   overflow-x: hidden;
   transition: background-color 0.3s ease, color 0.3s ease;
@@ -198,7 +199,7 @@
   transition: background 0.3s ease, color 0.3s ease;
 }
 
-.tasks-container{
+.tasks-container {
   width: 100%;
   display: flex;
   justify-content: center;
@@ -206,6 +207,7 @@
   padding-right: 5vw;
   margin-top: 5vh;
 }
+
 .main-area {
   flex: 1;
   display: flex;
@@ -265,10 +267,7 @@ a {
 
 @media (max-width: 768px) {
   .main-area {
-    padding-top: 18px;
-    padding-left: 14px;
-    padding-right: 14px;
-    padding-bottom: calc(96px + env(safe-area-inset-bottom));
+    padding: 18px 14px calc(96px + env(safe-area-inset-bottom));
   }
 
   .content-grid {

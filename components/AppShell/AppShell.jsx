@@ -18,7 +18,7 @@ const StepperCaller = dynamic(
     }
 );
 
-export default function AppShell({ mode = "overview" }) {
+export default function AppShell({ mode = "overview", goalLimit, habitLimit }) {
     const [showModal, setShowModal] = useState(false);
     const [modalMode, setModalMode] = useState("goal");
     const [activeDatum, setActiveDatum] = useState({});
@@ -49,6 +49,8 @@ export default function AppShell({ mode = "overview" }) {
                     <div className={`content-grid${showHeader ? " hide-on-mobile" : ""}`}>
                         <ItemsManager
                             mode={itemMode}
+                            goalLimit={goalLimit}
+                            habitLimit={habitLimit}
                             onEditOverride={(item) => handleLaunchModal(item.type, item)}
                         />
                     </div>

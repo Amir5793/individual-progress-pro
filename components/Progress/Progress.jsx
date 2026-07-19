@@ -118,7 +118,7 @@ const StyledWrapper = styled.div`
 
   .progress-sub {
     font-size: 12px;
-    color: var(--text-secondary);
+    color: var(--text-primary);
     margin-bottom: 10px;
   }
 
@@ -146,7 +146,7 @@ const StyledWrapper = styled.div`
   .progress-count {
     font-size: 13px;
     font-weight: 600;
-    color: var(--text-secondary);
+    color: var(--text-primary);
     white-space: nowrap;
   }
 

@@ -31,7 +31,7 @@ import {
 } from "./HabitItem.styles";
 
 import {
-    CalendarDays, MoreHorizontal, Pencil, Trash2,
+    MoreHorizontal, Pencil, Trash2,
     Flame, Zap, Target, AlertCircle, Clock,
 } from "lucide-react";
 

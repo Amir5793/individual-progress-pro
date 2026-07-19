@@ -20,6 +20,9 @@ export default function ItemsContainer({
 
                                            sortBy = "priority",
 
+                                           goalLimit = Infinity,
+                                           habitLimit = Infinity,
+
                                            loading = false,
 
                                            onItemClick,
@@ -31,19 +34,23 @@ export default function ItemsContainer({
                                            onActionComplete,
                                        }) {
 
-    const goals = useMemo(() => {
+    const allGoals = useMemo(() => {
         return sortItems(
             commitments.filter((item) => item.type === "goal"),
             sortBy
         );
     }, [commitments, sortBy]);
 
-    const habits = useMemo(() => {
+    const allHabits = useMemo(() => {
         return sortItems(
             commitments.filter((item) => item.type === "habit"),
             sortBy
         );
     }, [commitments, sortBy]);
+
+    const isOverview = mode === "overview";
+    const goals = isOverview ? allGoals.slice(0, goalLimit) : allGoals;
+    const habits = isOverview ? allHabits.slice(0, habitLimit) : allHabits;
 
     /* -------------------------------------------------------------------------- */
     /* Loading                                                                    */

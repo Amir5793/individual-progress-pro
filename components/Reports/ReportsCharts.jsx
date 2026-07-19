@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useRef, useEffect, useMemo, useCallback } from "react";
-import Script from "next/script";
-import { useCommitments } from "@/lib/store/CommitmentContext";
+import React, { useState, useRef, useEffect, useMemo, useCallback } from "react";
+import useReportCommitments from "@/lib/hooks/useReportCommitments";
 import {
   ChartsSection,
   ChartsRow,
@@ -43,6 +42,35 @@ function getCssVar(name) {
 
 const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+const CHART_JS_URL = "https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js";
+
+let chartPromise = null;
+function ensureChartJs() {
+  if (typeof window !== "undefined" && window.Chart) return Promise.resolve();
+  if (chartPromise) return chartPromise;
+  chartPromise = new Promise((resolve) => {
+    const script = document.createElement("script");
+    script.src = CHART_JS_URL;
+    script.async = true;
+    script.onload = () => resolve();
+    document.head.appendChild(script);
+  });
+  return chartPromise;
+}
+
+function useChartReady() {
+  const [ready, setReady] = useState(() => typeof window !== "undefined" && !!window.Chart);
+  useEffect(() => {
+    if (window.Chart) { setReady(true); return; }
+    let mounted = true;
+    ensureChartJs().then(() => {
+      if (mounted) setReady(true);
+    });
+    return () => { mounted = false; };
+  }, []);
+  return ready;
+}
+
 /* ==========================================================
    DATA HOOKS — scoped to chosen week
    ========================================================== */
@@ -74,7 +102,7 @@ function useCategoryData(commitments, weekStart, weekEnd) {
   }, [commitments, weekStart, weekEnd]);
 }
 
-function useDailyProgress(commitments, weekStart, weekEnd) {
+function useDailyProgress(commitments, weekStart) {
   return useMemo(() => {
     const days = [];
     for (let i = 0; i < 7; i++) {
@@ -126,9 +154,10 @@ function useDailyProgress(commitments, weekStart, weekEnd) {
    PIE CHART
    ========================================================== */
 
-function PieChart({ counts, title, description }) {
+function PieChart({ counts, title, description, chartReady }) {
   const canvasRef = useRef(null);
   const chartRef = useRef(null);
+  const [mounted, setMounted] = useState(false);
 
   const labels = useMemo(() => Object.keys(counts), [counts]);
   const data = useMemo(() => Object.values(counts), [counts]);
@@ -136,6 +165,10 @@ function PieChart({ counts, title, description }) {
     () => labels.map((l, i) => getColorForCategory(l, i)),
     [labels]
   );
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const renderChart = useCallback(() => {
     if (!canvasRef.current || !window.Chart) return;
@@ -192,17 +225,13 @@ function PieChart({ counts, title, description }) {
   }, [labels, data, colors]);
 
   useEffect(() => {
-    if (window.Chart) {
+    if (chartReady && mounted) {
       renderChart();
     }
     return () => {
       if (chartRef.current) chartRef.current.destroy();
     };
-  }, [renderChart]);
-
-  const handleScriptLoad = useCallback(() => {
-    renderChart();
-  }, [renderChart]);
+  }, [chartReady, mounted, renderChart]);
 
   const isEmpty = labels.length === 0;
 
@@ -210,18 +239,13 @@ function PieChart({ counts, title, description }) {
     <ChartCard>
       <ChartTitle>{title}</ChartTitle>
       <ChartDesc>{description}</ChartDesc>
-      {isEmpty ? (
+      {!mounted || isEmpty ? (
         <EmptyChart>No items this week</EmptyChart>
       ) : (
         <CanvasWrap $aspect="4 / 3">
           <canvas ref={canvasRef} />
         </CanvasWrap>
       )}
-      <Script
-        src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"
-        strategy="afterInteractive"
-        onLoad={handleScriptLoad}
-      />
     </ChartCard>
   );
 }
@@ -230,11 +254,16 @@ function PieChart({ counts, title, description }) {
    BAR / LINE CHART (Daily Progress for chosen week)
    ========================================================== */
 
-function ProgressChart({ days, title, description }) {
+function ProgressChart({ days, title, description, chartReady }) {
   const canvasRef = useRef(null);
   const chartRef = useRef(null);
+  const [mounted, setMounted] = useState(false);
 
   const labels = useMemo(() => days.map((d) => d.label), [days]);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const renderChart = useCallback(() => {
     if (!canvasRef.current || !window.Chart) return;
@@ -360,17 +389,13 @@ function ProgressChart({ days, title, description }) {
   }, [labels, days]);
 
   useEffect(() => {
-    if (window.Chart) {
+    if (chartReady && mounted) {
       renderChart();
     }
     return () => {
       if (chartRef.current) chartRef.current.destroy();
     };
-  }, [renderChart]);
-
-  const handleScriptLoad = useCallback(() => {
-    renderChart();
-  }, [renderChart]);
+  }, [chartReady, mounted, renderChart]);
 
   return (
     <ChartCard>
@@ -379,11 +404,6 @@ function ProgressChart({ days, title, description }) {
       <CanvasWrap $aspect="2 / 1">
         <canvas ref={canvasRef} />
       </CanvasWrap>
-      <Script
-        src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"
-        strategy="afterInteractive"
-        onLoad={handleScriptLoad}
-      />
     </ChartCard>
   );
 }
@@ -393,7 +413,8 @@ function ProgressChart({ days, title, description }) {
    ========================================================== */
 
 export default function ReportsCharts({ weekStart, weekEnd }) {
-  const { commitments } = useCommitments();
+  const chartReady = useChartReady();
+  const { commitments } = useReportCommitments(weekStart, weekEnd);
   const { goalCounts, habitCounts } = useCategoryData(commitments, weekStart, weekEnd);
   const days = useDailyProgress(commitments, weekStart, weekEnd);
 
@@ -404,11 +425,13 @@ export default function ReportsCharts({ weekStart, weekEnd }) {
           counts={goalCounts}
           title="Goal Categories"
           description="Categories of goals created this week. Larger slices indicate more goals in that area."
+          chartReady={chartReady}
         />
         <PieChart
           counts={habitCounts}
           title="Habit Categories"
           description="Categories of habits created this week. Shows which areas of life you are building routines in."
+          chartReady={chartReady}
         />
       </ChartsRow>
 
@@ -416,6 +439,7 @@ export default function ReportsCharts({ weekStart, weekEnd }) {
         days={days}
         title="Weekly Progress Overview"
         description="Habit completion rate per day this week (ideal, minimum, missed as % of total habits). The line shows goal action completion rate."
+        chartReady={chartReady}
       />
     </ChartsSection>
   );

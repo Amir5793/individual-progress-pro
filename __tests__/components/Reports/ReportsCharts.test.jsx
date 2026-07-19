@@ -4,16 +4,6 @@ import ReportsCharts from "@/components/Reports/ReportsCharts";
 import { useCommitments } from "@/lib/store/CommitmentContext";
 
 jest.mock("@/lib/store/CommitmentContext");
-jest.mock("next/script", () => {
-  const MockScript = (props) => {
-    if (props.onLoad) {
-      setTimeout(() => props.onLoad(), 0);
-    }
-    return null;
-  };
-  MockScript.displayName = "Script";
-  return { __esModule: true, default: MockScript };
-});
 
 function makeWeekRange() {
   const now = new Date();

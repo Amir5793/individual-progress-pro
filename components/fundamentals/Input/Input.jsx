@@ -56,7 +56,7 @@ const StyledWrapper = styled.div`
     padding: 10px;
     border: none;
     border-radius: 10px;
-    background: linear-gradient(-45deg, #3B3B98, #2C3A47, #182C61, #2f3640);
+    background: linear-gradient(-45deg, var(--stepper-bg-1), var(--stepper-bg-2), var(--stepper-bg-3), var(--stepper-bg-4));
     background-size: 400% 400%;
     color: var(--text-primary);
     font-size: 16px;

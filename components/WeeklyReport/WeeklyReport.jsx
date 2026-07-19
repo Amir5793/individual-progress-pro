@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useCallback, useMemo } from "react";
-import { useCommitments } from "@/lib/store/CommitmentContext";
+import useReportCommitments from "@/lib/hooks/useReportCommitments";
+import { saveDraft } from "@/lib/services/draftService";
 import WeekHeader from "./WeekHeader";
 import ReportItem from "./ReportItem";
 import EmptyWeek from "./EmptyWeek";
@@ -21,7 +22,7 @@ export default function WeeklyReport({
   onJump,
   onNavigate,
 }) {
-  const { commitments, loading } = useCommitments();
+  const { commitments, loading } = useReportCommitments(weekStart, weekEnd);
   const [dirty, setDirty] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -70,13 +71,19 @@ export default function WeeklyReport({
   const wrappedJump = useCallback(() => handleNavAttempt(onJump), [handleNavAttempt, onJump]);
 
   const handleSave = useCallback(() => {
+    if (!hasItems) {
+      showToast("Nothing to save", "error");
+      return;
+    }
     setSaving(true);
+    const weekKey = weekStart.toISOString().split("T")[0];
+    saveDraft(weekKey, goals, habits);
     setTimeout(() => {
       setSaving(false);
       setDirty(false);
-      showToast("Report saved");
+      showToast("Draft saved");
     }, 400);
-  }, [showToast]);
+  }, [goals, habits, weekStart, hasItems, showToast]);
 
   const handlePublish = useCallback(() => {
     if (!hasItems) {

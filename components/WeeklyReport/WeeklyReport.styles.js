@@ -85,6 +85,7 @@ export const HeaderBar = styled.div`
   justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
+  margin-top: 5rem;
 `;
 
 export const StatusBadge = styled.span`

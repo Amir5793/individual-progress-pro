@@ -149,4 +149,8 @@ a {
   .content-grid {
     gap: 12px;
   }
+
+  .hide-on-mobile {
+    display: none;
+  }
 }

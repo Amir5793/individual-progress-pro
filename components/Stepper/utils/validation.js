@@ -372,6 +372,12 @@ export const validateGoalData = (data, mode = "goal", goalOrTask) => {
       isValid = false;
     }
 
+    const categoryResult = validateCategory(data.category);
+    if (!categoryResult.valid) {
+      errors.category = categoryResult.error;
+      isValid = false;
+    }
+
     const obstacleResult = validateObstacle(data.obstacle);
     if (!obstacleResult.valid) {
       errors.obstacle = obstacleResult.error;
@@ -525,7 +531,9 @@ const validateHabitStep = (currentStep, value) => {
       return runSingleValidator(value, validateTarget, "target");
     case 5: // Cue/Trigger (optional)
       return runSingleValidator(value, validateTrigger, "trigger");
-    case 6: // Obstacles (optional – IF/THEN pattern)
+    case 6: // Category
+      return runSingleValidator(value, validateCategory, "category");
+    case 7: // Obstacles (optional – IF/THEN pattern)
     {
       const errors = {};
       let valid = true;
@@ -549,11 +557,11 @@ const validateHabitStep = (currentStep, value) => {
         errors: Object.keys(errors).length ? errors : undefined,
       };
     }
-    case 7: // Motivation & Review (reason + summary)
+    case 8: // Motivation & Review (reason + summary)
       return runSingleValidator(value, validateReason, "reason");
-    case 8:
     case 9:
-      return { valid: true }; // No steps beyond 7 in habit mode
+    case 10:
+      return { valid: true };
     default:
       return { valid: false, error: `Unknown habit step: ${currentStep}` };
   }

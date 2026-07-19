@@ -39,26 +39,27 @@ const CARD_DATA = {
 
 const CATEGORIES = ["Learning", "Career", "Health", "Hobby", "Personal", "Other"];
 
-export const CategoryOrReason = ({ mode, category, reason, handleFieldChange, errors }) => {
+export const CategoryOrReason = ({ mode, category, reason, handleFieldChange, errors, view }) => {
     const isGoalMode = mode === "goal";
+    const showCategory = view === "category" || (view !== "reason" && isGoalMode);
 
     return (
         <StyledWrapper>
             <Step>
                 <HeaderGroup>
                     <StepTitle>
-                        {isGoalMode
+                        {showCategory
                             ? "Identify the sphere of life."
                             : "What is your deep incentive?"}
                     </StepTitle>
                     <StepSubtitle>
-                        {isGoalMode
+                        {showCategory
                             ? "Choose the area of investment. Categorization clarifies attention balance."
                             : "This statement is your psychological safeguard against procrastination."}
                     </StepSubtitle>
                 </HeaderGroup>
 
-                {isGoalMode ? (
+                {showCategory ? (
                     <SelectionContainer>
                         <CategoryGrid>
                             {CATEGORIES.map((tag) => {

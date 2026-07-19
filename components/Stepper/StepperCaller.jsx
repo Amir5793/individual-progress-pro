@@ -4,7 +4,7 @@ import styled from "styled-components";
 import Stepper from "./Stepper";
 import { datumHandler } from "./utils/datumHandler";
 import { validateStepInput, validateGoalData } from "@/components/Stepper/utils/validation";
-import { localStorageHandler } from "../../backend/local_storage/local_storage_api";
+import { localStorageHandler } from "@/backend/local_storage/local_storage_api";
 import { useCommitments } from "@/lib/store/CommitmentContext";
 
 // Components for steps
@@ -245,6 +245,7 @@ export const StepperCaller = ({ mode, datum, handleCloseModal, onCommitmentCreat
                 { field: "minimumAction", getValue: () => minimumAction },
                 { field: "target", getValue: () => target },
                 { field: "trigger", getValue: () => trigger },
+                { field: "category", getValue: () => category },
                 { field: "obstacle", getValue: () => ({ obstacle, fallbackPlan }) },
                 { field: "reason", getValue: () => reasonNow },
                 { field: "review", getValue: () => null },
@@ -421,6 +422,17 @@ export const StepperCaller = ({ mode, datum, handleCloseModal, onCommitmentCreat
                     handleFieldChange={handleFieldChange}
                     errors={errors}
                 />
+
+                {mode === "habit" && (
+                    <CategoryOrReason
+                        mode={mode}
+                        category={category}
+                        reason={reason}
+                        handleFieldChange={handleFieldChange}
+                        errors={errors}
+                        view="category"
+                    />
+                )}
 
                 <DeadlineOrObstacle
                     mode={mode}

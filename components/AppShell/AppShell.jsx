@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
 import Header from "@/components/Header/Header";
+import DashboardSummary from "@/components/DashboardSummary/DashboardSummary";
 import Progress from "@/components/Progress/Progress";
 import Fab from "@/components/Fab/Fab";
 import Sidebar from "@/components/Sidebar/Sidebar";
@@ -44,7 +45,8 @@ export default function AppShell({ mode = "overview" }) {
                 <Sidebar />
                 <main className="main-area">
                     {showHeader ? <Header /> : null}
-                    <div className="content-grid">
+                    {showHeader ? <DashboardSummary /> : null}
+                    <div className={`content-grid${showHeader ? " hide-on-mobile" : ""}`}>
                         <ItemsManager
                             mode={itemMode}
                             onEditOverride={(item) => handleLaunchModal(item.type, item)}

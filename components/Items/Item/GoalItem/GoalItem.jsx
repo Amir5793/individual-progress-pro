@@ -338,9 +338,7 @@ export default function GoalItem({
                                             key={act.id || idx}
                                             $isDone={isDone}
                                             $isCurrent={isCurrent}
-                                            style={{ cursor: isDone ? 'default' : 'pointer' }}
                                             onClick={(e) => {
-                                                if (isDone) return;
                                                 e.stopPropagation();
                                                 onActionComplete?.(item, act.id || idx);
                                             }}

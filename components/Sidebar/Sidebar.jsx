@@ -19,6 +19,7 @@ export default function Sidebar() {
 
   return (
     <StyledWrapper>
+      <div className="sidebar-stand"></div>
       <aside className="sidebar">
         <div className="sidebar-logo">
           <div className="logo-icon">
@@ -63,6 +64,18 @@ export default function Sidebar() {
             </svg>
             <span>Habits</span>
           </Link>
+          <Link href="/reports" className={`nav-item ${isActive("/reports") ? "active" : ""}`}>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <g fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+                <line x1="10" y1="9" x2="8" y2="9"/>
+              </g>
+            </svg>
+            <span>Reports</span>
+          </Link>
           {/*<br/>*/}
           {/*<hr/>*/}
           {/*<br/>*/}
@@ -100,6 +113,21 @@ export default function Sidebar() {
 }
 
 const StyledWrapper = styled.div`
+  .sidebar-stand {
+    width: 220px;
+    min-width: 220px;
+    min-height: 100dvh;
+    background: var(--sidebar-bg);
+    display: flex;
+    flex-direction: column;
+    padding: 28px 16px 24px;
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    position: sticky;
+    top: 0;
+    left: 0;
+    z-index: 0;
+  }
+
   .sidebar {
     width: 220px;
     min-width: 220px;
@@ -109,7 +137,9 @@ const StyledWrapper = styled.div`
     flex-direction: column;
     padding: 28px 16px 24px;
     border-right: 1px solid rgba(255, 255, 255, 0.05);
-    position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
     z-index: 0;
   }
 
@@ -201,6 +231,9 @@ const StyledWrapper = styled.div`
   }
 
   @media (max-width: 1024px) {
+    .sidebar-stand{
+      display: none;
+    }
     .sidebar {
       width: 100%;
       min-width: 0;

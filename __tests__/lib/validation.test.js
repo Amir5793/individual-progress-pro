@@ -265,6 +265,7 @@ describe("validateGoalData", () => {
       minimumAction: "1 min walk",
       target: "",
       trigger: "",
+      category: "Health",
       obstacle: "",
       reason: {},
     };
@@ -381,24 +382,29 @@ describe("validateStepInput", () => {
     expect(result.valid).toBe(true);
   });
 
-  it("habit step 6 validates obstacles", () => {
-    const result = validateStepInput(6, { obstacle: "", fallbackPlan: "" }, "habit");
+  it("habit step 6 validates category", () => {
+    const result = validateStepInput(6, "", "habit");
+    expect(result.valid).toBe(false);
+  });
+
+  it("habit step 7 validates obstacles", () => {
+    const result = validateStepInput(7, { obstacle: "", fallbackPlan: "" }, "habit");
     expect(result.valid).toBe(true);
   });
 
-  it("habit step 7 validates reason", () => {
-    const result = validateStepInput(7, "reason", "habit");
+  it("habit step 8 validates reason", () => {
+    const result = validateStepInput(8, "reason", "habit");
     expect(result.valid).toBe(true);
-  });
-
-  it("habit step 8 returns valid", () => {
-    expect(validateStepInput(8, null, "habit")).toEqual(
-      expect.objectContaining({ valid: true })
-    );
   });
 
   it("habit step 9 returns valid", () => {
     expect(validateStepInput(9, null, "habit")).toEqual(
+      expect.objectContaining({ valid: true })
+    );
+  });
+
+  it("habit step 10 returns valid", () => {
+    expect(validateStepInput(10, null, "habit")).toEqual(
       expect.objectContaining({ valid: true })
     );
   });

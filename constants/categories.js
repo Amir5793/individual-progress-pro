@@ -55,10 +55,14 @@ const defaultCategory = {
     icon: Circle, color: "var(--text-muted)",
 };
 
+export function getCategoryConfig(category) {
+    return categories[category] || defaultCategory;
+}
+
 export function getCategoryIcon(category) {
-    return (categories[category] || defaultCategory).icon;
+    return getCategoryConfig(category).icon;
 }
 
 export function getCategoryColor(category) {
-    return (categories[category] || defaultCategory).color;
+    return getCategoryConfig(category).color;
 }

@@ -33,16 +33,16 @@ export default function Sidebar() {
         </div>
 
         <nav className="sidebar-nav">
-          <div className={`nav-item ${isActive("/") ? "active" : ""}`}>
+          <Link href="/" className={`nav-item ${isActive("/") ? "active" : ""}`}>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                 <g fill="currentColor" fillRule="evenodd" clipRule="evenodd">
                   <path d="M426.667 125.489H85.333v20.078h341.334zM85.333 386.508V185.724h341.334v200.784zM42.667 85.332v341.333h426.666V85.332zm320 149.333v128h42.666v-128zm-64 128v-85.333h42.666v85.333zm-64-21.333v21.333h42.666v-21.333z" />
                   <path d="M170.667 362.665c41.237 0 74.666-33.429 74.666-74.666c0-41.238-33.429-74.667-74.666-74.667c-41.238 0-74.667 33.429-74.667 74.667s33.429 74.666 74.667 74.666m35.476-50.962a42.67 42.67 0 0 0 7.19-23.704h-42.666v-42.667a42.66 42.66 0 0 0-39.419 26.339a42.664 42.664 0 0 0 31.095 58.175a42.67 42.67 0 0 0 43.8-18.143" />
                 </g>
               </svg>
-            <Link href="/">Overview</Link>
-          </div>
-          <div className={`nav-item ${isActive("/goals") ? "active" : ""}`}>
+            <span>Overview</span>
+          </Link>
+          <Link href="/goals" className={`nav-item ${isActive("/goals") ? "active" : ""}`}>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
               <g fill="none" fillRule="evenodd">
                 <path
@@ -51,9 +51,9 @@ export default function Sidebar() {
                       d="M12 4a2 2 0 0 0-2 2h4a2 2 0 0 0-2-2M9.354 3c.705-.622 1.632-1 2.646-1s1.94.378 2.646 1H18a2 2 0 0 1 2 2v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zM8.126 5H6v15h12V5h-2.126q.124.481.126 1v1a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V6q.002-.519.126-1M8 11a1 1 0 0 1 1-1h6a1 1 0 1 1 0 2H9a1 1 0 0 1-1-1m0 4a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2H9a1 1 0 0 1-1-1"/>
               </g>
             </svg>
-            <Link href="/goals">Goals</Link>
-          </div>
-          <div className={`nav-item ${isActive("/habits") ? "active" : ""}`}>
+            <span>Goals</span>
+          </Link>
+          <Link href="/habits" className={`nav-item ${isActive("/habits") ? "active" : ""}`}>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
               <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
                 <path
@@ -61,8 +61,8 @@ export default function Sidebar() {
                 <path d="m13.412 25.03l6.922 7.06L34.907 17.1"/>
               </g>
             </svg>
-            <Link href="/habits">Habits</Link>
-          </div>
+            <span>Habits</span>
+          </Link>
           {/*<br/>*/}
           {/*<hr/>*/}
           {/*<br/>*/}
@@ -103,7 +103,7 @@ const StyledWrapper = styled.div`
   .sidebar {
     width: 220px;
     min-width: 220px;
-    height: 100vh;
+    min-height: 100dvh;
     background: var(--sidebar-bg);
     display: flex;
     flex-direction: column;
@@ -151,8 +151,9 @@ const StyledWrapper = styled.div`
   }
 
   aside svg {
-    width: 3rem;
-    height: 3rem;
+    width: 1.25rem;
+    height: 1.25rem;
+    flex-shrink: 0;
   }
 
   .sidebar-nav {
@@ -174,6 +175,7 @@ const StyledWrapper = styled.div`
     font-weight: 500;
     position: relative;
     white-space: nowrap;
+    text-decoration: none;
   }
 
   .nav-item.active {
@@ -196,6 +198,59 @@ const StyledWrapper = styled.div`
   .sidebar-bottom {
     margin-top: auto;
     padding-top: 16px;
+  }
+
+  @media (max-width: 1024px) {
+    .sidebar {
+      width: 100%;
+      min-width: 0;
+      min-height: auto;
+      padding: 18px 14px 12px;
+      border-right: none;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      position: sticky;
+      top: 0;
+      backdrop-filter: blur(12px);
+    }
+
+    .sidebar-logo {
+      margin-bottom: 16px;
+    }
+
+    .sidebar-nav {
+      flex-direction: row;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+
+    .nav-item {
+      min-width: fit-content;
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .nav-item.active::before {
+      display: none;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .sidebar-logo {
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+    }
+
+    .logo-text .t1,
+    .logo-text .t2 {
+      font-size: 14px;
+    }
   }
 
   .theme-selector {

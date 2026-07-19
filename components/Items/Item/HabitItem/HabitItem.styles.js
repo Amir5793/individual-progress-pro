@@ -13,7 +13,11 @@ import {
     IconButton,
 } from "../shared";
 
-export const Card = styled(BaseCard).attrs({ $gap: "16px" })``;
+export const Card = styled(BaseCard).attrs({ $gap: "16px" })`
+  @media (max-width: 640px) {
+    padding: 14px;
+  }
+`;
 
 export const LeftSection = styled(BaseLeftSection).attrs({
     $minWidth: "auto",
@@ -57,6 +61,10 @@ export const StatusButtonGroup = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 8px;
+
+  @media (max-width: 480px) {
+    gap: 6px;
+  }
 `;
 
 export const StatusButton = styled.button`
@@ -73,6 +81,11 @@ export const StatusButton = styled.button`
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   background: rgba(255, 255, 255, 0.03);
   color: var(--text-muted);
+
+  @media (max-width: 480px) {
+    padding: 8px 4px;
+    font-size: 0.75rem;
+  }
 
   .status-icon {
     font-size: 0.9rem;
@@ -218,6 +231,10 @@ export const Targets = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 export const TargetItem = styled.div`
@@ -292,6 +309,12 @@ export const TrackerDay = styled.div`
   font-size: 0.78rem;
   font-weight: 700;
   transition: 0.18s ease;
+
+  @media (max-width: 480px) {
+    width: 30px;
+    height: 30px;
+    font-size: 0.72rem;
+  }
 
   ${({ $state, $color }) => {
     switch ($state) {

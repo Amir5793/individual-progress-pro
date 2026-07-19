@@ -4,7 +4,7 @@
  * @param {string} key - The storage key
  * @param {*} [value] - The value to store (required for POST, PUT, PATCH)
  * @param {Function} [validation] - Optional validation function for POST and PUT.
- *   Must return `true` or `{ valid: true }` on success,
+ *   Must return `true` or `{ valid: true }` on success
  *   or `false`, `{ valid: false, error?: string }` on failure.
  * @returns {{ success: boolean, data?: any, error?: string, status?: number }}
  */

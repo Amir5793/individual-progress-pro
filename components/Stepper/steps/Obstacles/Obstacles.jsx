@@ -25,7 +25,7 @@ export const Obstacles = ({ obstacle, fallbackPlan, handleFieldChange, errors })
             <div className="step-header">
                 <h1>Safeguard your progress.</h1>
                 <p className="subtitle">
-                    Plans rarely fail from a lack of desire. They fail because of unexpected friction. Let's design a contingency path.
+                    Plans rarely fail from a lack of desire. They fail because of unexpected friction. Let&apos;s design a contingency path.
                 </p>
             </div>
 

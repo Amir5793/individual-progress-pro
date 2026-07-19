@@ -4,7 +4,7 @@ import styled from "styled-components";
 import Stepper from "./Stepper";
 import { datumHandler } from "./utils/datumHandler";
 import { validateStepInput, validateGoalData } from "@/components/Stepper/utils/validation";
-import { localStorageHandler } from "@/backend/local_storage/loacl_storage_api";
+import { localStorageHandler } from "../../backend/local_storage/local_storage_api";
 import { useCommitments } from "@/lib/store/CommitmentContext";
 
 // Components for steps
@@ -32,17 +32,17 @@ const INITIAL_ACTION_STATE = {
     completedAt: null
 };
 
-/* Helper inside StepperCaller.js to parse and validate date values safely */
-const parseInitialDate = (val) => {
-    if (!val || val === "No deadline" || val === "pick a date") return null;
-    const date = new Date(val);
-    return isNaN(date.getTime()) ? null : date;
-};
-
 const safeToISOString = (val) => {
     if (!val || val === "No deadline" || val === "pick a date") return null;
     const date = new Date(val);
     return isNaN(date.getTime()) ? null : date.toISOString();
+};
+
+let actionSequence = 0;
+
+const createSequentialId = (prefix) => {
+    actionSequence += 1;
+    return `${prefix}-${actionSequence}`;
 };
 
 export const StepperCaller = ({ mode, datum, handleCloseModal, onCommitmentCreated }) => {
@@ -101,7 +101,7 @@ export const StepperCaller = ({ mode, datum, handleCloseModal, onCommitmentCreat
         } else {
             const actionToAdd = {
                 ...newAction,
-                id: Date.now().toString(36),
+                id: createSequentialId("action"),
                 resources: Array.isArray(newAction.resources) ? newAction.resources : []
             };
             setActions((prev) => [...prev, actionToAdd]);
@@ -293,7 +293,7 @@ export const StepperCaller = ({ mode, datum, handleCloseModal, onCommitmentCreat
         }
 
         const isEditMode = !!datumCopy.id;
-        const id = datumCopy.id || crypto.randomUUID?.() || Date.now().toString(36);
+        const id = datumCopy.id || crypto.randomUUID?.() || createSequentialId(mode);
 
         // Map safe and verified dates only to prevent serialization crashes
         const commitment = {

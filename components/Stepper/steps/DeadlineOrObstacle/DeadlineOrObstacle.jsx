@@ -28,7 +28,7 @@ export const DeadlineOrObstacle = ({
                     <div className="step-header">
                         <h1>Safeguard your habit.</h1>
                         <p className="obstacle-subtitle">
-                            Habits break when friction appears unprepared. Let's build a safety net so you never lose momentum.
+                            Habits break when friction appears unprepared. Let&apos;s build a safety net so you never lose momentum.
                         </p>
                     </div>
 

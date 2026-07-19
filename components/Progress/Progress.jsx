@@ -46,7 +46,7 @@ export default function Progress() {
         {/* <!-- Bar Progress --> */}
         <div className="progress-center">
           <div className="progress-title">Weekly Progress</div>
-          <div className="progress-sub">Keep going! You're doing great.</div>
+          <div className="progress-sub">Keep going! You&apos;re doing great.</div>
           <div className="progress-bar-wrap">
             <div className="progress-bar-track">
               <div className="progress-bar-fill"></div>
@@ -80,7 +80,7 @@ const StyledWrapper = styled.div`
     gap: 32px;
     padding: 18px 28px;
     box-shadow: 0 2px 16px rgba(0, 0, 0, 0.25);
-    width: 87%;
+    width: 100%;
   }
 
   .circular-progress-wrap {
@@ -164,5 +164,22 @@ const StyledWrapper = styled.div`
     cursor: pointer;
     white-space: nowrap;
     flex-shrink: 0;
+  }
+
+  @media (max-width: 768px) {
+    .progress-section {
+      flex-wrap: wrap;
+      gap: 18px;
+      padding: 16px 18px;
+    }
+
+    .progress-bar-wrap {
+      flex-wrap: wrap;
+    }
+
+    .analytics-btn {
+      width: 100%;
+      justify-content: center;
+    }
   }
 `;

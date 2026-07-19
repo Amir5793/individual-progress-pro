@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useMemo } from "react";
 import ItemRenderer from "../ItemRendered/ItemRenderer";
 
 import {
@@ -30,6 +31,20 @@ export default function ItemsContainer({
                                            onActionComplete,
                                        }) {
 
+    const goals = useMemo(() => {
+        return sortItems(
+            commitments.filter((item) => item.type === "goal"),
+            sortBy
+        );
+    }, [commitments, sortBy]);
+
+    const habits = useMemo(() => {
+        return sortItems(
+            commitments.filter((item) => item.type === "habit"),
+            sortBy
+        );
+    }, [commitments, sortBy]);
+
     /* -------------------------------------------------------------------------- */
     /* Loading                                                                    */
     /* -------------------------------------------------------------------------- */
@@ -47,26 +62,6 @@ export default function ItemsContainer({
     /* -------------------------------------------------------------------------- */
     /* Split data                                                                  */
     /* -------------------------------------------------------------------------- */
-
-    const goals = sortItems(
-
-        commitments.filter(
-            item => item.type === "goal"
-        ),
-
-        sortBy
-
-    );
-
-    const habits = sortItems(
-
-        commitments.filter(
-            item => item.type === "habit"
-        ),
-
-        sortBy
-
-    );
 
     /* -------------------------------------------------------------------------- */
     /* Reusable renderer                                                           */

@@ -1,7 +1,7 @@
 // GoalItem.jsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import {
     Card,
     Header,
@@ -48,7 +48,7 @@ import {
     formatDeadline, difficultyColor, energyColor, getGoalStatus,
 } from "./helpers";
 
-import { getCategoryColor, getCategoryIcon } from "@/constants/categories";
+import { getCategoryConfig } from "@/constants/categories";
 
 import {
     Pencil, MoreHorizontal, Check, CalendarDays, Zap, Target,
@@ -71,32 +71,29 @@ export default function GoalItem({
         actions = [], obstacle, fallbackPlan,
     } = item;
 
-    const CategoryIcon = getCategoryIcon(category);
-    const accentColor = getCategoryColor(category);
+    const { icon: CategoryIcon, color: accentColor } = getCategoryConfig(category);
     const status = getGoalStatus(item);
 
-    const completedActions = actions.filter(a => a.completed).length;
+    const completedActions = useMemo(() => actions.filter(a => a.completed).length, [actions]);
     const totalActions = actions.length;
     const progressPct = totalActions > 0 ? Math.round((completedActions / totalActions) * 100) : 0;
 
-    // Next executable step extraction
-    const nextActionIndex = actions.findIndex(a => !a.completed);
+    const nextActionIndex = useMemo(() => actions.findIndex(a => !a.completed), [actions]);
     const nextAction = nextActionIndex !== -1 ? actions[nextActionIndex] : null;
 
-    // FEATURE 2.2: Identify uncompleted high-priority execution steps
-    const hasUncompletedHighPriorityAction = actions.some(
-        a => a.priority?.toLowerCase() === "high" && !a.completed
+    const hasUncompletedHighPriorityAction = useMemo(
+        () => actions.some(a => a.priority?.toLowerCase() === "high" && !a.completed),
+        [actions]
     );
 
-    const handleCheckboxComplete = (e) => {
+    const handleCheckboxComplete = useCallback((e) => {
         e.stopPropagation();
         if (hasUncompletedHighPriorityAction && !completed) {
-            // Block completion and open the roadmap modal to guide the user
             setShowRoadmap(true);
             return;
         }
         onComplete?.(item);
-    };
+    }, [hasUncompletedHighPriorityAction, completed, onComplete, item]);
 
     return (
         <>

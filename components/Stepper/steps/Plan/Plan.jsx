@@ -159,9 +159,9 @@ export const Plan = ({
         <StyledWrapper>
             <Step>
                 <div className="step-header">
-                    <h1>Let's make this achievable.</h1>
+                    <h1>Let&apos;s make this achievable.</h1>
                     <p className="subtitle">
-                        Break your goal into actions. Imagine you're explaining this to a friend. What would they do first? What after that?
+                        Break your goal into actions. Imagine you&apos;re explaining this to a friend. What would they do first? What after that?
                     </p>
                 </div>
 

@@ -1,7 +1,38 @@
-/* eslint-disable react/no-unknown-property */
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
+
+const stableRandom = (seed) => {
+    const value = Math.sin(seed) * 10000;
+    return value - Math.floor(value);
+};
+
+const buildParticles = (count, width, height) => {
+    return Array.from({ length: count }, (_, index) => {
+        const seed = index + count * 13 + width * 7 + height * 11;
+        const x = (stableRandom(seed + 1) - 0.5) * width;
+        const y = (stableRandom(seed + 2) - 0.5) * height;
+        const z = (stableRandom(seed + 3) - 0.5) * 20;
+
+        return {
+            t: stableRandom(seed + 4) * 100,
+            speed: 0.01 + stableRandom(seed + 5) / 200,
+            xFactor: -50 + stableRandom(seed + 6) * 100,
+            yFactor: -50 + stableRandom(seed + 7) * 100,
+            zFactor: -50 + stableRandom(seed + 8) * 100,
+            mx: x,
+            my: y,
+            mz: z,
+            cx: x,
+            cy: y,
+            cz: z,
+            vx: 0,
+            vy: 0,
+            vz: 0,
+            randomRadiusOffset: (stableRandom(seed + 9) - 0.5) * 2
+        };
+    });
+};
 
 const AntigravityInner = ({
                               count = 300,
@@ -29,44 +60,10 @@ const AntigravityInner = ({
     const virtualMouse = useRef({ x: 0, y: 0 });
 
     const particles = useMemo(() => {
-        const temp = [];
         const width = viewport.width || 100;
         const height = viewport.height || 100;
 
-        for (let i = 0; i < count; i++) {
-            const t = Math.random() * 100;
-            const factor = 20 + Math.random() * 100;
-            const speed = 0.01 + Math.random() / 200;
-            const xFactor = -50 + Math.random() * 100;
-            const yFactor = -50 + Math.random() * 100;
-            const zFactor = -50 + Math.random() * 100;
-
-            const x = (Math.random() - 0.5) * width;
-            const y = (Math.random() - 0.5) * height;
-            const z = (Math.random() - 0.5) * 20;
-
-            const randomRadiusOffset = (Math.random() - 0.5) * 2;
-
-            temp.push({
-                t,
-                factor,
-                speed,
-                xFactor,
-                yFactor,
-                zFactor,
-                mx: x,
-                my: y,
-                mz: z,
-                cx: x,
-                cy: y,
-                cz: z,
-                vx: 0,
-                vy: 0,
-                vz: 0,
-                randomRadiusOffset
-            });
-        }
-        return temp;
+        return buildParticles(count, width, height);
     }, [count, viewport.width, viewport.height]);
 
     useFrame(state => {

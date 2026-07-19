@@ -1,22 +1,15 @@
 // components/DatePicker/DatePicker.jsx
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 
 const DatePicker = ({ onDateSelect, initialDate = null, placeholder = 'Select date' }) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [selectedDate, setSelectedDate] = useState(initialDate ? new Date(initialDate) : null);
-    const [currentMonth, setCurrentMonth] = useState(new Date());
-    const [viewDate, setViewDate] = useState(new Date());
-    const pickerRef = useRef(null);
-
-    useEffect(() => {
-        if (initialDate) {
-            const date = new Date(initialDate);
-            setSelectedDate(date);
-            setViewDate(date);
-            setCurrentMonth(date);
-        }
+    const parsedInitialDate = useMemo(() => {
+        return initialDate ? new Date(initialDate) : null;
     }, [initialDate]);
+
+    const [isOpen, setIsOpen] = useState(false);
+    const [viewDate, setViewDate] = useState(parsedInitialDate ?? new Date());
+    const pickerRef = useRef(null);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -54,8 +47,7 @@ const DatePicker = ({ onDateSelect, initialDate = null, placeholder = 'Select da
 
     const handleDateSelect = (day) => {
         const newDate = new Date(viewDate.getFullYear(), viewDate.getMonth(), day);
-        setSelectedDate(newDate);
-        setCurrentMonth(newDate);
+        setViewDate(newDate);
         setIsOpen(false);
         if (onDateSelect) {
             onDateSelect(newDate);
@@ -72,11 +64,11 @@ const DatePicker = ({ onDateSelect, initialDate = null, placeholder = 'Select da
     };
 
     const isSelected = (day) => {
-        if (!selectedDate) return false;
+        if (!parsedInitialDate) return false;
         return (
-            selectedDate.getFullYear() === viewDate.getFullYear() &&
-            selectedDate.getMonth() === viewDate.getMonth() &&
-            selectedDate.getDate() === day
+            parsedInitialDate.getFullYear() === viewDate.getFullYear() &&
+            parsedInitialDate.getMonth() === viewDate.getMonth() &&
+            parsedInitialDate.getDate() === day
         );
     };
 
@@ -141,7 +133,7 @@ const DatePicker = ({ onDateSelect, initialDate = null, placeholder = 'Select da
                     </svg>
                 </span>
                 <span className="triggerText">
-                    {formatDate(selectedDate)}
+                    {formatDate(parsedInitialDate)}
                 </span>
                 <span className="triggerArrow">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -196,14 +188,12 @@ const DatePicker = ({ onDateSelect, initialDate = null, placeholder = 'Select da
                         <button className="todayButton" onClick={() => {
                             const today = new Date();
                             setViewDate(today);
-                            setCurrentMonth(today);
                             handleDateSelect(today.getDate());
                         }} type="button">
                             Today
                         </button>
-                        {selectedDate && (
+                        {parsedInitialDate && (
                             <button className="clearButton" onClick={() => {
-                                setSelectedDate(null);
                                 if (onDateSelect) {
                                     onDateSelect(null);
                                 }

@@ -19,8 +19,10 @@ export default function Fab({ givenMode, onLaunchCreator }) {
 
     return (
         <StyledWrapper className="fab-container">
-            <div
+            <button
+                type="button"
                 className={`fab ${isExpanded ? "fab-expanded" : ""}`}
+                aria-label={isExpanded ? "Close quick actions" : "Open quick actions"}
                 onClick={givenMode === "goal" || givenMode === "habit" ? () => handleOptionClick(givenMode) : handleFabClick}
             >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -36,17 +38,27 @@ export default function Fab({ givenMode, onLaunchCreator }) {
                         </g>
                     )}
                 </svg>
-            </div>
+            </button>
 
             {isExpanded && (
-                <div className="fab-option fab-option-left" onClick={() => handleOptionClick("goal")}>
+                <button
+                    type="button"
+                    className="fab-option fab-option-left"
+                    aria-label="Create goal"
+                    onClick={() => handleOptionClick("goal")}
+                >
                     <span>Goal</span>
-                </div>
+                </button>
             )}
             {isExpanded && (
-                <div className="fab-option fab-option-top" onClick={() => handleOptionClick("habit")}>
+                <button
+                    type="button"
+                    className="fab-option fab-option-top"
+                    aria-label="Create habit"
+                    onClick={() => handleOptionClick("habit")}
+                >
                     <span>Habit</span>
-                </div>
+                </button>
             )}
         </StyledWrapper>
     );
@@ -55,9 +67,9 @@ export default function Fab({ givenMode, onLaunchCreator }) {
 const StyledWrapper = styled.div`
   /* Main FAB */
   .fab {
-    position: absolute;
-    bottom: 32px;
-    right: 40px;
+    position: fixed;
+    bottom: calc(24px + env(safe-area-inset-bottom));
+    right: clamp(16px, 4vw, 40px);
     width: 56px;
     height: 56px;
     border-radius: 50%;
@@ -69,6 +81,7 @@ const StyledWrapper = styled.div`
     box-shadow: 0 8px 28px rgba(79, 141, 255, 0.45);
     z-index: 10;
     animation: fabPop 0.2s ease, glowPulse 2.5s infinite ease-in-out;
+    border: none;
   }
 
   .fab:hover {
@@ -82,7 +95,7 @@ const StyledWrapper = styled.div`
   }
 
   .fab-option {
-    position: absolute;
+    position: fixed;
     width: 48px;
     height: 48px;
     border-radius: 50%;
@@ -98,6 +111,7 @@ const StyledWrapper = styled.div`
     font-size: 14px;
     font-weight: 500;
     user-select: none;
+    border: none;
   }
 
   .fab-option:hover {
@@ -106,14 +120,14 @@ const StyledWrapper = styled.div`
   }
 
   .fab-option-left {
-    bottom: 32px;
-    right: 112px;
+    bottom: calc(24px + env(safe-area-inset-bottom));
+    right: clamp(88px, 4vw + 72px, 112px);
     animation: slideLeft 1s ease forwards;
   }
 
   .fab-option-top {
-    bottom: 104px;
-    right: 40px;
+    bottom: calc(96px + env(safe-area-inset-bottom));
+    right: clamp(16px, 4vw, 40px);
     animation: slideTop 1s ease forwards;
   }
 
@@ -126,17 +140,30 @@ const StyledWrapper = styled.div`
 
   @keyframes slideLeft {
     0% { opacity: 0; transform: scale(0.4); right: 0px; }
-    100% { opacity: 1; transform: scale(1) translate(-16px, 0); right: 112px; }
+    100% { opacity: 1; transform: scale(1) translate(-16px, 0); right: clamp(88px, 4vw + 72px, 112px); }
   }
 
   @keyframes slideTop {
     0% { opacity: 0; transform: scale(0.4); bottom: 0; }
-    100% { opacity: 1; transform: scale(1) translate(0, -16px); bottom: 104px; }
+    100% { opacity: 1; transform: scale(1) translate(0, -16px); bottom: calc(96px + env(safe-area-inset-bottom)); }
   }
 
   @keyframes glowPulse {
     0% { box-shadow: 0 8px 28px rgba(79, 141, 255, 0.45); }
     50% { box-shadow: 0 8px 48px rgba(79, 141, 255, 0.75); }
     100% { box-shadow: 0 8px 28px rgba(79, 141, 255, 0.45); }
+  }
+
+  @media (max-width: 640px) {
+    .fab {
+      width: 52px;
+      height: 52px;
+    }
+
+    .fab-option {
+      width: 46px;
+      height: 46px;
+      font-size: 13px;
+    }
   }
 `;

@@ -17,6 +17,9 @@ import {
     COMMITMENT_UPDATED // Ensure this type matches exactly
 } from "@/lib/store/types";
 
+const handleItemClick = (item) => { /* reserved for future navigation */ };
+const handleMore = (item) => { /* reserved for future context menu */ };
+
 export default function ItemsManager({
                                          mode = "overview",
                                          sortBy = "priority",
@@ -24,7 +27,6 @@ export default function ItemsManager({
                                      }) {
     const { commitments, loading, dispatch } = useCommitments();
 
-    // Launch the edit modal in StepperCaller
     const handleEdit = useCallback((item) => {
         if (onEditOverride) {
             onEditOverride(item);
@@ -78,13 +80,13 @@ export default function ItemsManager({
             commitments={commitments}
             loading={loading}
             sortBy={sortBy}
-            onItemClick={(item) => console.log(item)}
+            onItemClick={handleItemClick}
             onEdit={handleEdit}
             onDelete={handleDelete}
             onComplete={handleComplete}
             onStatusChange={handleStatusChange}
             onActionComplete={handleActionComplete}
-            onMore={(item) => console.log("More:", item)}
+            onMore={handleMore}
         />
     );
 }

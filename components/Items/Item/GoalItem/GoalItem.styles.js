@@ -15,10 +15,14 @@ import {
 
 export const Card = styled(BaseCard).attrs({ $gap: "18px" })`
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  
+
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+  }
+
+  @media (max-width: 640px) {
+    padding: 14px;
   }
 `;
 
@@ -145,6 +149,10 @@ export const ChipGroup = styled.div`
   gap: 8px;
   flex-wrap: wrap;
   flex: 1;
+
+  @media (max-width: 480px) {
+    gap: 6px;
+  }
 `;
 
 export const Chip = styled.div`
@@ -163,6 +171,11 @@ export const Chip = styled.div`
   svg {
     width: 14px;
     height: 14px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 4px 8px;
+    font-size: 0.75rem;
   }
 `;
 
@@ -348,6 +361,13 @@ export const ModalCard = styled.div`
   gap: 1.25rem;
   box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8);
   animation: cardSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+  @media (max-width: 480px) {
+    padding: 1.25rem;
+    max-width: 100%;
+    max-height: 90vh;
+    border-radius: 16px;
+  }
 
   @keyframes cardSlideUp {
     from { transform: scale(0.96) translateY(16px); opacity: 0; }

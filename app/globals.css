@@ -55,9 +55,8 @@
 }
 
 .export-wrapper {
-  width: 100vw;
-  height: 100vh;
-  min-height: 100vh;
+  width: 100%;
+  min-height: 100dvh;
   position: relative;
   font-family: var(--font-family-body);
   background-color: var(--background);
@@ -66,7 +65,7 @@
 
 .app-wrapper {
   display: flex;
-  min-height: 812px;
+  min-height: 100dvh;
   background: var(--bg);
   background-image: var(--bg-radial);
   color: var(--text-primary);
@@ -75,7 +74,7 @@
 }
 
 .tasks-container{
-  width: 100vw;
+  width: 100%;
   display: flex;
   justify-content: center;
   padding-left: 5vw;
@@ -86,20 +85,16 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 32px 40px 28px 40px;
+  padding: clamp(20px, 3vw, 32px) clamp(16px, 3vw, 40px) calc(92px + env(safe-area-inset-bottom)) clamp(16px, 3vw, 40px);
   overflow: hidden;
   min-width: 0;
-
-  /* BUG FIX: Removed 'width: 100vw' and 'height: 100vh' */
-  /* Using 100vw here alongside a Sidebar breaks flex layout calculations, causing a major horizontal overflow/clipping issue. */
   width: 100%;
   height: auto;
-  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .content-grid {
   display: grid;
-  /*grid-template-columns: 1fr 1fr;*/
   gap: 14px;
   flex: 1;
   margin-bottom: 14px;
@@ -114,63 +109,44 @@
   min-width: 0;
 }
 
-.col-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-muted);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 0 4px;
-  margin-bottom: 2px;
-  display: none;
+html,
+body {
+  min-height: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  background: var(--background);
 }
 
-/*:root {*/
-/*  --background: #ffffff;*/
-/*  --foreground: #171717;*/
-/*}*/
+body {
+  color: var(--foreground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
-/*@media (prefers-color-scheme: dark) {*/
-/*  :root {*/
-/*    --background: #0a0a0a;*/
-/*    --foreground: #ededed;*/
-/*  }*/
-/*}*/
+a {
+  color: inherit;
+  text-decoration: none;
+}
 
-/*html {*/
-/*  height: 100%;*/
-/*}*/
+@media (max-width: 1024px) {
+  .app-wrapper {
+    flex-direction: column;
+  }
 
-/*html,*/
-/*body {*/
-/*  max-width: 100vw;*/
-/*  overflow-x: hidden;*/
-/*}*/
+  .main-area {
+    min-height: auto;
+  }
+}
 
-/*body {*/
-/*  min-height: 100%;*/
-/*  display: flex;*/
-/*  flex-direction: column;*/
-/*  color: var(--foreground);*/
-/*  background: var(--background);*/
-/*  font-family: Arial, Helvetica, sans-serif;*/
-/*  -webkit-font-smoothing: antialiased;*/
-/*  -moz-osx-font-smoothing: grayscale;*/
-/*}*/
+@media (max-width: 768px) {
+  .main-area {
+    padding-top: 18px;
+    padding-left: 14px;
+    padding-right: 14px;
+    padding-bottom: calc(96px + env(safe-area-inset-bottom));
+  }
 
-/** {*/
-/*  box-sizing: border-box;*/
-/*  padding: 0;*/
-/*  margin: 0;*/
-/*}*/
-
-/*a {*/
-/*  color: inherit;*/
-/*  text-decoration: none;*/
-/*}*/
-
-/*@media (prefers-color-scheme: dark) {*/
-/*  html {*/
-/*    color-scheme: dark;*/
-/*  }*/
-/*}*/
+  .content-grid {
+    gap: 12px;
+  }
+}

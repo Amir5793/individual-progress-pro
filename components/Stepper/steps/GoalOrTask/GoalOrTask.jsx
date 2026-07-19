@@ -7,7 +7,6 @@ export const GoalOrTask = ({isAchieveAbleInOneAction, handleGoalOrTask}) => {
     return (
         <StyledWrapper>
         <Step>
-            {console.log(handleGoalOrTask)}
             <h1>Can you achieve this goal in one straight action?</h1>
             <div className="goal-or-task-checkbox-container">
                 <CheckBox checked={isAchieveAbleInOneAction} value="Yes" func={() => {

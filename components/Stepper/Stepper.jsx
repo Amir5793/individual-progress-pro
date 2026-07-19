@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, Children, useRef, useLayoutEffect, useEffect } from 'react';
+import React, { useState, Children, useRef, useLayoutEffect, useEffect, useCallback, useMemo, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import styled from 'styled-components';
 
@@ -11,6 +11,54 @@ import * as THREE from 'three';
 
 // Safe isomorphic layout effect to prevent SSR warnings during early NextJs parsing
 const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+
+const stableRandom = (seed) => {
+    const value = Math.sin(seed) * 10000;
+    return value - Math.floor(value);
+};
+
+const buildParticles = (count, width, height) => {
+    return Array.from({ length: count }, (_, index) => {
+        const seed = index + count * 13 + width * 7 + height * 11;
+
+        return {
+            t: stableRandom(seed + 1) * 100,
+            speed: 0.01 + stableRandom(seed + 2) / 200,
+            mx: (stableRandom(seed + 3) - 0.5) * width,
+            my: (stableRandom(seed + 4) - 0.5) * height,
+            mz: (stableRandom(seed + 5) - 0.5) * 20,
+            cx: (stableRandom(seed + 3) - 0.5) * width,
+            cy: (stableRandom(seed + 4) - 0.5) * height,
+            cz: (stableRandom(seed + 5) - 0.5) * 20,
+            randomRadiusOffset: (stableRandom(seed + 6) - 0.5) * 2
+        };
+    });
+};
+
+function useAmbientEffectsEnabled() {
+    const [enabled, setEnabled] = useState(false);
+
+    useEffect(() => {
+        if (typeof window === "undefined") return undefined;
+
+        const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+        const evaluate = () => {
+            setEnabled(window.innerWidth >= 1024 && !mediaQuery.matches);
+        };
+
+        evaluate();
+        mediaQuery.addEventListener("change", evaluate);
+        window.addEventListener("resize", evaluate);
+
+        return () => {
+            mediaQuery.removeEventListener("change", evaluate);
+            window.removeEventListener("resize", evaluate);
+        };
+    }, []);
+
+    return enabled;
+}
 
 const AntigravityInner = ({
                               count = 300,
@@ -37,35 +85,11 @@ const AntigravityInner = ({
     const lastMouseMoveTime = useRef(0);
     const virtualMouse = useRef({ x: 0, y: 0 });
 
-    const particles = React.useMemo(() => {
-        const temp = [];
+    const particles = useMemo(() => {
         const width = viewport.width || 100;
         const height = viewport.height || 100;
 
-        for (let i = 0; i < count; i++) {
-            const t = Math.random() * 100;
-            const factor = 20 + Math.random() * 100;
-            const speed = 0.01 + Math.random() / 200;
-            const x = (Math.random() - 0.5) * width;
-            const y = (Math.random() - 0.5) * height;
-            const z = (Math.random() - 0.5) * 20;
-
-            const randomRadiusOffset = (Math.random() - 0.5) * 2;
-
-            temp.push({
-                t,
-                factor,
-                speed,
-                mx: x,
-                my: y,
-                mz: z,
-                cx: x,
-                cy: y,
-                cz: z,
-                randomRadiusOffset
-            });
-        }
-        return temp;
+        return buildParticles(count, width, height);
     }, [count, viewport.width, viewport.height]);
 
     useFrame(state => {
@@ -169,7 +193,11 @@ const AntigravityInner = ({
 
 const Antigravity = props => {
     return (
-        <Canvas camera={{ position: [0, 0, 50], fov: 35 }}>
+        <Canvas
+            camera={{ position: [0, 0, 50], fov: 35 }}
+            dpr={[1, 1.5]}
+            gl={{ antialias: false, powerPreference: "low-power" }}
+        >
             <AntigravityInner {...props} />
         </Canvas>
     );
@@ -202,24 +230,19 @@ export default function Stepper({
     const totalSteps = stepsArray.length;
     const isCompleted = currentStep > totalSteps;
     const isLastStep = currentStep === totalSteps;
+    const showAmbientEffects = useAmbientEffectsEnabled();
 
-    const currentStepRef = useRef(initialStep);
-    currentStepRef.current = currentStep;
-    const onStepChangeRef = useRef(onStepChange);
-    onStepChangeRef.current = onStepChange;
-
-    const updateStep = async (newStep) => {
-        const result = await onStepChangeRef.current(currentStepRef.current, newStep);
+    const updateStep = useCallback(async (newStep) => {
+        const result = await onStepChange(currentStep, newStep);
         const shouldChange = result !== false;
 
         if (shouldChange) {
             setCurrentStep(newStep);
-            currentStepRef.current = newStep;
             if (newStep > totalSteps) {
                 onFinalStepCompleted();
             }
         }
-    };
+    }, [currentStep, onFinalStepCompleted, onStepChange, totalSteps]);
 
     const handleBack = () => {
         if (currentStep > 1) {
@@ -248,41 +271,42 @@ export default function Stepper({
             if (tag === "TEXTAREA" || tag === "BUTTON" || tag === "SELECT") return;
             if (e.target.type === "radio" || e.target.type === "checkbox") return;
             e.preventDefault();
-            const step = currentStepRef.current;
-            if (step >= totalSteps) {
+            if (currentStep >= totalSteps) {
                 setDirection(1);
                 updateStep(totalSteps + 1);
             } else {
                 setDirection(1);
-                updateStep(step + 1);
+                updateStep(currentStep + 1);
             }
         };
         window.addEventListener("keydown", handleKeyDown);
         return () => window.removeEventListener("keydown", handleKeyDown);
-    }, [isCompleted, totalSteps]);
+    }, [currentStep, isCompleted, totalSteps, updateStep]);
 
     return (
         <StyledWrapper className="outer-container" {...rest} onClick={handleCloseModal}>
             {/* Background Canvas Environment */}
-            <div className="antigravity-background-layer">
-                <Antigravity
-                    count={300}
-                    magnetRadius={6}
-                    ringRadius={7}
-                    waveSpeed={0.4}
-                    waveAmplitude={1}
-                    particleSize={1.5}
-                    lerpSpeed={0.05}
-                    color="#5227FF"
-                    autoAnimate
-                    particleVariance={1}
-                    rotationSpeed={0}
-                    depthFactor={1}
-                    pulseSpeed={3}
-                    particleShape="capsule"
-                    fieldStrength={10}
-                />
-            </div>
+            {showAmbientEffects ? (
+                <div className="antigravity-background-layer">
+                    <Antigravity
+                        count={120}
+                        magnetRadius={6}
+                        ringRadius={7}
+                        waveSpeed={0.4}
+                        waveAmplitude={1}
+                        particleSize={1.2}
+                        lerpSpeed={0.05}
+                        color="#5227FF"
+                        autoAnimate
+                        particleVariance={1}
+                        rotationSpeed={0}
+                        depthFactor={1}
+                        pulseSpeed={3}
+                        particleShape="capsule"
+                        fieldStrength={10}
+                    />
+                </div>
+            ) : null}
 
             {/* Modal Container */}
             <div
@@ -363,6 +387,14 @@ export default function Stepper({
    ========================================================================== */
 function StepContentWrapper({ isCompleted, currentStep, direction, children, className }) {
     const [parentHeight, setParentHeight] = useState(0);
+    const heightRef = useRef(0);
+
+    const handleHeightReady = useCallback((h) => {
+        if (h !== heightRef.current) {
+            heightRef.current = h;
+            setParentHeight(h);
+        }
+    }, []);
 
     return (
         <motion.div
@@ -373,7 +405,7 @@ function StepContentWrapper({ isCompleted, currentStep, direction, children, cla
         >
             <AnimatePresence initial={false} mode="sync" custom={direction}>
                 {!isCompleted && (
-                    <SlideTransition key={currentStep} direction={direction} onHeightReady={setParentHeight}>
+                    <SlideTransition key={currentStep} direction={direction} onHeightReady={handleHeightReady}>
                         {children}
                     </SlideTransition>
                 )}
@@ -389,7 +421,7 @@ function SlideTransition({ children, direction, onHeightReady }) {
         if (containerRef.current) {
             onHeightReady(containerRef.current.offsetHeight);
         }
-    }, [children, onHeightReady]);
+    }, []);
 
     return (
         <motion.div
@@ -426,7 +458,7 @@ export function Step({ children }) {
 /* ==========================================================================
    INDICATOR TRACKS & PLOTS
    ========================================================================== */
-function StepIndicator({ step, currentStep, onClickStep, disableStepIndicators }) {
+const StepIndicator = memo(function StepIndicator({ step, currentStep, onClickStep, disableStepIndicators }) {
     const status = currentStep === step ? 'active' : currentStep < step ? 'inactive' : 'complete';
 
     const handleClick = () => {
@@ -460,9 +492,9 @@ function StepIndicator({ step, currentStep, onClickStep, disableStepIndicators }
             </motion.div>
         </motion.div>
     );
-}
+});
 
-function StepConnector({ isComplete }) {
+const StepConnector = memo(function StepConnector({ isComplete }) {
     const lineVariants = {
         incomplete: { width: 0, backgroundColor: '#fff' },
         complete: { width: '100%', backgroundColor: '#5227FF' }
@@ -479,9 +511,9 @@ function StepConnector({ isComplete }) {
             />
         </div>
     );
-}
+});
 
-function CheckIcon(props) {
+const CheckIcon = memo(function CheckIcon(props) {
     return (
         <svg {...props} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
             <motion.path
@@ -494,7 +526,7 @@ function CheckIcon(props) {
             />
         </svg>
     );
-}
+});
 
 /* ==========================================================================
    STYLED-COMPONENTS STRUCTURES (SCOPED VARS AND MEDIA QUERIES)
@@ -503,7 +535,7 @@ const StyledWrapper = styled.div`
   /* Standardise high stacking Modal overlay positioning */
   position: fixed;
   inset: 0;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   z-index: 1000;
   background: rgba(4, 5, 8, 0.4);
@@ -729,5 +761,57 @@ const StyledWrapper = styled.div`
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
+  }
+
+  @media (max-width: 640px) {
+    .step-circle-container {
+      max-width: 95vw;
+      max-height: 90vh;
+      border-radius: 1.25rem;
+    }
+
+    .step-indicator-row {
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .step-default {
+      gap: 1rem;
+      padding-left: 1rem;
+      padding-right: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .footer-container {
+      padding-left: 1rem;
+      padding-right: 1rem;
+      padding-bottom: 1rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .step-circle-container {
+      max-width: 100vw;
+      border-radius: 0;
+      max-height: 100vh;
+    }
+
+    .step-indicator-row {
+      padding: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .step-default {
+      gap: 0.75rem;
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .footer-container {
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+      padding-bottom: 0.75rem;
+    }
   }
 `;

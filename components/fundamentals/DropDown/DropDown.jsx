@@ -53,7 +53,7 @@ const StyledWrapper = styled.div`
     position: relative;
     inset-inline: auto;
     max-width: 298px;
-    min-width: 298px;
+    min-width: 0;
   }
 
   .dropdown input:where(:checked) ~ .list {

@@ -31,6 +31,7 @@ const StyledWrapper = styled.div`
       -5px -5px 15px var(--bg-radial);
     padding: 0.5rem;
     width: 300px;
+    max-width: 100%;
     font-size: 14px;
     gap: 1rem;
   }

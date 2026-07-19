@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useMemo, useCallback } from "react";
 import {
     Card,
     Header,
@@ -44,7 +44,7 @@ import {
 import { getConsistency } from "@/lib/habits/consistency";
 import { getWeekTracker } from "@/lib/habits/tracker";
 import { calculateStreak } from "@/lib/habits/streak";
-import { getCategoryColor, getCategoryIcon } from "@/constants/categories";
+import { getCategoryConfig } from "@/constants/categories";
 
 export default function HabitItem({
                                        item, onStatusChange, onEdit, onDelete, onMore, onClick
@@ -55,19 +55,18 @@ export default function HabitItem({
         trigger, fallbackPlan, completions = [],
     } = item;
 
-    const color = getCategoryColor(category);
-    const CategoryIcon = getCategoryIcon(category);
+    const { icon: CategoryIcon, color } = getCategoryConfig(category);
     const todayStatus = getTodayStatus(completions);
-    const tracker = getWeekTracker(completions);
-    const consistency = getConsistency(completions);
-    const streak = calculateStreak(completions);
-    const stats = getCompletionStats(completions);
+    const tracker = useMemo(() => getWeekTracker(completions), [completions]);
+    const consistency = useMemo(() => getConsistency(completions), [completions]);
+    const streak = useMemo(() => calculateStreak(completions), [completions]);
+    const stats = useMemo(() => getCompletionStats(completions), [completions]);
 
-    const handleStatusSelect = (newStatus) => {
+    const handleStatusSelect = useCallback((newStatus) => {
         const updatedCompletions = buildUpdatedCompletions(completions, newStatus);
         const newStreak = computeNewStreak(completions, newStatus);
         onStatusChange?.(item, newStatus, updatedCompletions, newStreak);
-    };
+    }, [completions, item, onStatusChange]);
 
     return (
         <Card onClick={() => onClick?.(item)}>

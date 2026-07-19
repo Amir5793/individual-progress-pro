@@ -35,15 +35,15 @@ export const Input = ({placeholder, hintTxt, onValueChange = () => {}, size = 'm
 
         <label className="placeholder" htmlFor="modern-input">{placeholder}</label>
         <div className="hint">{hintTxt}</div>
-        {!hasValue && (
-            <button className="details-btn">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="about-svg">
-                    <path d="M0 0h24v24H0z" fill="none"/>
-                    <path fill="var(--accent-yellow)"
-                          d="M13 9h-2V7h2m0 10h-2v-6h2m-1-9A10 10 0 0 0 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2"/>
-                </svg>
-            </button>
-        )}
+        {/*{!hasValue && (*/}
+        {/*    <button className="details-btn">*/}
+        {/*        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="about-svg">*/}
+        {/*            <path d="M0 0h24v24H0z" fill="none"/>*/}
+        {/*            <path fill="var(--accent-yellow)"*/}
+        {/*                  d="M13 9h-2V7h2m0 10h-2v-6h2m-1-9A10 10 0 0 0 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2"/>*/}
+        {/*        </svg>*/}
+        {/*    </button>*/}
+        {/*)}*/}
     </StyledWrapper>)
 }
 
@@ -118,5 +118,53 @@ const StyledWrapper = styled.div`
   .about-svg {
     width: 1.5vw;
     height: 1.5vw;
+  }
+
+  @media (max-width: 640px) {
+    input, textarea {
+      height: 44px;
+      font-size: 15px;
+      padding: 8px 10px;
+      //margin-bottom: 10vw;
+    }
+    h1{
+      margin: 0;
+    }
+
+    .large {
+      height: 80px;
+    }
+
+    .hint {
+      font-size: 0.75rem;
+      bottom: -10vw;
+    }
+
+    .placeholder {
+      font-size: 0.9rem;
+    }
+
+    input:focus + .placeholder, textarea:focus + .placeholder,
+    input:not(:placeholder-shown) + .placeholder, textarea:not(:placeholder-shown) + .placeholder {
+      font-size: 0.7rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    input, textarea {
+      height: 40px;
+      font-size: 14px;
+      padding: 6px 8px;
+      border-radius: 8px;
+    }
+
+    .large {
+      height: 72px;
+    }
+
+    .hint {
+      font-size: 0.7rem;
+      bottom: -10vw;
+    }
   }
 `;

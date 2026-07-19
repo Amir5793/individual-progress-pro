@@ -45,7 +45,9 @@ export default function AppShell({ mode = "overview", goalLimit, habitLimit }) {
                 <Sidebar />
                 <main className="main-area">
                     {showHeader ? <Header /> : null}
-                    {showHeader ? <DashboardSummary /> : null}
+                    {showHeader ? (
+                        <DashboardSummary onLaunchCreator={handleLaunchModal} />
+                    ) : null}
                     <div className={`content-grid${showHeader ? " hide-on-mobile" : ""}`}>
                         <ItemsManager
                             mode={itemMode}

@@ -157,6 +157,14 @@ const HeaderGroup = styled.div`
   flex-direction: column;
   gap: 6px;
   margin-bottom: 2rem;
+
+  @media (max-width: 640px) {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.1rem;
+  }
 `;
 
 const StepTitle = styled.h1`
@@ -165,6 +173,15 @@ const StepTitle = styled.h1`
   letter-spacing: -0.025em;
   color: var(--text-primary);
   margin: 0;
+
+  @media (max-width: 640px) {
+    font-size: 1.3rem;
+    letter-spacing: -0.02em;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.1rem;
+  }
 `;
 
 const StepSubtitle = styled.p`
@@ -172,6 +189,15 @@ const StepSubtitle = styled.p`
   font-size: 0.95rem;
   line-height: 1.55;
   margin: 0;
+
+  @media (max-width: 640px) {
+    font-size: 0.82rem;
+    line-height: 1.45;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.78rem;
+  }
 `;
 
 /* ---------- Categories Grid Components (Goal Mode) ---------- */
@@ -180,6 +206,10 @@ const SelectionContainer = styled.div`
   flex-direction: column;
   gap: 1.25rem;
   width: 100%;
+
+  @media (max-width: 640px) {
+    gap: 0.75rem;
+  }
 `;
 
 const CategoryGrid = styled.div`
@@ -224,6 +254,16 @@ const SphereCard = styled.button`
   &:active {
     transform: translateY(0px);
   }
+
+  @media (max-width: 640px) {
+    padding: 0.85rem;
+    border-radius: 12px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0.7rem;
+    border-radius: 10px;
+  }
 `;
 
 const SphereHeader = styled.div`
@@ -250,6 +290,14 @@ const SphereTitleText = styled.span`
   font-size: 0.95rem;
   font-weight: 600;
   letter-spacing: -0.01em;
+
+  @media (max-width: 640px) {
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.8rem;
+  }
 `;
 
 const SphereDescription = styled.p`
@@ -258,6 +306,20 @@ const SphereDescription = styled.p`
   line-height: 1.45;
   margin: 0;
   padding-right: 1.5rem; /* Leaves visual space for checked state indicator */
+
+  @media (max-width: 640px) {
+    font-size: 0.72rem;
+    line-height: 1.4;
+    padding-right: 1rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.68rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
 `;
 
 const CheckedIndicator = styled.div`

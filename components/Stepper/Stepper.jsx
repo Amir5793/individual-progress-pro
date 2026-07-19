@@ -319,6 +319,16 @@ export default function Stepper({
                 onClick={(e) => e.stopPropagation()} // Stop background events from triggering dismissals
             >
                 <div className={`step-indicator-row ${stepContainerClassName}`}>
+                    {handleCloseModal && (
+                        <button
+                            type="button"
+                            className="close-x"
+                            onClick={handleCloseModal}
+                            aria-label="Close"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                        </button>
+                    )}
                     {stepsArray.map((_, index) => {
                         const stepNumber = index + 1;
                         const isNotLastStep = index < totalSteps - 1;
@@ -589,6 +599,7 @@ const StyledWrapper = styled.div`
     align-items: center;
     padding: 2rem;
     margin-bottom: 2rem;
+    position: relative;
   }
 
   .step-content-default {
@@ -606,6 +617,9 @@ const StyledWrapper = styled.div`
     padding-left: 2rem;
     padding-right: 2rem;
     margin-bottom: 2rem;
+  }
+  .error{
+    font-size: .8rem;
   }
 
   .footer-container {
@@ -751,6 +765,10 @@ const StyledWrapper = styled.div`
     color: var(--text-primary);
   }
 
+  .close-x {
+    display: none;
+  }
+
   @keyframes modalScaleIn {
     from {
       opacity: 0;
@@ -773,11 +791,18 @@ const StyledWrapper = styled.div`
       max-width: 95vw;
       max-height: 90vh;
       border-radius: 1.25rem;
+      min-height: 30vh;
+      min-width: 75vw;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     .step-indicator-row {
-      padding: 1rem;
-      margin-bottom: 1rem;
+      padding: 0.75rem 1rem;
+      margin-bottom: 0.5rem;
+      justify-content: center;
+      gap: 6px;
+      flex-wrap: wrap;
     }
 
     .step-default {
@@ -785,6 +810,11 @@ const StyledWrapper = styled.div`
       padding-left: 1rem;
       padding-right: 1rem;
       margin-bottom: 1rem;
+      min-height: 65%;
+    }
+    
+    .error{
+      padding-top: 2.5rem;
     }
 
     .footer-container {
@@ -792,24 +822,65 @@ const StyledWrapper = styled.div`
       padding-right: 1rem;
       padding-bottom: 1rem;
     }
+
+    .footer-nav {
+      margin-top: 1.5rem;
+    }
+
+    .step-content-default {
+      min-height: 30vh !important;
+    }
+
+    .next-button,
+    .complete-button {
+      padding: 0.3rem 0.75rem;
+      font-size: 0.85rem;
+    }
+
+    .back-button {
+      padding: 0.2rem 0.4rem;
+      font-size: 0.85rem;
+    }
+
+    .close-x {
+      display: flex;
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 6px;
+      z-index: 5;
+      transition: color 0.15s;
+    }
+
+    .close-x:hover {
+      color: var(--text-primary);
+    }
   }
 
   @media (max-width: 480px) {
     .step-circle-container {
+      min-width: 75vw;
       max-width: 100vw;
       border-radius: 0;
       max-height: 100vh;
     }
 
     .step-indicator-row {
-      padding: 0.75rem;
-      margin-bottom: 0.75rem;
+      padding: 0.5rem 0.75rem;
+      margin-bottom: 0.25rem;
+      gap: 4px;
     }
 
     .step-default {
-      gap: 0.75rem;
+      gap: 2.5rem;
       padding-left: 0.75rem;
       padding-right: 0.75rem;
+      padding-top: 0.75rem;
       margin-bottom: 0.75rem;
     }
 
@@ -817,6 +888,95 @@ const StyledWrapper = styled.div`
       padding-left: 0.75rem;
       padding-right: 0.75rem;
       padding-bottom: 0.75rem;
+    }
+
+    .footer-nav {
+      margin-top: 1rem;
+    }
+
+    .step-content-default {
+      min-height: 18vh;
+    }
+
+    .next-button,
+    .complete-button {
+      padding: 0.25rem 0.65rem;
+      font-size: 0.8rem;
+    }
+
+    .back-button {
+      padding: 0.15rem 0.35rem;
+      font-size: 0.8rem;
+    }
+
+    .skip-button {
+      font-size: 0.8rem;
+    }
+
+    .close-x {
+      top: 0.5rem;
+      right: 0.5rem;
+    }
+  }
+
+  /* ===========================================================
+     MOBILE STEP INDICATORS — Override inline styles from
+     disableStepIndicators to show simple compact dots
+     =========================================================== */
+  @media (max-width: 640px) {
+    .step-indicator {
+      opacity: 1 !important;
+      pointer-events: none !important;
+      cursor: default;
+    }
+
+    .step-indicator-inner {
+      width: 8px;
+      height: 8px;
+      font-size: 0;
+      gap: 0;
+    }
+
+    .step-indicator-inner > * {
+      display: none;
+    }
+
+    .step-indicator-inner::after {
+      content: "";
+      display: block;
+      width: 8px;
+      height: 8px;
+      border-radius: 9999px;
+      background: var(--text-muted);
+      transition: background 0.3s, transform 0.3s;
+    }
+
+    .step-connector {
+      margin-left: 2px;
+      margin-right: 2px;
+      height: 2px;
+    }
+
+    .step-connector-inner {
+      height: 2px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .step-indicator-inner {
+      width: 6px;
+      height: 6px;
+    }
+
+    .step-indicator-inner::after {
+      width: 6px;
+      height: 6px;
+    }
+
+    .step-connector {
+      margin-left: 1px;
+      margin-right: 1px;
+      height: 2px;
     }
   }
 `;

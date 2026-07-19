@@ -1,9 +1,17 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import DashboardSummary from "@/components/DashboardSummary/DashboardSummary";
 import { useCommitments } from "@/lib/store/CommitmentContext";
+import { createCommitment } from "@/lib/services/commitmentService";
 
 jest.mock("@/lib/store/CommitmentContext");
+jest.mock("@/lib/services/commitmentService", () => ({
+  createCommitment: jest.fn((item) => ({
+    ...item,
+    id: item.id || "sample-1",
+    createdAt: Date.now(),
+  })),
+}));
 jest.mock("next/link", () => {
   const MockLink = ({ children, href, ...props }) => (
     <a href={href} data-testid="next-link" {...props}>
@@ -43,14 +51,19 @@ function makeHabit(overrides = {}) {
   };
 }
 
-function renderWithCtx(commitments, loading = false) {
-  useCommitments.mockReturnValue({ commitments, loading, dispatch: jest.fn() });
-  return render(<DashboardSummary />);
+function renderWithCtx(commitments, loading = false, props = {}) {
+  useCommitments.mockReturnValue({
+    commitments,
+    loading,
+    dispatch: jest.fn(),
+  });
+  return render(<DashboardSummary {...props} />);
 }
 
 describe("DashboardSummary", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    localStorage.clear();
   });
 
   it("renders nothing while loading", () => {
@@ -60,12 +73,112 @@ describe("DashboardSummary", () => {
 
   it("renders empty state when no commitments", () => {
     renderWithCtx([]);
-    expect(screen.getByText("No commitments yet")).toBeTruthy();
+    expect(
+      screen.getByText("Welcome to your progress tracker")
+    ).toBeTruthy();
     expect(
       screen.getByText(
-        "Create your first goal or habit to see your dashboard summary here."
+        "Create your first goal or habit to start tracking your progress."
       )
     ).toBeTruthy();
+  });
+
+  it("renders CTA buttons in empty state", () => {
+    renderWithCtx([]);
+    expect(screen.getByLabelText("Create your first goal")).toBeTruthy();
+    expect(screen.getByLabelText("Create your first habit")).toBeTruthy();
+  });
+
+  it("calls onLaunchCreator when CTA buttons clicked", () => {
+    const onLaunch = jest.fn();
+    renderWithCtx([], false, { onLaunchCreator: onLaunch });
+
+    fireEvent.click(screen.getByLabelText("Create your first goal"));
+    expect(onLaunch).toHaveBeenCalledWith("goal");
+
+    fireEvent.click(screen.getByLabelText("Create your first habit"));
+    expect(onLaunch).toHaveBeenCalledWith("habit");
+  });
+
+  it("shows progress checklist in empty state", () => {
+    renderWithCtx([]);
+    expect(screen.getAllByText("Create your first goal").length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText("Create your first habit").length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("marks checklist items as done when commitments exist", () => {
+    const items = [makeGoal({ id: "g1" }), makeHabit({ id: "h1" })];
+    renderWithCtx(items);
+    expect(screen.getByText(/undone goal/)).toBeTruthy();
+  });
+
+  it("shows welcome overlay on first visit with no commitments", () => {
+    renderWithCtx([]);
+    expect(screen.getByRole("dialog", { name: "Welcome" })).toBeTruthy();
+    expect(screen.getByText("Welcome aboard!")).toBeTruthy();
+  });
+
+  it("does not show welcome overlay if previously seen", () => {
+    localStorage.setItem("onboarding-welcome-seen", "1");
+    renderWithCtx([]);
+    expect(screen.queryByRole("dialog", { name: "Welcome" })).toBeNull();
+  });
+
+  it("dismisses welcome overlay when 'I'll do it later' clicked", () => {
+    renderWithCtx([]);
+    const laterBtn = screen.getByText("I'll do it later");
+    fireEvent.click(laterBtn);
+    expect(screen.queryByRole("dialog", { name: "Welcome" })).toBeNull();
+    expect(localStorage.getItem("onboarding-welcome-seen")).toBe("1");
+  });
+
+  it("loads sample data from welcome overlay", () => {
+    const dispatch = jest.fn();
+    useCommitments.mockReturnValue({ commitments: [], loading: false, dispatch });
+    render(<DashboardSummary />);
+
+    fireEvent.click(screen.getByText("Load sample data"));
+    expect(createCommitment).toHaveBeenCalled();
+    expect(dispatch).toHaveBeenCalled();
+    expect(screen.queryByRole("dialog", { name: "Welcome" })).toBeNull();
+  });
+
+  it("shows help button when commitments exist", () => {
+    const items = [makeGoal({ id: "g1" })];
+    renderWithCtx(items);
+    expect(
+      screen.getByRole("button", { name: "Quick start guide" })
+    ).toBeTruthy();
+  });
+
+  it("opens quick-start guide when help button clicked", () => {
+    const items = [makeGoal({ id: "g1" })];
+    renderWithCtx(items);
+    fireEvent.click(screen.getByRole("button", { name: "Quick start guide" }));
+    expect(
+      screen.getByRole("dialog", { name: "Quick start guide" })
+    ).toBeTruthy();
+    expect(screen.getByText("Quick Start Guide")).toBeTruthy();
+  });
+
+  it("closes quick-start guide when 'Got it' clicked", () => {
+    const items = [makeGoal({ id: "g1" })];
+    renderWithCtx(items);
+    fireEvent.click(screen.getByRole("button", { name: "Quick start guide" }));
+    fireEvent.click(screen.getByText("Got it"));
+    expect(
+      screen.queryByRole("dialog", { name: "Quick start guide" })
+    ).toBeNull();
+  });
+
+  it("shows quick-start steps", () => {
+    const items = [makeGoal({ id: "g1" })];
+    renderWithCtx(items);
+    fireEvent.click(screen.getByRole("button", { name: "Quick start guide" }));
+    expect(screen.getByText("Set a goal")).toBeTruthy();
+    expect(screen.getByText("Build a habit")).toBeTruthy();
+    expect(screen.getByText("Track daily")).toBeTruthy();
+    expect(screen.getByText("Review reports")).toBeTruthy();
   });
 
   it("renders undone goal count in summary", () => {
@@ -169,5 +282,15 @@ describe("DashboardSummary", () => {
 
     expect(screen.queryByText("Top Habits")).toBeNull();
     expect(screen.queryByText("Top Goals")).toBeNull();
+  });
+
+  it("shows 'no goals yet' and 'no habits yet' messages", () => {
+    const habits = [makeHabit({ id: "h1", completions: [] })];
+    renderWithCtx(habits);
+    expect(screen.getByText(/No goals yet/)).toBeTruthy();
+
+    const goals = [makeGoal({ id: "g1" })];
+    renderWithCtx(goals);
+    expect(screen.getByText(/No habits yet/)).toBeTruthy();
   });
 });

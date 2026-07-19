@@ -493,6 +493,7 @@ const StyledWrapper = styled.div`
     font-weight: 500;
     letter-spacing: -0.02em;
     margin-bottom: 0.5rem;
+    line-height: 1.25;
   }
 
   h2 {
@@ -507,5 +508,39 @@ const StyledWrapper = styled.div`
 
   ul {
     color: var(--text-primary);
+  }
+
+  @media (max-width: 640px) {
+    h1 {
+      font-size: 1.35rem;
+      margin-bottom: 0.35rem;
+    }
+
+    h2 {
+      font-size: 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    ul {
+      font-size: 0.85rem;
+      padding-left: 1.1rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    h1 {
+      font-size: 1.15rem;
+      margin-bottom: 0.25rem;
+    }
+
+    h2 {
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+
+    ul {
+      font-size: 0.8rem;
+      line-height: 1.5;
+    }
   }
 `;

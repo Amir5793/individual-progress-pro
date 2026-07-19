@@ -1,11 +1,54 @@
-import React from "react";
+"use client";
+
+import React, { useMemo } from "react";
+import Link from "next/link";
+import { useCommitments } from "@/lib/store/CommitmentContext";
+import { getTodayStatus } from "@/components/Items/Item/HabitItem/helpers";
 import styled from "styled-components";
 
+const CIRCUMFERENCE = 2 * Math.PI * 31;
+
+function computeProgress(commitments) {
+  if (!commitments.length) return { total: 0, done: 0, pct: 0 };
+
+  const total = commitments.length;
+  const done = commitments.filter((c) => {
+    if (c.type === "goal") {
+      return c.completed === true;
+    }
+    if (c.type === "habit") {
+      const st = getTodayStatus(c.completions || []);
+      return st === "completed" || st === "minimum";
+    }
+    return false;
+  }).length;
+
+  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+  return { total, done, pct };
+}
+
 export default function Progress() {
+  const { commitments } = useCommitments();
+  const { total, done, pct } = useMemo(
+    () => computeProgress(commitments),
+    [commitments]
+  );
+
+  const offset = CIRCUMFERENCE * (1 - pct / 100);
+
+  const message =
+    pct === 100
+      ? "All done for today!"
+      : pct >= 50
+      ? "Keep going! You're doing great."
+      : pct > 0
+      ? "Good start, keep the momentum."
+      : "Time to get moving.";
+
   return (
     <StyledWrapper>
       <div className="progress-section">
-        {/* <!-- Circular Progress --> */}
+        {/* Circular Progress */}
         <div className="circular-progress-wrap">
           <svg width="76" height="76" viewBox="0 0 76 76">
             <circle
@@ -15,7 +58,7 @@ export default function Progress() {
               fill="none"
               stroke="var(--track-bg)"
               strokeWidth="7"
-            ></circle>
+            />
             <circle
               cx="38"
               cy="38"
@@ -24,9 +67,9 @@ export default function Progress() {
               stroke="url(#prog-gradient)"
               strokeWidth="7"
               strokeLinecap="round"
-              strokeDasharray="194.8"
-              strokeDashoffset="54.5"
-            ></circle>
+              strokeDasharray={CIRCUMFERENCE}
+              strokeDashoffset={offset}
+            />
             <defs>
               <linearGradient
                 id="prog-gradient"
@@ -35,36 +78,49 @@ export default function Progress() {
                 x2="100%"
                 y2="0%"
               >
-                <stop offset="0%" stopColor="#4F8DFF"></stop>
-                <stop offset="100%" stopColor="#7B61FF"></stop>
+                <stop offset="0%" stopColor="#4F8DFF" />
+                <stop offset="100%" stopColor="#7B61FF" />
               </linearGradient>
             </defs>
           </svg>
-          <div className="circular-label">72%</div>
+          <div className="circular-label">{pct}%</div>
         </div>
 
-        {/* <!-- Bar Progress --> */}
+        {/* Bar Progress */}
         <div className="progress-center">
-          <div className="progress-title">Weekly Progress</div>
-          <div className="progress-sub">Keep going! You&apos;re doing great.</div>
+          <div className="progress-title">Today&apos;s Progress</div>
+          <div className="progress-sub">{message}</div>
           <div className="progress-bar-wrap">
             <div className="progress-bar-track">
-              <div className="progress-bar-fill"></div>
+              <div
+                className="progress-bar-fill"
+                style={{ width: `${pct}%` }}
+              />
             </div>
-            <div className="progress-count">13 / 18</div>
+            <div className="progress-count">
+              {done} / {total}
+            </div>
           </div>
         </div>
 
-        {/* <!-- Analytics button --> */}
-        <div className="analytics-btn" data-media-type="banani-button">
-          <div>
-            <button icon="lucide:bar-chart-3"></button>
-          </div>
-          View Analytics
-          <div>
-            <button icon="lucide:arrow-right"></button>
-          </div>
-        </div>
+        {/* Analytics button */}
+        <Link href="/reports" className="analytics-btn">
+          <span>View Reports</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M5 12h14" />
+            <path d="m12 5 7 7-7 7" />
+          </svg>
+        </Link>
       </div>
     </StyledWrapper>
   );
@@ -140,7 +196,7 @@ const StyledWrapper = styled.div`
     height: 100%;
     border-radius: 50px;
     background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
-    width: 72%;
+    transition: width 0.4s ease;
   }
 
   .progress-count {
@@ -164,6 +220,13 @@ const StyledWrapper = styled.div`
     cursor: pointer;
     white-space: nowrap;
     flex-shrink: 0;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+
+    &:hover {
+      background: var(--accent-purple);
+      color: var(--text-on-accent);
+    }
   }
 
   @media (max-width: 768px) {

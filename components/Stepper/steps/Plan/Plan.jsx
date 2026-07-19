@@ -416,7 +416,7 @@ export const Plan = ({
 const StyledWrapper = styled.div`
   /* Root transitions setup */
   --cozy-bezier: cubic-bezier(0.16, 1, 0.3, 1);
-  --cozy-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  --cozy-shadow: var(--modal-shadow);
 
   .step-header {
     margin-bottom: 2rem;
@@ -446,7 +446,7 @@ const StyledWrapper = styled.div`
   }
 
   .roadmap-goal {
-    border-bottom: 1px solid var(--panel-border, rgba(255, 255, 255, 0.08));
+    border-bottom: 1px solid var(--card-border);
     padding-bottom: 1.25rem;
   }
 
@@ -479,7 +479,7 @@ const StyledWrapper = styled.div`
     background: rgba(124, 58, 237, 0.04);
     border: 1px solid rgba(124, 58, 237, 0.15);
     cursor: pointer;
-    color: var(--interactive-hover, #7b61ff);
+    color: var(--accent-purple);
     font-size: 0.8rem;
     font-weight: 600;
     padding: 6px 12px;
@@ -492,7 +492,7 @@ const StyledWrapper = styled.div`
 
   .text-link-btn:hover {
     background: rgba(124, 58, 237, 0.1);
-    color: #fff;
+    color: var(--text-primary);
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(124, 58, 237, 0.15);
   }
@@ -512,13 +512,13 @@ const StyledWrapper = styled.div`
   }
 
   .action-list::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.12);
+    background: var(--scrollbar-thumb);
     border-radius: 99px;
     transition: background 0.2s;
   }
 
   .action-list::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.25);
+    background: var(--scrollbar-thumb);
   }
 
   .empty-actions-state {
@@ -528,9 +528,9 @@ const StyledWrapper = styled.div`
     justify-content: center;
     gap: 0.75rem;
     padding: 3.5rem 1.5rem;
-    border: 1px dashed rgba(255, 255, 255, 0.08);
+    border: 1px dashed var(--card-border);
     border-radius: 16px;
-    background: rgba(255, 255, 255, 0.015);
+    background: var(--subtle-bg);
     text-align: center;
     backdrop-filter: blur(4px);
   }
@@ -553,7 +553,7 @@ const StyledWrapper = styled.div`
     background: rgba(124, 58, 237, 0.02);
     border: 1px dashed rgba(124, 58, 237, 0.35);
     border-radius: 12px;
-    color: var(--interactive-hover, #7b61ff);
+    color: var(--accent-purple);
     padding: 1rem;
     font-size: 0.9rem;
     font-weight: 600;
@@ -568,8 +568,8 @@ const StyledWrapper = styled.div`
 
   .add-action-btn:hover {
     background: rgba(124, 58, 237, 0.08);
-    border-color: var(--interactive-hover, #7b61ff);
-    color: #fff;
+    border-color: var(--accent-purple);
+    color: var(--text-primary);
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(124, 58, 237, 0.1);
   }
@@ -579,7 +579,7 @@ const StyledWrapper = styled.div`
   }
 
   .error-message-banner {
-    color: var(--accent-red, #ff5c70);
+    color: var(--accent-red);
     font-size: 0.85rem;
     background: rgba(255, 92, 112, 0.08);
     border: 1px solid rgba(255, 92, 112, 0.2);
@@ -592,8 +592,8 @@ const StyledWrapper = styled.div`
 
   /* ---------- Action Card ---------- */
   .action-card {
-    background: rgba(255, 255, 255, 0.025);
-    border: 1px solid var(--panel-border, rgba(255, 255, 255, 0.06));
+    background: var(--subtle-bg);
+    border: 1px solid var(--card-border);
     border-radius: 12px;
     padding: 1rem 1.25rem;
     display: flex;
@@ -608,26 +608,26 @@ const StyledWrapper = styled.div`
     border-color 0.25s ease,
     box-shadow 0.3s ease;
     animation: cardScaleIn 0.35s var(--cozy-bezier) forwards;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--card-shadow);
   }
 
   .action-card:hover {
-    background: rgba(255, 255, 255, 0.045);
-    border-color: rgba(255, 255, 255, 0.12);
+    background: var(--subtle-bg-hover);
+    border-color: var(--interactive-border);
     transform: translateY(-2px) translate3d(0, 0, 0);
-    box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--card-shadow);
   }
 
   .action-card.dragging {
     opacity: 0.4;
-    border: 1px dashed var(--interactive-hover, #7b61ff) !important;
+    border: 1px dashed var(--accent-purple) !important;
     background: rgba(124, 58, 237, 0.04) !important;
     transform: scale(0.97) translate3d(0, 0, 0);
     box-shadow: none;
   }
 
   .action-card.drag-over {
-    border-color: var(--interactive-hover, #7b61ff) !important;
+    border-color: var(--accent-purple) !important;
     background: rgba(124, 58, 237, 0.06) !important;
     transform: translateY(2px) translate3d(0, 0, 0);
   }
@@ -641,7 +641,7 @@ const StyledWrapper = styled.div`
     opacity: 0.15 !important;
     transform: scale3d(0.96, 0.96, 1) !important;
     border-style: dashed !important;
-    border-color: var(--interactive-hover, #7b61ff) !important;
+    border-color: var(--accent-purple) !important;
     box-shadow: none !important;
   }
 
@@ -658,15 +658,15 @@ const StyledWrapper = styled.div`
   }
 
   .action-card.priority-high {
-    border-left: 3px solid var(--accent-red, #ff5c70);
+    border-left: 3px solid var(--accent-red);
   }
 
   .action-card.priority-medium {
-    border-left: 3px solid var(--accent-yellow, #f4c542);
+    border-left: 3px solid var(--accent-yellow);
   }
 
   .action-card.priority-low {
-    border-left: 3px solid var(--text-muted, rgba(240, 242, 250, 0.35));
+    border-left: 3px solid var(--text-muted);
   }
   
   option{
@@ -699,7 +699,7 @@ const StyledWrapper = styled.div`
 
   .action-index-badge {
     background: rgba(124, 58, 237, 0.1);
-    color: var(--interactive-hover, #7b61ff);
+    color: var(--accent-purple);
     min-width: 26px;
     height: 26px;
     border-radius: 50%;
@@ -715,9 +715,9 @@ const StyledWrapper = styled.div`
 
   .action-card:hover .action-index-badge {
     transform: scale(1.1);
-    background: var(--interactive-hover, #7b61ff);
-    color: #fff;
-    border-color: var(--interactive-hover, #7b61ff);
+    background: var(--accent-purple);
+    color: var(--text-primary);
+    border-color: var(--accent-purple);
   }
 
   .action-content {
@@ -763,20 +763,20 @@ const StyledWrapper = styled.div`
 
   .priority-pill.priority-high {
     background: rgba(255, 92, 112, 0.08);
-    color: var(--accent-red, #ff5c70);
+    color: var(--accent-red);
     border: 1px solid rgba(255, 92, 112, 0.18);
   }
 
   .priority-pill.priority-medium {
     background: rgba(244, 197, 66, 0.08);
-    color: var(--accent-yellow, #f4c542);
+    color: var(--accent-yellow);
     border: 1px solid rgba(244, 197, 66, 0.18);
   }
 
   .priority-pill.priority-low {
-    background: rgba(255, 255, 255, 0.04);
+    background: var(--subtle-bg-hover);
     color: var(--text-muted);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--card-border);
   }
 
   .action-controls {
@@ -802,12 +802,12 @@ const StyledWrapper = styled.div`
 
   .control-btn:hover {
     opacity: 1;
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--btn-secondary-bg);
   }
 
   .control-btn.delete-btn:hover {
     background: rgba(255, 92, 112, 0.1);
-    color: var(--accent-red, #ff5c70);
+    color: var(--accent-red);
   }
 
   .action-details {
@@ -826,7 +826,7 @@ const StyledWrapper = styled.div`
   }
 
   .success-criteria {
-    color: var(--text-secondary, rgba(240, 242, 250, 0.55));
+    color: var(--text-secondary);
   }
 
   .success-criteria .pill-icon {
@@ -839,7 +839,7 @@ const StyledWrapper = styled.div`
   }
 
   .meta-separator {
-    color: rgba(255, 255, 255, 0.06);
+    color: var(--text-muted);
     margin: 0 2px;
   }
 
@@ -850,7 +850,7 @@ const StyledWrapper = styled.div`
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(4, 5, 8, 0.5);
+    background: var(--overlay-bg);
     backdrop-filter: blur(14px);
     display: flex;
     align-items: center;
@@ -864,8 +864,8 @@ const StyledWrapper = styled.div`
   }
 
   .modal-card {
-    background: var(--card, #1a2138);
-    border: 1px solid var(--card-border, rgba(255, 255, 255, 0.07));
+    background: var(--card);
+    border: 1px solid var(--card-border);
     border-radius: 20px;
     padding: 2rem;
     width: 100%;
@@ -874,7 +874,7 @@ const StyledWrapper = styled.div`
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.8);
+    box-shadow: var(--modal-shadow);
     position: relative;
     overflow: hidden;
   }
@@ -893,7 +893,7 @@ const StyledWrapper = styled.div`
     display: flex;
     flex-direction: column;
     gap: 0.35rem;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.04);
+    border-bottom: 2px solid var(--card-border);
     padding-bottom: 1rem;
     flex-shrink: 0;
   }
@@ -936,8 +936,8 @@ const StyledWrapper = styled.div`
   }
 
   .close-x-btn:hover {
-    color: #fff;
-    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-primary);
+    background: var(--btn-secondary-bg);
   }
 
   .modal-body-scroll {
@@ -955,7 +955,7 @@ const StyledWrapper = styled.div`
   }
 
   .modal-body-scroll::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--scrollbar-thumb);
     border-radius: 99px;
   }
 
@@ -993,11 +993,11 @@ const StyledWrapper = styled.div`
   }
 
   .action-fields-row select {
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--subtle-bg);
+    border: 1px solid var(--card-border);
     border-radius: 12px;
     padding: 0.75rem 1rem;
-    color: #fff;
+    color: var(--text-primary);
     font-size: 0.9rem;
     outline: none;
     cursor: pointer;
@@ -1006,7 +1006,7 @@ const StyledWrapper = styled.div`
   }
 
   .action-fields-row select:focus {
-    border-color: var(--interactive-hover, #7b61ff);
+    border-color: var(--accent-purple);
     box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
   }
 
@@ -1020,15 +1020,15 @@ const StyledWrapper = styled.div`
   .add-action-buttons {
     display: flex;
     gap: 0.85rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    border-top: 1px solid var(--card-border);
     padding-top: 1.25rem;
     margin-top: 0.5rem;
     flex-shrink: 0;
   }
 
   .action-save-btn {
-    background: var(--interactive-hover, #7b61ff);
-    color: #fff;
+    background: var(--accent-purple);
+    color: var(--text-primary);
     border: none;
     font-weight: 600;
     font-size: 0.9rem;
@@ -1051,9 +1051,9 @@ const StyledWrapper = styled.div`
   }
 
   .action-cancel-btn {
-    background: rgba(255, 255, 255, 0.035);
+    background: var(--btn-secondary-bg);
     color: var(--text-secondary);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--btn-secondary-border);
     font-weight: 600;
     font-size: 0.9rem;
     padding: 0.8rem 1.6rem;
@@ -1064,9 +1064,9 @@ const StyledWrapper = styled.div`
   }
 
   .action-cancel-btn:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--btn-secondary-hover);
     color: var(--text-primary);
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: var(--interactive-border);
   }
 
   @keyframes cardScaleIn {
@@ -1086,7 +1086,7 @@ const StyledWrapper = styled.div`
       backdrop-filter: blur(0px);
     }
     to {
-      background: rgba(4, 5, 8, 0.75);
+      background: var(--overlay-bg);
       backdrop-filter: blur(14px);
     }
   }

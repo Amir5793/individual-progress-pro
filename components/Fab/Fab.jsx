@@ -78,7 +78,7 @@ const StyledWrapper = styled.div`
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: 0 8px 28px rgba(79, 141, 255, 0.45);
+    box-shadow: 0 8px 28px var(--fab-glow);
     z-index: 10;
     animation: fabPop 0.2s ease, glowPulse 2.5s infinite ease-in-out;
     border: none;
@@ -90,7 +90,7 @@ const StyledWrapper = styled.div`
 
   .fab svg {
     width: 80%;
-    color: #fff;
+    color: var(--text-on-accent);
     transition: 0.3s ease;
   }
 
@@ -104,10 +104,10 @@ const StyledWrapper = styled.div`
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: 0 8px 24px rgba(79, 141, 255, 0.35);
+    box-shadow: 0 8px 24px var(--fab-glow);
     z-index: 9;
     transition: all 0.2s ease;
-    color: #fff;
+    color: var(--text-on-accent);
     font-size: 14px;
     font-weight: 500;
     user-select: none;
@@ -116,7 +116,7 @@ const StyledWrapper = styled.div`
 
   .fab-option:hover {
     transform: scale(1.1);
-    box-shadow: 0 8px 32px rgba(79, 141, 255, 0.6);
+    box-shadow: 0 8px 32px var(--fab-glow-pulse);
   }
 
   .fab-option-left {
@@ -149,9 +149,9 @@ const StyledWrapper = styled.div`
   }
 
   @keyframes glowPulse {
-    0% { box-shadow: 0 8px 28px rgba(79, 141, 255, 0.45); }
-    50% { box-shadow: 0 8px 48px rgba(79, 141, 255, 0.75); }
-    100% { box-shadow: 0 8px 28px rgba(79, 141, 255, 0.45); }
+    0% { box-shadow: 0 8px 28px var(--fab-glow); }
+    50% { box-shadow: 0 8px 48px var(--fab-glow-pulse); }
+    100% { box-shadow: 0 8px 28px var(--fab-glow); }
   }
 
   @media (max-width: 640px) {

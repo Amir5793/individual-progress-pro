@@ -2,6 +2,7 @@ import localFont from "next/font/local";
 import {Geist, Geist_Mono} from "next/font/google";
 import "./globals.css";
 import {CommitmentProvider} from "@/lib/store/CommitmentContext";
+import {ThemeProvider} from "@/lib/store/ThemeContext";
 
 const inter = localFont({
     src: "../fonts/Inter-VariableFont_opsz,wght.ttf",
@@ -28,9 +29,11 @@ export default function RootLayout({children}) {
     return (
         <html lang="en" className={`${inter.variable} ${geistSans.variable} ${geistMono.variable}`}>
         <body>
+        <ThemeProvider>
         <CommitmentProvider>
             {children}
         </CommitmentProvider>
+        </ThemeProvider>
         </body>
         </html>
     );

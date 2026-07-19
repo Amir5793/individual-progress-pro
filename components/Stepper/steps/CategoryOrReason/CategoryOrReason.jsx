@@ -143,7 +143,7 @@ const cardScaleIn = keyframes`
 
 const StyledWrapper = styled.div`
   width: 100%;
-  color: var(--text-primary, #f8fafc);
+  color: var(--text-primary);
   display: flex;
   flex-direction: column;
 
@@ -163,12 +163,12 @@ const StepTitle = styled.h1`
   font-size: 1.85rem;
   font-weight: 500;
   letter-spacing: -0.025em;
-  color: var(--text-primary, #f8fafc);
+  color: var(--text-primary);
   margin: 0;
 `;
 
 const StepSubtitle = styled.p`
-  color: var(--text-muted, #94a3b8);
+  color: var(--text-muted);
   font-size: 0.95rem;
   line-height: 1.55;
   margin: 0;
@@ -195,8 +195,8 @@ const CategoryGrid = styled.div`
 `;
 
 const SphereCard = styled.button`
-  background: ${props => props.$active ? "rgba(255, 255, 255, 0.015)" : "rgba(255, 255, 255, 0.005)"};
-  border: 1px solid ${props => props.$active ? props.$accentColor : "var(--panel-border, rgba(255, 255, 255, 0.06))"};
+  background: ${props => props.$active ? "var(--subtle-bg)" : "var(--subtle-bg)"};
+  border: 1px solid ${props => props.$active ? props.$accentColor : "var(--card-border)"};
   border-radius: 14px;
   padding: 1.15rem;
   text-align: left;
@@ -212,12 +212,12 @@ const SphereCard = styled.button`
     box-shadow 0.3s ease;
 
   box-shadow: ${props => props.$active
-    ? `0 12px 24px -10px rgba(0, 0, 0, 0.3), inset 0 0 12px rgba(255,255,255,0.015)`
+    ? "var(--card-shadow), inset 0 0 12px var(--subtle-bg)"
     : "none"};
 
   &:hover {
-    background: rgba(255, 255, 255, 0.035);
-    border-color: ${props => props.$active ? props.$accentColor : "rgba(255, 255, 255, 0.15)"};
+    background: var(--subtle-bg);
+    border-color: ${props => props.$active ? props.$accentColor : "var(--interactive-border)"};
     transform: translateY(-2px);
   }
 
@@ -237,7 +237,7 @@ const SphereIcon = styled.div`
   width: 28px;
   height: 28px;
   border-radius: 8px;
-  background: ${props => props.$active ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.03)"};
+  background: ${props => props.$active ? "var(--btn-secondary-hover)" : "var(--btn-secondary-bg)"};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -246,14 +246,14 @@ const SphereIcon = styled.div`
 `;
 
 const SphereTitleText = styled.span`
-  color: var(--text-primary, #f8fafc);
+  color: var(--text-primary);
   font-size: 0.95rem;
   font-weight: 600;
   letter-spacing: -0.01em;
 `;
 
 const SphereDescription = styled.p`
-  color: var(--text-muted, #94a3b8);
+  color: var(--text-muted);
   font-size: 0.8rem;
   line-height: 1.45;
   margin: 0;
@@ -268,7 +268,7 @@ const CheckedIndicator = styled.div`
   height: 18px;
   border-radius: 50%;
   background: ${props => props.$accentColor};
-  color: #0c0e12;
+  color: var(--text-primary);
   font-weight: 900;
   font-size: 0.75rem;
   display: flex;
@@ -282,14 +282,14 @@ const CheckedIndicator = styled.div`
 
 /* ---------- Motivation Identity Panel (Habit Mode) ---------- */
 const ReasonPortalCard = styled.div`
-  background: rgba(255, 255, 255, 0.015);
-  border: 1px solid var(--panel-border, rgba(255, 255, 255, 0.06));
+  background: var(--subtle-bg);
+  border: 1px solid var(--card-border);
   border-radius: 16px;
   padding: 2rem;
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
-  box-shadow: 0 12px 30px -10px rgba(0,0,0,0.5);
+  box-shadow: var(--modal-shadow);
   animation: ${cardScaleIn} 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 `;
 
@@ -297,7 +297,7 @@ const IdentityStatementLabel = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--text-muted, #94a3b8);
+  color: var(--text-muted);
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -315,41 +315,41 @@ const InputContainer = styled.div`
   .Input {
     background: transparent !important;
     border: none !important;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.1) !important;
+    border-bottom: 2px solid var(--interactive-border) !important;
     border-radius: 0 !important;
     padding: 10px 0 !important;
     font-size: 1.25rem !important;
     font-weight: 400 !important;
     letter-spacing: -0.01em !important;
-    color: #fff !important;
+    color: var(--text-primary) !important;
     transition: border-color 0.25s ease !important;
   }
 
   .Input:focus {
-    border-bottom-color: var(--interactive-hover, #8b5cf6) !important;
+    border-bottom-color: var(--accent-purple) !important;
   }
 
   .Input::placeholder {
-    color: var(--text-subtle, #475569) !important;
+    color: var(--text-muted) !important;
   }
 `;
 
 const CoachHintText = styled.p`
   font-size: 0.825rem;
   line-height: 1.5;
-  color: var(--text-subtle, #475569);
-  border-left: 2px solid rgba(255, 255, 255, 0.06);
+  color: var(--text-muted);
+  border-left: 2px solid var(--card-border);
   padding-left: 12px;
   margin: 0;
 
   strong {
-    color: var(--text-muted, #94a3b8);
+    color: var(--text-muted);
     font-weight: 600;
   }
 `;
 
 const ErrorMessageBanner = styled.div`
-  color: var(--accent-red, #ff5c70);
+  color: var(--accent-red);
   font-size: 0.8rem;
   background: rgba(244, 63, 94, 0.05);
   border: 1px solid rgba(244, 63, 94, 0.16);

@@ -25,7 +25,7 @@ export const NavBar = styled.div`
   border: 1px solid var(--card-border);
   border-radius: var(--radius-card);
   padding: 10px 16px;
-  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--card-shadow);
   margin-bottom: 20px;
 `;
 
@@ -37,14 +37,14 @@ export const NavBtn = styled.button`
   height: 36px;
   border-radius: var(--radius-sm);
   border: none;
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--btn-secondary-bg);
   color: var(--text-secondary);
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
   flex-shrink: 0;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--btn-secondary-hover);
     color: var(--text-primary);
   }
 `;
@@ -62,7 +62,7 @@ export const TodayBtn = styled.button`
   padding: 6px 14px;
   border-radius: var(--radius-pill);
   border: none;
-  background: rgba(123, 97, 255, 0.15);
+  background: var(--nav-active-bg);
   color: var(--accent-purple);
   font-size: 0.8rem;
   font-weight: 600;
@@ -105,7 +105,7 @@ export const StatusBadge = styled.span`
       case "pending-approval":
         return "rgba(79, 141, 255, 0.15)";
       default:
-        return "rgba(255, 255, 255, 0.06)";
+        return "var(--btn-secondary-bg)";
     }
   }};
   color: ${({ $variant }) => {
@@ -138,13 +138,13 @@ export const ActionBtn = styled.button`
   transition: background 0.15s, opacity 0.15s;
 
   background: ${({ $primary }) =>
-    $primary ? "var(--accent-purple)" : "rgba(255, 255, 255, 0.06)"};
+    $primary ? "var(--accent-purple)" : "var(--btn-secondary-bg)"};
   color: ${({ $primary }) =>
-    $primary ? "#fff" : "var(--text-secondary)"};
+    $primary ? "var(--text-on-accent)" : "var(--text-secondary)"};
 
   &:hover {
     background: ${({ $primary }) =>
-      $primary ? "rgba(123, 97, 255, 0.85)" : "rgba(255, 255, 255, 0.1)"};
+      $primary ? "rgba(123, 97, 255, 0.85)" : "var(--btn-secondary-hover)"};
   }
 
   &:disabled {
@@ -175,11 +175,11 @@ export const ItemCard = styled.div`
   border: 1px solid var(--card-border);
   border-radius: 14px;
   padding: 14px 16px;
-  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--card-shadow);
   transition: border-color 0.15s;
 
   &:hover {
-    border-color: rgba(255, 255, 255, 0.12);
+    border-color: var(--interactive-border);
   }
 `;
 
@@ -222,7 +222,7 @@ export const Badge = styled.span`
       case "done":
         return "rgba(46, 212, 122, 0.12)";
       case "pending":
-        return "rgba(255, 255, 255, 0.06)";
+        return "var(--btn-secondary-bg)";
       case "minimum":
         return "rgba(244, 197, 66, 0.12)";
       case "failed":
@@ -230,7 +230,7 @@ export const Badge = styled.span`
       case "streak":
         return "rgba(244, 197, 66, 0.12)";
       default:
-        return "rgba(255, 255, 255, 0.06)";
+        return "var(--btn-secondary-bg)";
     }
   }};
   color: ${({ $variant }) => {
@@ -263,16 +263,16 @@ export const EmptyState = styled.div`
   gap: 14px;
   padding: 48px 20px;
   text-align: center;
-  border: 2px dashed rgba(255, 255, 255, 0.08);
+  border: 2px dashed var(--card-border);
   border-radius: var(--radius-card);
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--subtle-bg);
 `;
 
 export const EmptyIcon = styled.div`
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--subtle-bg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -298,7 +298,7 @@ export const EmptyDesc = styled.p`
 export const Overlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: var(--overlay-bg);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -314,7 +314,7 @@ export const DialogCard = styled.div`
   padding: 24px;
   max-width: 400px;
   width: 100%;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--modal-shadow);
 `;
 
 export const DialogTitle = styled.h3`
@@ -353,13 +353,13 @@ export const DialogBtn = styled.button`
       case "danger":
         return "rgba(255, 92, 112, 0.15)";
       default:
-        return "rgba(255, 255, 255, 0.06)";
+        return "var(--btn-secondary-bg)";
     }
   }};
   color: ${({ $variant }) => {
     switch ($variant) {
       case "save":
-        return "#fff";
+        return "var(--text-on-accent)";
       case "danger":
         return "var(--accent-red)";
       default:
@@ -388,8 +388,8 @@ export const Toast = styled.div`
   animation: toastIn 0.3s ease, toastOut 0.3s ease 2.7s forwards;
   background: ${({ $variant }) =>
     $variant === "error" ? "rgba(255, 92, 112, 0.9)" : "rgba(46, 212, 122, 0.9)"};
-  color: #fff;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  color: var(--text-on-accent);
+  box-shadow: var(--card-shadow);
 
   @keyframes toastIn {
     from {

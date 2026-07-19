@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTheme } from "@/lib/store/ThemeContext";
 
 const NAV_ITEMS = [
   { href: "/", label: "Overview" },
@@ -9,13 +10,42 @@ const NAV_ITEMS = [
   { href: "/habits", label: "Habits" },
 ];
 
+const SunIcon = (
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="4"/>
+    <path d="M12 2v2"/>
+    <path d="M12 20v2"/>
+    <path d="m4.93 4.93 1.41 1.41"/>
+    <path d="m17.66 17.66 1.41 1.41"/>
+    <path d="M2 12h2"/>
+    <path d="M20 12h2"/>
+    <path d="m6.34 17.66-1.41 1.41"/>
+    <path d="m19.07 4.93-1.41 1.41"/>
+  </svg>
+);
+
+const MoonIcon = (
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+  </svg>
+);
+
 export default function Sidebar() {
   const pathname = usePathname();
+  const { theme, toggleTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true); // eslint-disable-line react-hooks/set-state-in-effect
+  }, []);
 
   const isActive = (href) => {
     if (href === "/") return pathname === "/";
     return pathname.startsWith(href);
   };
+
+  const themeIcon = mounted ? (theme === "dark" ? SunIcon : MoonIcon) : SunIcon;
+  const themeLabel = mounted ? (theme === "dark" ? "Light" : "Dark") : "Dark";
 
   return (
     <StyledWrapper>
@@ -96,17 +126,12 @@ export default function Sidebar() {
           {/*</div>*/}
         </nav>
 
-        {/*<div className="sidebar-bottom">*/}
-        {/*  <div className="theme-selector" data-media-type="banani-button">*/}
-        {/*    <div>*/}
-        {/*      <button></button>*/}
-        {/*    </div>*/}
-        {/*    <span>Dark</span>*/}
-        {/*    <div className="chevron">*/}
-        {/*      <button></button>*/}
-        {/*    </div>*/}
-        {/*  </div>*/}
-        {/*</div>*/}
+        <div className="sidebar-bottom">
+          <button className="theme-toggle" onClick={toggleTheme} aria-label="Toggle theme">
+            {themeIcon}
+            <span>{themeLabel}</span>
+          </button>
+        </div>
       </aside>
     </StyledWrapper>
   );
@@ -121,11 +146,12 @@ const StyledWrapper = styled.div`
     display: flex;
     flex-direction: column;
     padding: 28px 16px 24px;
-    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    border-right: 1px solid var(--sidebar-border);
     position: sticky;
     top: 0;
     left: 0;
     z-index: 0;
+    transition: background 0.3s ease, border-color 0.3s ease;
   }
 
   .sidebar {
@@ -136,11 +162,12 @@ const StyledWrapper = styled.div`
     display: flex;
     flex-direction: column;
     padding: 28px 16px 24px;
-    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    border-right: 1px solid var(--sidebar-border);
     position: fixed;
     top: 0;
     left: 0;
     z-index: 0;
+    transition: background 0.3s ease, border-color 0.3s ease;
   }
 
   .sidebar-logo {
@@ -209,7 +236,7 @@ const StyledWrapper = styled.div`
   }
 
   .nav-item.active {
-    background: rgba(123, 97, 255, 0.15);
+    background: var(--nav-active-bg);
     color: var(--accent-purple);
   }
 
@@ -240,7 +267,7 @@ const StyledWrapper = styled.div`
       min-height: auto;
       padding: 18px 14px 12px;
       border-right: none;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid var(--sidebar-border);
       position: sticky;
       top: 0;
       backdrop-filter: blur(12px);
@@ -260,7 +287,7 @@ const StyledWrapper = styled.div`
     .nav-item {
       min-width: fit-content;
       padding: 10px 14px;
-      background: rgba(255, 255, 255, 0.03);
+      background: var(--nav-item-bg);
     }
 
     .nav-item.active::before {
@@ -286,22 +313,28 @@ const StyledWrapper = styled.div`
     }
   }
 
-  .theme-selector {
+  .theme-toggle {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
+    width: 100%;
     padding: 10px 12px;
     border-radius: var(--radius-sm);
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--btn-secondary-bg);
+    border: 1px solid var(--btn-secondary-border);
     cursor: pointer;
     color: var(--text-secondary);
     font-size: 14px;
     font-weight: 500;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
   }
 
-  .theme-selector .chevron {
-    margin-left: auto;
-    opacity: 0.5;
+  .theme-toggle:hover {
+    background: var(--btn-secondary-hover);
+    color: var(--text-primary);
+  }
+
+  .theme-toggle svg {
+    flex-shrink: 0;
   }
 `;

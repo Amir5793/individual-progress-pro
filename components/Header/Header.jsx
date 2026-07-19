@@ -65,16 +65,17 @@ const StyledWrapper = styled.div`
     width: 3rem;
     height: 3rem;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.07);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--btn-secondary-bg);
+    border: 1px solid var(--btn-secondary-border);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     color: var(--text-secondary);
     backdrop-filter: blur(8px);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    box-shadow: var(--card-shadow);
     border: none;
+    transition: background 0.15s, color 0.15s;
   }
 
   .icon-btn svg {

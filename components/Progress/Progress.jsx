@@ -13,7 +13,7 @@ export default function Progress() {
               cy="38"
               r="31"
               fill="none"
-              stroke="rgba(255,255,255,0.08)"
+              stroke="var(--track-bg)"
               strokeWidth="7"
             ></circle>
             <circle
@@ -79,7 +79,7 @@ const StyledWrapper = styled.div`
     align-items: center;
     gap: 32px;
     padding: 18px 28px;
-    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.25);
+    box-shadow: var(--card-shadow);
     width: 100%;
   }
 
@@ -131,7 +131,7 @@ const StyledWrapper = styled.div`
   .progress-bar-track {
     flex: 1;
     height: 7px;
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--track-bg);
     border-radius: 50px;
     overflow: hidden;
   }
@@ -155,8 +155,8 @@ const StyledWrapper = styled.div`
     align-items: center;
     gap: 8px;
     padding: 11px 20px;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--btn-secondary-bg);
+    border: 1px solid var(--btn-secondary-border);
     border-radius: var(--radius-card);
     color: var(--text-primary);
     font-size: 14px;

@@ -140,8 +140,8 @@ const StyledWrapper = styled.div`
   }
 
   .condition-node {
-    background: rgba(255, 255, 255, 0.015);
-    border: 1px solid var(--panel-border, rgba(255, 255, 255, 0.06));
+    background: var(--subtle-bg);
+    border: 1px solid var(--card-border);
     border-radius: 12px;
     padding: 1.5rem;
     display: flex;
@@ -168,13 +168,13 @@ const StyledWrapper = styled.div`
 
   .node-edge-badge.error-badge {
     background: rgba(244, 63, 94, 0.08);
-    color: var(--accent-red, #f43f5e);
+    color: var(--accent-red);
     border: 1px solid rgba(244, 63, 94, 0.15);
   }
 
   .node-edge-badge.success-badge {
     background: rgba(16, 185, 129, 0.08);
-    color: #10b981;
+    color: var(--accent-green);
     border: 1px solid rgba(16, 185, 129, 0.15);
   }
 
@@ -186,7 +186,7 @@ const StyledWrapper = styled.div`
   }
 
   .section-label {
-    color: var(--text-muted, #94a3b8);
+    color: var(--text-muted);
     font-size: 0.85rem !important;
     font-weight: 500 !important;
     text-transform: uppercase;
@@ -213,7 +213,7 @@ const StyledWrapper = styled.div`
 
   .suggestions-label {
     font-size: 0.75rem;
-    color: var(--text-subtle, #475569);
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
@@ -225,9 +225,9 @@ const StyledWrapper = styled.div`
   }
 
   .suggestion-chip {
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid var(--panel-border, rgba(255, 255, 255, 0.06));
-    color: var(--text-muted, #94a3b8);
+    background: var(--subtle-bg);
+    border: 1px solid var(--card-border);
+    color: var(--text-muted);
     padding: 6px 12px;
     border-radius: 99px;
     font-size: 0.8rem;
@@ -236,21 +236,21 @@ const StyledWrapper = styled.div`
   }
 
   .suggestion-chip:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.15);
-    color: var(--text-primary, #f8fafc);
+    background: var(--btn-secondary-bg);
+    border-color: var(--interactive-border);
+    color: var(--text-primary);
     transform: translateY(-1px);
   }
 
   .suggestion-chip.active {
     background: rgba(124, 58, 237, 0.08);
-    border-color: var(--interactive-hover, #8b5cf6);
-    color: #fff;
+    border-color: var(--accent-purple);
+    color: var(--text-primary);
   }
 
   .sub-navigation-trigger {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: var(--subtle-bg-hover);
+    border: 1px solid var(--card-border);
     color: var(--text-primary) !important;
     padding: 10px 16px;
     border-radius: 8px;
@@ -264,7 +264,7 @@ const StyledWrapper = styled.div`
 
   .sub-navigation-trigger:hover {
     background: rgba(124, 58, 237, 0.1);
-    border-color: var(--interactive-hover, #8b5cf6);
+    border-color: var(--accent-purple);
     transform: translateX(2px);
   }
 
@@ -285,7 +285,7 @@ const StyledWrapper = styled.div`
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--text-muted);
     border: none;
     cursor: pointer;
     padding: 0;
@@ -293,17 +293,17 @@ const StyledWrapper = styled.div`
   }
 
   .instagram-dot.active {
-    background: var(--interactive-hover, #8b5cf6);
+    background: var(--accent-purple);
     width: 18px;
     border-radius: 4px;
   }
 
   .instagram-dot:hover {
-    background: rgba(255, 255, 255, 0.45);
+    background: var(--text-muted);
   }
 
   .instagram-dot.active:hover {
-    background: var(--interactive-hover, #8b5cf6);
+    background: var(--accent-purple);
   }
 
   .animate-slideIn {

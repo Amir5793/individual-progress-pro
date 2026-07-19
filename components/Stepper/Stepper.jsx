@@ -12,6 +12,11 @@ import * as THREE from 'three';
 // Safe isomorphic layout effect to prevent SSR warnings during early NextJs parsing
 const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
+function getCssVar(name, fallback) {
+  if (typeof window === 'undefined') return fallback;
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
+}
+
 const stableRandom = (seed) => {
     const value = Math.sin(seed) * 10000;
     return value - Math.floor(value);
@@ -68,7 +73,7 @@ const AntigravityInner = ({
                               waveAmplitude = 1,
                               particleSize = 2,
                               lerpSpeed = 0.1,
-                              color = '#FF9FFC',
+                              color,
                               autoAnimate = false,
                               particleVariance = 1,
                               rotationSpeed = 0,
@@ -296,7 +301,7 @@ export default function Stepper({
                         waveAmplitude={1}
                         particleSize={1.2}
                         lerpSpeed={0.05}
-                        color="#5227FF"
+                        color={getCssVar("--stepper-particle", "#5227FF")}
                         autoAnimate
                         particleVariance={1}
                         rotationSpeed={0}
@@ -475,9 +480,9 @@ const StepIndicator = memo(function StepIndicator({ step, currentStep, onClickSt
         >
             <motion.div
                 variants={{
-                    inactive: { scale: 1, backgroundColor: '#222', color: '#a3a3a3' },
-                    active: { scale: 1, backgroundColor: '#5227FF', color: '#5227FF' },
-                    complete: { scale: 1, backgroundColor: '#5227FF', color: '#3b82f6' }
+                    inactive: { scale: 1, backgroundColor: 'var(--btn-secondary-bg)', color: 'var(--text-muted)' },
+                    active: { scale: 1, backgroundColor: 'var(--accent-purple)', color: 'var(--accent-purple)' },
+                    complete: { scale: 1, backgroundColor: 'var(--accent-purple)', color: 'var(--accent-blue)' }
                 }}
                 transition={{ duration: 0.3 }}
                 className="step-indicator-inner"
@@ -496,8 +501,8 @@ const StepIndicator = memo(function StepIndicator({ step, currentStep, onClickSt
 
 const StepConnector = memo(function StepConnector({ isComplete }) {
     const lineVariants = {
-        incomplete: { width: 0, backgroundColor: '#fff' },
-        complete: { width: '100%', backgroundColor: '#5227FF' }
+        incomplete: { width: 0, backgroundColor: 'var(--text-muted)' },
+        complete: { width: '100%', backgroundColor: 'var(--accent-purple)' }
     };
 
     return (
@@ -538,7 +543,7 @@ const StyledWrapper = styled.div`
   width: 100%;
   height: 100vh;
   z-index: 1000;
-  background: rgba(4, 5, 8, 0.4);
+  background: var(--overlay-bg);
   backdrop-filter: blur(8px);
   overflow: hidden;
   display: flex;
@@ -569,8 +574,8 @@ const StyledWrapper = styled.div`
     flex-direction: column;
     justify-content: space-between;
     border-radius: 2rem;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.15);
-    background: linear-gradient(-45deg, #3B3B98, #2C3A47, #182C61, #2f3640);
+    box-shadow: var(--modal-shadow);
+    background: linear-gradient(-45deg, var(--stepper-bg-1), var(--stepper-bg-2), var(--stepper-bg-3), var(--stepper-bg-4));
     background-size: 400% 400%;
     /* Keep animation entries pristine and responsive */
     animation: modalScaleIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards, gradient 15s ease infinite;
@@ -651,7 +656,7 @@ const StyledWrapper = styled.div`
     background: linear-gradient(-45deg, var(--accent-purple), var(--card), var(--sidebar-primary-foreground), var(--sidebar-bg));
     background-size: 400% 400%;
     animation: gradient 15s ease infinite;
-    color: #fff;
+    color: var(--text-on-accent);
     font-weight: 500;
     letter-spacing: -0.025em;
     padding: 0.375rem 0.875rem;
@@ -687,7 +692,7 @@ const StyledWrapper = styled.div`
     background: linear-gradient(-45deg, var(--accent-purple), var(--card), var(--sidebar-primary-foreground), var(--sidebar-bg));
     background-size: 400% 400%;
     animation: gradient 15s ease infinite;
-    color: #fff;
+    color: var(--text-on-accent);
     font-weight: 500;
     letter-spacing: -0.025em;
     padding: 0.375rem 0.875rem;
@@ -715,7 +720,7 @@ const StyledWrapper = styled.div`
     height: 0.75rem;
     width: 0.75rem;
     border-radius: 9999px;
-    background-color: #fff;
+    background-color: var(--text-primary);
   }
 
   .step-number {
@@ -730,7 +735,7 @@ const StyledWrapper = styled.div`
     flex: 1;
     overflow: hidden;
     border-radius: 0.25rem;
-    background-color: #52525b;
+    background-color: var(--track-bg);
   }
 
   .step-connector-inner {
@@ -743,7 +748,7 @@ const StyledWrapper = styled.div`
   .check-icon {
     height: 1rem;
     width: 1rem;
-    color: #fff;
+    color: var(--text-primary);
   }
 
   @keyframes modalScaleIn {

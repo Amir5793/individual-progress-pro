@@ -18,7 +18,7 @@ export const Card = styled(BaseCard).attrs({ $gap: "18px" })`
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--card-shadow-hover);
   }
 
   @media (max-width: 640px) {
@@ -78,7 +78,7 @@ export const Checkbox = styled.button`
   border: 2px solid ${({ $color }) => $color};
   background: ${({ $checked, $color }) =>
       $checked ? $color : "transparent"};
-  color: white;
+  color: var(--text-on-accent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -100,7 +100,7 @@ export const ProgressBar = styled.div`
   width: 100%;
   height: 4px;
   border-radius: 4px;
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--track-bg);
   overflow: hidden;
 `;
 
@@ -118,8 +118,8 @@ export const CompletionSection = styled.div`
   gap: 8px;
   padding: 16px;
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.025);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: var(--subtle-bg);
+  border: 1px solid var(--card-border);
 `;
 
 export const CompletionLabel = styled.div`
@@ -161,12 +161,12 @@ export const Chip = styled.div`
   gap: 6px;
   padding: 6px 12px;
   border-radius: 999px;
-  background: ${({ $color }) => $color || "rgba(255,255,255,.05)"};
+  background: ${({ $color }) => $color || "var(--subtle-bg)"};
   color: var(--text-primary);
   font-size: 0.8rem;
   font-weight: 600;
   white-space: nowrap;
-  border: 1px solid rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--card-border);
 
   svg {
     width: 14px;
@@ -188,7 +188,7 @@ export const ActionsList = styled.div`
     font-size: 0.85rem;
     color: var(--accent-green, #2ed47a);
     padding: 8px 12px;
-    background: rgba(46, 212, 122, 0.06);
+    background: var(--subtle-bg);
     border-radius: 10px;
     text-align: center;
   }
@@ -213,14 +213,14 @@ export const ActionItemRow = styled.div`
   gap: 12px;
   padding: 12px 14px;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.015);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: var(--subtle-bg);
+  border: 1px solid var(--card-border);
   transition: all 0.2s ease;
   cursor: pointer;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.04);
-    border-color: rgba(255, 255, 255, 0.1);
+    background: var(--subtle-bg-hover);
+    border-color: var(--interactive-border);
 
     .check-action-subtle {
       opacity: 1 !important;
@@ -299,7 +299,7 @@ export const ActionButton = styled.button`
   position: relative;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--btn-secondary-bg);
     transform: scale(1.08);
   }
 
@@ -311,15 +311,15 @@ export const ActionButton = styled.button`
     transform: translateX(-50%);
     padding: 6px 10px;
     border-radius: 6px;
-    background: #0b0c10;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    color: white;
+    background: var(--tooltip-bg);
+    border: 1px solid var(--btn-secondary-border);
+    color: var(--text-primary);
     font-size: 0.7rem;
     font-weight: 500;
     white-space: nowrap;
     pointer-events: none;
     z-index: 10;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    box-shadow: var(--tooltip-shadow);
   }
 
   svg {
@@ -333,7 +333,7 @@ export const ActionButton = styled.button`
 export const ModalOverlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(4, 5, 8, 0.75);
+  background: var(--overlay-bg);
   backdrop-filter: blur(12px);
   display: flex;
   align-items: center;
@@ -349,8 +349,8 @@ export const ModalOverlay = styled.div`
 `;
 
 export const ModalCard = styled.div`
-  background: #14161f;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--card);
+  border: 1px solid var(--card-border);
   border-radius: 20px;
   padding: 1.75rem;
   width: 100%;
@@ -359,7 +359,7 @@ export const ModalCard = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
-  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8);
+  box-shadow: var(--modal-shadow);
   animation: cardSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 
   @media (max-width: 480px) {
@@ -375,8 +375,8 @@ export const ModalCard = styled.div`
   }
   
   .confirm-close-btn {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--btn-secondary-bg);
+    border: 1px solid var(--btn-secondary-border);
     color: var(--text-primary);
     padding: 0.75rem;
     border-radius: 10px;
@@ -387,7 +387,7 @@ export const ModalCard = styled.div`
     transition: background 0.2s;
     
     &:hover {
-      background: rgba(255, 255, 255, 0.08);
+      background: var(--btn-secondary-hover);
     }
   }
 `;
@@ -395,7 +395,7 @@ export const ModalCard = styled.div`
 export const ModalHeader = styled.div`
   display: flex;
   flex-direction: column;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid var(--card-border);
   padding-bottom: 0.75rem;
 `;
 
@@ -409,7 +409,7 @@ export const ModalHeaderRow = styled.div`
 export const ModalTitle = styled.h4`
   font-size: 1.15rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--text-primary);
   margin: 0;
 `;
 
@@ -445,13 +445,13 @@ export const ModalBodyScroll = styled.div`
     width: 4px;
   }
   &::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--scrollbar-thumb);
     border-radius: 99px;
   }
 `;
 
 export const ModalFooterButtons = styled.div`
-  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  border-top: 1px solid var(--card-border);
   padding-top: 0.75rem;
 `;
 

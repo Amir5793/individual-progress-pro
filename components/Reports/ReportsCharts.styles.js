@@ -32,7 +32,7 @@ export const ChartCard = styled.div`
   border: 1px solid var(--card-border);
   border-radius: var(--radius-card);
   padding: 20px;
-  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--card-shadow);
   display: flex;
   flex-direction: column;
   gap: 4px;

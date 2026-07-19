@@ -79,7 +79,7 @@ export const StatusButton = styled.button`
   font-weight: 600;
   font-size: 0.82rem;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--subtle-bg);
   color: var(--text-muted);
 
   @media (max-width: 480px) {
@@ -192,8 +192,8 @@ export const ContextRow = styled.div`
   gap: 4px;
   padding: 10px 14px;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.025);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: var(--subtle-bg);
+  border: 1px solid var(--card-border);
 
   ${({ $variant }) => $variant === "fallback" && css`
     background: rgba(244, 63, 94, 0.03);
@@ -240,8 +240,8 @@ export const Targets = styled.div`
 export const TargetItem = styled.div`
   padding: 14px;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.025);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: var(--subtle-bg);
+  border: 1px solid var(--card-border);
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -338,7 +338,7 @@ export const TrackerDay = styled.div`
         `;
         default:
             return css`
-          background: rgba(255, 255, 255, 0.05);
+          background: var(--subtle-bg);
           color: var(--text-muted);
         `;
     }
@@ -376,7 +376,7 @@ export const ActionButton = styled.button`
   position: relative;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--btn-secondary-bg);
     transform: scale(1.1);
   }
 
@@ -388,8 +388,8 @@ export const ActionButton = styled.button`
     transform: translateX(-50%);
     padding: 4px 10px;
     border-radius: 6px;
-    background: rgba(0, 0, 0, 0.85);
-    color: white;
+    background: var(--tooltip-bg);
+    color: var(--text-primary);
     font-size: 0.75rem;
     font-weight: 500;
     white-space: nowrap;

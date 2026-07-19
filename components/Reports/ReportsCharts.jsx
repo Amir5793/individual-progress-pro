@@ -36,6 +36,11 @@ function getColorForCategory(cat, idx) {
   return CATEGORY_COLORS[cat] || FALLBACK_COLORS[idx % FALLBACK_COLORS.length];
 }
 
+function getCssVar(name) {
+  if (typeof window === "undefined") return "";
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
 const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 /* ==========================================================
@@ -144,7 +149,7 @@ function PieChart({ counts, title, description }) {
           {
             data,
             backgroundColor: colors,
-            borderColor: "rgba(26, 33, 56, 0.8)",
+            borderColor: getCssVar("--chart-border"),
             borderWidth: 2,
             hoverOffset: 6,
           },
@@ -158,7 +163,7 @@ function PieChart({ counts, title, description }) {
           legend: {
             position: "bottom",
             labels: {
-              color: "rgba(240, 242, 250, 0.7)",
+              color: getCssVar("--text-secondary") || "rgba(240, 242, 250, 0.7)",
               font: { size: 11, weight: "500" },
               padding: 12,
               usePointStyle: true,
@@ -166,10 +171,10 @@ function PieChart({ counts, title, description }) {
             },
           },
           tooltip: {
-            backgroundColor: "rgba(14, 19, 35, 0.95)",
-            titleColor: "#f0f2fa",
-            bodyColor: "rgba(240, 242, 250, 0.8)",
-            borderColor: "rgba(255,255,255,0.08)",
+            backgroundColor: getCssVar("--chart-tooltip-bg") || "rgba(14, 19, 35, 0.95)",
+            titleColor: getCssVar("--text-primary") || "#f0f2fa",
+            bodyColor: getCssVar("--text-secondary") || "rgba(240, 242, 250, 0.8)",
+            borderColor: getCssVar("--btn-secondary-border") || "rgba(255,255,255,0.08)",
             borderWidth: 1,
             cornerRadius: 10,
             padding: 10,
@@ -288,18 +293,18 @@ function ProgressChart({ days, title, description }) {
         },
         scales: {
           x: {
-            grid: { color: "rgba(255,255,255,0.04)" },
+            grid: { color: getCssVar("--chart-grid") || "rgba(255,255,255,0.04)" },
             ticks: {
-              color: "rgba(240, 242, 250, 0.6)",
+              color: getCssVar("--text-secondary") || "rgba(240, 242, 250, 0.6)",
               font: { size: 11, weight: "500" },
             },
           },
           y: {
             beginAtZero: true,
             max: 100,
-            grid: { color: "rgba(255,255,255,0.04)" },
+            grid: { color: getCssVar("--chart-grid") || "rgba(255,255,255,0.04)" },
             ticks: {
-              color: "rgba(240, 242, 250, 0.5)",
+              color: getCssVar("--text-secondary") || "rgba(240, 242, 250, 0.5)",
               font: { size: 10 },
               stepSize: 25,
               callback: (v) => v + "%",
@@ -307,7 +312,7 @@ function ProgressChart({ days, title, description }) {
             title: {
               display: true,
               text: "Habits",
-              color: "rgba(240, 242, 250, 0.4)",
+              color: getCssVar("--text-muted") || "rgba(240, 242, 250, 0.4)",
               font: { size: 10 },
             },
           },
@@ -317,14 +322,14 @@ function ProgressChart({ days, title, description }) {
             max: 100,
             grid: { drawOnChartArea: false },
             ticks: {
-              color: "rgba(108, 92, 231, 0.7)",
+              color: getCssVar("--accent-purple") || "rgba(108, 92, 231, 0.7)",
               font: { size: 10 },
               callback: (v) => v + "%",
             },
             title: {
               display: true,
               text: "Goal %",
-              color: "rgba(108, 92, 231, 0.5)",
+              color: getCssVar("--accent-purple") || "rgba(108, 92, 231, 0.5)",
               font: { size: 10 },
             },
           },
@@ -333,7 +338,7 @@ function ProgressChart({ days, title, description }) {
           legend: {
             position: "bottom",
             labels: {
-              color: "rgba(240, 242, 250, 0.7)",
+              color: getCssVar("--text-secondary") || "rgba(240, 242, 250, 0.7)",
               font: { size: 11, weight: "500" },
               padding: 12,
               usePointStyle: true,
@@ -341,10 +346,10 @@ function ProgressChart({ days, title, description }) {
             },
           },
           tooltip: {
-            backgroundColor: "rgba(14, 19, 35, 0.95)",
-            titleColor: "#f0f2fa",
-            bodyColor: "rgba(240, 242, 250, 0.8)",
-            borderColor: "rgba(255,255,255,0.08)",
+            backgroundColor: getCssVar("--chart-tooltip-bg") || "rgba(14, 19, 35, 0.95)",
+            titleColor: getCssVar("--text-primary") || "#f0f2fa",
+            bodyColor: getCssVar("--text-secondary") || "rgba(240, 242, 250, 0.8)",
+            borderColor: getCssVar("--btn-secondary-border") || "rgba(255,255,255,0.08)",
             borderWidth: 1,
             cornerRadius: 10,
             padding: 10,

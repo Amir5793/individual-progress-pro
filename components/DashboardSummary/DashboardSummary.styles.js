@@ -17,7 +17,7 @@ export const Card = styled.div`
     border: 1px solid var(--card-border);
     border-radius: var(--radius-card);
     padding: 18px;
-    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.25);
+    box-shadow: var(--card-shadow);
     margin-bottom: 12px;
 
     &:last-child {
@@ -71,7 +71,7 @@ export const EmptyIcon = styled.div`
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--subtle-bg);
   display: flex;
   align-items: center;
   justify-content: center;

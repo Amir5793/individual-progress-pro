@@ -18,7 +18,7 @@ export const Container = styled.div`
     overflow-y: auto;
 
     scrollbar-width: thin;
-    scrollbar-color: rgba(255,255,255,.15) transparent;
+    scrollbar-color: var(--scrollbar-thumb) transparent;
 
     &::-webkit-scrollbar {
         width: 6px;
@@ -27,7 +27,7 @@ export const Container = styled.div`
         background: transparent;
     }
     &::-webkit-scrollbar-thumb {
-        background: rgba(255,255,255,.15);
+        background: var(--scrollbar-thumb);
         border-radius: 3px;
     }
 
@@ -90,10 +90,10 @@ export const EmptyState = styled.div`
 
     min-height: 220px;
 
-    border: 2px dashed rgba(255,255,255,.08);
+    border: 2px dashed var(--interactive-border);
     border-radius: var(--radius-card);
 
-    background: rgba(255,255,255,.02);
+    background: var(--subtle-bg);
 
     color: var(--text-muted);
 
@@ -105,7 +105,7 @@ export const EmptyState = styled.div`
     transition: .2s ease;
 
     &:hover{
-        border-color: rgba(255,255,255,.12);
-        background: rgba(255,255,255,.03);
+        border-color: var(--btn-secondary-hover);
+        background: var(--subtle-bg-hover);
     }
 `;

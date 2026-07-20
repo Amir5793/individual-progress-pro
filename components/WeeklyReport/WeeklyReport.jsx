@@ -3,6 +3,7 @@
 import React, { useState, useCallback, useMemo } from "react";
 import useReportCommitments from "@/lib/hooks/useReportCommitments";
 import { saveDraft } from "@/lib/services/draftService";
+import { useTranslation } from "@/lib/i18n/localeContext";
 import WeekHeader from "./WeekHeader";
 import ReportItem from "./ReportItem";
 import EmptyWeek from "./EmptyWeek";
@@ -23,6 +24,7 @@ export default function WeeklyReport({
   onNavigate,
 }) {
   const { commitments, loading } = useReportCommitments(weekStart, weekEnd);
+  const t = useTranslation();
   const [dirty, setDirty] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -72,7 +74,7 @@ export default function WeeklyReport({
 
   const handleSave = useCallback(() => {
     if (!hasItems) {
-      showToast("Nothing to save", "error");
+      showToast(t('report.nothing_to_save'), "error");
       return;
     }
     setSaving(true);
@@ -81,17 +83,17 @@ export default function WeeklyReport({
     setTimeout(() => {
       setSaving(false);
       setDirty(false);
-      showToast("Draft saved");
+      showToast(t('report.draft_saved'));
     }, 400);
   }, [goals, habits, weekStart, hasItems, showToast]);
 
   const handlePublish = useCallback(() => {
     if (!hasItems) {
-      showToast("Nothing to publish", "error");
+      showToast(t('report.nothing_to_publish'), "error");
       return;
     }
     setDirty(false);
-    showToast("Report published");
+    showToast(t('report.published'));
   }, [hasItems, showToast]);
 
   const handleExport = useCallback(() => {
@@ -113,7 +115,7 @@ export default function WeeklyReport({
     a.download = `report-${new Date().toISOString().split("T")[0]}.csv`;
     a.click();
     URL.revokeObjectURL(url);
-    showToast("Exported CSV");
+    showToast(t('report.exported_csv'));
   }, [goals, habits, showToast]);
 
   const handleDialogSave = useCallback(() => {
@@ -157,8 +159,8 @@ export default function WeeklyReport({
 
       {showDialog && (
         <ConfirmDialog
-          title="Unsaved changes"
-          message="You have unsaved changes. What would you like to do?"
+          title={t('dialog.unsaved_title')}
+          message={t('dialog.unsaved_msg')}
           onSave={handleDialogSave}
           onDiscard={handleDialogDiscard}
           onCancel={handleDialogCancel}

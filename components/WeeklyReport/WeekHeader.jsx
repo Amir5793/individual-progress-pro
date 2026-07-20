@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useTranslation } from "@/lib/i18n/localeContext";
 import {
   HeaderBar,
   StatusBadge,
@@ -15,18 +16,20 @@ export default function WeekHeader({
   onExport,
   saving,
 }) {
+  const t = useTranslation();
+
   return (
     <HeaderBar>
       <StatusBadge $variant={status}>{status.replace("-", " ")}</StatusBadge>
 
       <ActionRow>
-        <ActionBtn onClick={onExport}>Export</ActionBtn>
+        <ActionBtn onClick={onExport}>{t('report.export')}</ActionBtn>
         <ActionBtn $primary onClick={onSave} disabled={saving}>
-          {saving ? "Saving…" : "Save Draft"}
+          {saving ? t('report.saving') : t('report.save_draft')}
         </ActionBtn>
         {status !== "published" && (
           <ActionBtn $primary onClick={onPublish}>
-            Publish
+            {t('report.publish')}
           </ActionBtn>
         )}
       </ActionRow>

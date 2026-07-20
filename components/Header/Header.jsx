@@ -1,55 +1,39 @@
 import React, { useState, useEffect } from "react";
 import { useCommitments } from "@/lib/store/CommitmentContext";
 import { clearAllCommitments } from "@/lib/services/commitmentService";
+import { useTranslation } from "@/lib/i18n/localeContext";
 import styled from "styled-components";
 
-const GREETINGS = [
-  { from: 5, to: 12, text: "Good morning" },
-  { from: 12, to: 17, text: "Good afternoon" },
-  { from: 17, to: 21, text: "Good evening" },
-  { from: 21, to: 24, text: "Good night" },
-  { from: 0, to: 5, text: "Good night" },
+const GREETING_RANGES = [
+  { from: 5, to: 12, key: 0 },
+  { from: 12, to: 17, key: 1 },
+  { from: 17, to: 21, key: 2 },
+  { from: 21, to: 24, key: 3 },
+  { from: 0, to: 5, key: 3 },
 ];
 
-const MOTIVATIONS = [
-  "Your future self will thank you.",
-  "One step at a time.",
-  "Consistency beats intensity.",
-  "Progress, not perfection.",
-  "Small wins build empires.",
-  "You're closer than you think.",
-  "Show up for yourself today.",
-  "Discipline is freedom.",
-  "Champions show up daily.",
-  "Dream big, start small.",
-];
-
-function getGreeting() {
+function getGreetingIndex() {
   const hour = new Date().getHours();
-  const match = GREETINGS.find((g) => hour >= g.from && hour < g.to);
-  return match ? match.text : "Hello there";
-}
-
-function getMotivation() {
-  const index = Math.floor(Math.random() * MOTIVATIONS.length);
-  return MOTIVATIONS[index];
+  const match = GREETING_RANGES.find((g) => hour >= g.from && hour < g.to);
+  return match ? match.key : null;
 }
 
 export default function Header() {
+  const t = useTranslation();
   const { commitments, dispatch, refresh } = useCommitments();
   const [greeting, setGreeting] = useState("");
   const [motivation, setMotivation] = useState("");
 
   useEffect(() => {
-    setGreeting(getGreeting());
-    setMotivation(getMotivation());
+    const idx = getGreetingIndex();
+    setGreeting(idx !== null ? t(`header.greeting.${idx}`) : t("header.greeting.fallback"));
+    const motIdx = Math.floor(Math.random() * 10);
+    setMotivation(t(`header.motivation.${motIdx}`));
   }, []);
 
   const handleClearAll = () => {
     if (!commitments.length) return;
-    const confirmed = window.confirm(
-      "Delete all goals and habits? This cannot be undone."
-    );
+    const confirmed = window.confirm(t("header.delete_all_confirm"));
     if (!confirmed) return;
     clearAllCommitments();
     dispatch({ type: "COMMITMENTS_LOADED", payload: [] });
@@ -60,7 +44,7 @@ export default function Header() {
       <header className="header">
         <div className="greeting-block">
           <div className="greeting-title">
-            {greeting}, Achiever {"\u{1F44B}"}
+            {greeting}, {t("header.achiever")} {"\u{1F44B}"}
           </div>
           <div className="greeting-sub">&quot;{motivation}&quot;</div>
         </div>
@@ -69,7 +53,7 @@ export default function Header() {
             type="button"
             className="icon-btn delete-btn"
             onClick={handleClearAll}
-            aria-label="Delete all commitments"
+            aria-label={t("header.delete_all_label")}
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
               <path

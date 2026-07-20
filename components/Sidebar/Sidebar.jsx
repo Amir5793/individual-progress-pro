@@ -3,12 +3,7 @@ import styled from "styled-components";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "@/lib/store/ThemeContext";
-
-const NAV_ITEMS = [
-  { href: "/", label: "Overview" },
-  { href: "/goals", label: "Goals" },
-  { href: "/habits", label: "Habits" },
-];
+import { useTranslation, useLocale } from "@/lib/i18n/localeContext";
 
 const SunIcon = (
   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -33,6 +28,8 @@ const MoonIcon = (
 export default function Sidebar() {
   const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
+  const t = useTranslation();
+  const { locale, setLocale } = useLocale();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -45,7 +42,7 @@ export default function Sidebar() {
   };
 
   const themeIcon = mounted ? (theme === "dark" ? SunIcon : MoonIcon) : SunIcon;
-  const themeLabel = mounted ? (theme === "dark" ? "Light" : "Dark") : "Dark";
+  const themeLabel = mounted ? (theme === "dark" ? t("nav.light") : t("nav.dark")) : t("nav.dark");
 
   return (
     <StyledWrapper>
@@ -71,7 +68,7 @@ export default function Sidebar() {
                   <path d="M170.667 362.665c41.237 0 74.666-33.429 74.666-74.666c0-41.238-33.429-74.667-74.666-74.667c-41.238 0-74.667 33.429-74.667 74.667s33.429 74.666 74.667 74.666m35.476-50.962a42.67 42.67 0 0 0 7.19-23.704h-42.666v-42.667a42.66 42.66 0 0 0-39.419 26.339a42.664 42.664 0 0 0 31.095 58.175a42.67 42.67 0 0 0 43.8-18.143" />
                 </g>
               </svg>
-            <span>Overview</span>
+            <span>{t("nav.overview")}</span>
           </Link>
           <Link href="/goals" className={`nav-item ${isActive("/goals") ? "active" : ""}`}>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -82,7 +79,7 @@ export default function Sidebar() {
                       d="M12 4a2 2 0 0 0-2 2h4a2 2 0 0 0-2-2M9.354 3c.705-.622 1.632-1 2.646-1s1.94.378 2.646 1H18a2 2 0 0 1 2 2v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zM8.126 5H6v15h12V5h-2.126q.124.481.126 1v1a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V6q.002-.519.126-1M8 11a1 1 0 0 1 1-1h6a1 1 0 1 1 0 2H9a1 1 0 0 1-1-1m0 4a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2H9a1 1 0 0 1-1-1"/>
               </g>
             </svg>
-            <span>Goals</span>
+            <span>{t("nav.goals")}</span>
           </Link>
           <Link href="/habits" className={`nav-item ${isActive("/habits") ? "active" : ""}`}>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
@@ -92,7 +89,7 @@ export default function Sidebar() {
                 <path d="m13.412 25.03l6.922 7.06L34.907 17.1"/>
               </g>
             </svg>
-            <span>Habits</span>
+            <span>{t("nav.habits")}</span>
           </Link>
           <Link href="/reports" className={`nav-item ${isActive("/reports") ? "active" : ""}`}>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -104,7 +101,7 @@ export default function Sidebar() {
                 <line x1="10" y1="9" x2="8" y2="9"/>
               </g>
             </svg>
-            <span>Reports</span>
+            <span>{t("nav.reports")}</span>
           </Link>
           {/*<br/>*/}
           {/*<hr/>*/}
@@ -127,7 +124,15 @@ export default function Sidebar() {
         </nav>
 
         <div className="sidebar-bottom">
-          <button className="theme-toggle" onClick={toggleTheme} aria-label="Toggle theme">
+          <button className="locale-toggle" onClick={() => setLocale(locale === "en" ? "fa" : "en")} aria-label={t("locale.selector_label")}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M2 12h20"/>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+            </svg>
+            <span>{t("locale.name")}</span>
+          </button>
+          <button className="theme-toggle" onClick={toggleTheme} aria-label={t("nav.toggle_theme")}>
             {themeIcon}
             <span>{themeLabel}</span>
           </button>
@@ -335,6 +340,32 @@ const StyledWrapper = styled.div`
   }
 
   .theme-toggle svg {
+    flex-shrink: 0;
+  }
+
+  .locale-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    background: var(--btn-secondary-bg);
+    border: 1px solid var(--btn-secondary-border);
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+
+  .locale-toggle:hover {
+    background: var(--btn-secondary-hover);
+    color: var(--text-primary);
+  }
+
+  .locale-toggle svg {
     flex-shrink: 0;
   }
 `;

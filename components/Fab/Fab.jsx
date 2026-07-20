@@ -2,9 +2,11 @@
 "use client";
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useTranslation } from "@/lib/i18n/localeContext";
 
 export default function Fab({ givenMode, onLaunchCreator }) {
     const [isExpanded, setIsExpanded] = useState(false);
+    const t = useTranslation();
 
     const handleFabClick = () => {
         setIsExpanded(!isExpanded);
@@ -22,7 +24,7 @@ export default function Fab({ givenMode, onLaunchCreator }) {
             <button
                 type="button"
                 className={`fab ${isExpanded ? "fab-expanded" : ""}`}
-                aria-label={isExpanded ? "Close quick actions" : "Open quick actions"}
+                aria-label={isExpanded ? t('fab.close') : t('fab.open')}
                 onClick={givenMode === "goal" || givenMode === "habit" ? () => handleOptionClick(givenMode) : handleFabClick}
             >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -44,20 +46,20 @@ export default function Fab({ givenMode, onLaunchCreator }) {
                 <button
                     type="button"
                     className="fab-option fab-option-left"
-                    aria-label="Create goal"
+                    aria-label={t('fab.create_goal')}
                     onClick={() => handleOptionClick("goal")}
                 >
-                    <span>Goal</span>
+                    <span>{t('fab.goal')}</span>
                 </button>
             )}
             {isExpanded && (
                 <button
                     type="button"
                     className="fab-option fab-option-top"
-                    aria-label="Create habit"
+                    aria-label={t('fab.create_habit')}
                     onClick={() => handleOptionClick("habit")}
                 >
-                    <span>Habit</span>
+                    <span>{t('fab.habit')}</span>
                 </button>
             )}
         </StyledWrapper>

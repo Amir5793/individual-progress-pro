@@ -3,12 +3,14 @@ import {CheckBox} from "@/components/fundamentals/CheckBox/CheckBox";
 import {Step} from "@/components/Stepper/Stepper";
 import React from "react";
 import styled from "styled-components";
+import {useTranslation} from "@/lib/i18n/localeContext";
 
 export const EnergyOrTrigger = ({mode, energy, trigger, handleFieldChange, errors}) => {
+    const t = useTranslation();
     return (
         <StyledWrapper>
         <Step>
-            <h1>{mode === "goal" ? "How much focus will you need?" : "What will remind you to do this?"}</h1>
+            <h1>{mode === "goal" ? t('stepper.energy.goal_question') : t('stepper.energy.trigger_question')}</h1>
             {mode === "goal" ? (<>
                 <div className="checkbox-container">
                     {["low", "medium", "much", "life or death"].map((level) => (<CheckBox
@@ -23,8 +25,8 @@ export const EnergyOrTrigger = ({mode, energy, trigger, handleFieldChange, error
             </>) : (<>
                 <Input
                     autoFocus
-                    placeholder="e.g. After breakfast"
-                    hintTxt="Link to an existing routine or time."
+                    placeholder={t('stepper.energy.trigger_placeholder')}
+                    hintTxt={t('stepper.energy.trigger_hint')}
                     value={trigger}
                     onValueChange={(val) => handleFieldChange("trigger", val)}
                 />

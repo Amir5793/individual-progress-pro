@@ -12,6 +12,7 @@ import {
 } from "./ItemsContainer.styles";
 
 import { sortItems } from "@/lib/items/sorting";
+import { useTranslation } from "@/lib/i18n/localeContext";
 
 export default function ItemsContainer({
                                            mode = "overview",
@@ -33,6 +34,8 @@ export default function ItemsContainer({
                                            onMore,
                                            onActionComplete,
                                        }) {
+
+    const t = useTranslation();
 
     const allGoals = useMemo(() => {
         return sortItems(
@@ -172,7 +175,7 @@ export default function ItemsContainer({
 
                 <ColumnTitle>
 
-                    Habits
+                    {t('habit.title_plural')}
 
                 </ColumnTitle>
 
@@ -187,7 +190,7 @@ export default function ItemsContainer({
 
                 <ColumnTitle>
 
-                    Goals
+                    {t('goal.title_plural')}
 
                 </ColumnTitle>
 

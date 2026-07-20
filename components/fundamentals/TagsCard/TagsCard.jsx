@@ -1,13 +1,15 @@
 import styled from "styled-components"
+import { useTranslation } from "@/lib/i18n/localeContext"
 
 export const TagsCard = ({tags, func, selectedTag}) => {
+    const t = useTranslation();
     return (
         <StyledWrapper>
             <div className="card">
-                <span className="title">All tags</span>
+                <span className="title">{t('tags.all')}</span>
                 <div className="card__tags">
                     <ul className="tag">
-                        <li className="tag__name add-tag">Add a tag</li>
+                        <li className="tag__name add-tag">{t('tags.add')}</li>
                         {tags.map(tag => {
                             return <li onClick={() => {func(tag)}} key={tags.findIndex((t) => {return t === tag})} className="tag__name">{tag}</li>
                         })}

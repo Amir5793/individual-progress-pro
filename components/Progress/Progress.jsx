@@ -4,6 +4,7 @@ import React, { useMemo } from "react";
 import Link from "next/link";
 import { useCommitments } from "@/lib/store/CommitmentContext";
 import { getTodayStatus } from "@/components/Items/Item/HabitItem/helpers";
+import { useTranslation } from "@/lib/i18n/localeContext";
 import styled from "styled-components";
 
 const CIRCUMFERENCE = 2 * Math.PI * 31;
@@ -28,6 +29,7 @@ function computeProgress(commitments) {
 }
 
 export default function Progress() {
+  const t = useTranslation();
   const { commitments } = useCommitments();
   const { total, done, pct } = useMemo(
     () => computeProgress(commitments),
@@ -38,12 +40,12 @@ export default function Progress() {
 
   const message =
     pct === 100
-      ? "All done for today!"
+      ? t('progress.all_done')
       : pct >= 50
-      ? "Keep going! You're doing great."
+      ? t('progress.keep_going')
       : pct > 0
-      ? "Good start, keep the momentum."
-      : "Time to get moving.";
+      ? t('progress.good_start')
+      : t('progress.time_to_move');
 
   return (
     <StyledWrapper>
@@ -88,7 +90,7 @@ export default function Progress() {
 
         {/* Bar Progress */}
         <div className="progress-center">
-          <div className="progress-title">Today&apos;s Progress</div>
+          <div className="progress-title">{t('progress.title')}</div>
           <div className="progress-sub">{message}</div>
           <div className="progress-bar-wrap">
             <div className="progress-bar-track">
@@ -105,7 +107,7 @@ export default function Progress() {
 
         {/* Analytics button */}
         <Link href="/reports" className="analytics-btn">
-          <span>View Reports</span>
+          <span>{t('progress.view_reports')}</span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"

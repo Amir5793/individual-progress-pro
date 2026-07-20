@@ -1,546 +1,646 @@
 "use client";
-import React, { useState, Children, useRef, useLayoutEffect, useEffect, useCallback, useMemo, memo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import styled from 'styled-components';
+import React, {
+  useState,
+  Children,
+  useRef,
+  useLayoutEffect,
+  useEffect,
+  useCallback,
+  useMemo,
+  memo,
+} from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import styled from "styled-components";
+import { useTranslation } from "@/lib/i18n/localeContext";
 
 /* ==========================================================================
    REACT THREE FIBER & THREE.JS DEPENDENCIES (ANTIGRAVITY BACKGROUND ENGINE)
    ========================================================================== */
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import * as THREE from 'three';
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import * as THREE from "three";
 
 // Safe isomorphic layout effect to prevent SSR warnings during early NextJs parsing
-const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+const useIsomorphicLayoutEffect =
+  typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 function getCssVar(name, fallback) {
-  if (typeof window === 'undefined') return fallback;
-  return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
+  if (typeof window === "undefined") return fallback;
+  return (
+    getComputedStyle(document.documentElement).getPropertyValue(name).trim() ||
+    fallback
+  );
 }
 
 const stableRandom = (seed) => {
-    const value = Math.sin(seed) * 10000;
-    return value - Math.floor(value);
+  const value = Math.sin(seed) * 10000;
+  return value - Math.floor(value);
 };
 
 const buildParticles = (count, width, height) => {
-    return Array.from({ length: count }, (_, index) => {
-        const seed = index + count * 13 + width * 7 + height * 11;
+  return Array.from({ length: count }, (_, index) => {
+    const seed = index + count * 13 + width * 7 + height * 11;
 
-        return {
-            t: stableRandom(seed + 1) * 100,
-            speed: 0.01 + stableRandom(seed + 2) / 200,
-            mx: (stableRandom(seed + 3) - 0.5) * width,
-            my: (stableRandom(seed + 4) - 0.5) * height,
-            mz: (stableRandom(seed + 5) - 0.5) * 20,
-            cx: (stableRandom(seed + 3) - 0.5) * width,
-            cy: (stableRandom(seed + 4) - 0.5) * height,
-            cz: (stableRandom(seed + 5) - 0.5) * 20,
-            randomRadiusOffset: (stableRandom(seed + 6) - 0.5) * 2
-        };
-    });
+    return {
+      t: stableRandom(seed + 1) * 100,
+      speed: 0.01 + stableRandom(seed + 2) / 200,
+      mx: (stableRandom(seed + 3) - 0.5) * width,
+      my: (stableRandom(seed + 4) - 0.5) * height,
+      mz: (stableRandom(seed + 5) - 0.5) * 20,
+      cx: (stableRandom(seed + 3) - 0.5) * width,
+      cy: (stableRandom(seed + 4) - 0.5) * height,
+      cz: (stableRandom(seed + 5) - 0.5) * 20,
+      randomRadiusOffset: (stableRandom(seed + 6) - 0.5) * 2,
+    };
+  });
 };
 
 function useAmbientEffectsEnabled() {
-    const [enabled, setEnabled] = useState(false);
+  const [enabled, setEnabled] = useState(false);
 
-    useEffect(() => {
-        if (typeof window === "undefined") return undefined;
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
 
-        const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-        const evaluate = () => {
-            setEnabled(window.innerWidth >= 1024 && !mediaQuery.matches);
-        };
+    const evaluate = () => {
+      setEnabled(window.innerWidth >= 1024 && !mediaQuery.matches);
+    };
 
-        evaluate();
-        mediaQuery.addEventListener("change", evaluate);
-        window.addEventListener("resize", evaluate);
+    evaluate();
+    mediaQuery.addEventListener("change", evaluate);
+    window.addEventListener("resize", evaluate);
 
-        return () => {
-            mediaQuery.removeEventListener("change", evaluate);
-            window.removeEventListener("resize", evaluate);
-        };
-    }, []);
+    return () => {
+      mediaQuery.removeEventListener("change", evaluate);
+      window.removeEventListener("resize", evaluate);
+    };
+  }, []);
 
-    return enabled;
+  return enabled;
 }
 
 const AntigravityInner = ({
-                              count = 300,
-                              magnetRadius = 10,
-                              ringRadius = 10,
-                              waveSpeed = 0.4,
-                              waveAmplitude = 1,
-                              particleSize = 2,
-                              lerpSpeed = 0.1,
-                              color,
-                              autoAnimate = false,
-                              particleVariance = 1,
-                              rotationSpeed = 0,
-                              depthFactor = 1,
-                              pulseSpeed = 3,
-                              particleShape = 'capsule',
-                              fieldStrength = 10
-                          }) => {
-    const meshRef = useRef(null);
-    const { viewport } = useThree();
-    const dummy = React.useMemo(() => new THREE.Object3D(), []);
+  count = 300,
+  magnetRadius = 10,
+  ringRadius = 10,
+  waveSpeed = 0.4,
+  waveAmplitude = 1,
+  particleSize = 2,
+  lerpSpeed = 0.1,
+  color,
+  autoAnimate = false,
+  particleVariance = 1,
+  rotationSpeed = 0,
+  depthFactor = 1,
+  pulseSpeed = 3,
+  particleShape = "capsule",
+  fieldStrength = 10,
+}) => {
+  const meshRef = useRef(null);
+  const { viewport } = useThree();
+  const dummy = React.useMemo(() => new THREE.Object3D(), []);
 
-    const lastMousePos = useRef({ x: 0, y: 0 });
-    const lastMouseMoveTime = useRef(0);
-    const virtualMouse = useRef({ x: 0, y: 0 });
+  const lastMousePos = useRef({ x: 0, y: 0 });
+  const lastMouseMoveTime = useRef(0);
+  const virtualMouse = useRef({ x: 0, y: 0 });
 
-    const particles = useMemo(() => {
-        const width = viewport.width || 100;
-        const height = viewport.height || 100;
+  const particles = useMemo(() => {
+    const width = viewport.width || 100;
+    const height = viewport.height || 100;
 
-        return buildParticles(count, width, height);
-    }, [count, viewport.width, viewport.height]);
+    return buildParticles(count, width, height);
+  }, [count, viewport.width, viewport.height]);
 
-    useFrame(state => {
-        const mesh = meshRef.current;
-        if (!mesh) return;
+  useFrame((state) => {
+    const mesh = meshRef.current;
+    if (!mesh) return;
 
-        const { viewport: v, pointer: m } = state;
+    const { viewport: v, pointer: m } = state;
 
-        const mouseDist = Math.sqrt(Math.pow(m.x - lastMousePos.current.x, 2) + Math.pow(m.y - lastMousePos.current.y, 2));
+    const mouseDist = Math.sqrt(
+      Math.pow(m.x - lastMousePos.current.x, 2) +
+        Math.pow(m.y - lastMousePos.current.y, 2),
+    );
 
-        if (mouseDist > 0.001) {
-            lastMouseMoveTime.current = Date.now();
-            lastMousePos.current = { x: m.x, y: m.y };
-        }
+    if (mouseDist > 0.001) {
+      lastMouseMoveTime.current = Date.now();
+      lastMousePos.current = { x: m.x, y: m.y };
+    }
 
-        let destX = (m.x * v.width) / 2;
-        let destY = (m.y * v.height) / 2;
+    let destX = (m.x * v.width) / 2;
+    let destY = (m.y * v.height) / 2;
 
-        if (autoAnimate && Date.now() - lastMouseMoveTime.current > 2000) {
-            const time = state.clock.getElapsedTime();
-            destX = Math.sin(time * 0.5) * (v.width / 4);
-            destY = Math.cos(time * 0.5 * 2) * (v.height / 4);
-        }
+    if (autoAnimate && Date.now() - lastMouseMoveTime.current > 2000) {
+      const time = state.clock.getElapsedTime();
+      destX = Math.sin(time * 0.5) * (v.width / 4);
+      destY = Math.cos(time * 0.5 * 2) * (v.height / 4);
+    }
 
-        const smoothFactor = 0.05;
-        virtualMouse.current.x += (destX - virtualMouse.current.x) * smoothFactor;
-        virtualMouse.current.y += (destY - virtualMouse.current.y) * smoothFactor;
+    const smoothFactor = 0.05;
+    virtualMouse.current.x += (destX - virtualMouse.current.x) * smoothFactor;
+    virtualMouse.current.y += (destY - virtualMouse.current.y) * smoothFactor;
 
-        const targetX = virtualMouse.current.x;
-        const targetY = virtualMouse.current.y;
+    const targetX = virtualMouse.current.x;
+    const targetY = virtualMouse.current.y;
 
-        const globalRotation = state.clock.getElapsedTime() * rotationSpeed;
+    const globalRotation = state.clock.getElapsedTime() * rotationSpeed;
 
-        particles.forEach((particle, i) => {
-            let { t, speed, mx, my, mz, cz, randomRadiusOffset } = particle;
+    particles.forEach((particle, i) => {
+      let { t, speed, mx, my, mz, cz, randomRadiusOffset } = particle;
 
-            t = particle.t += speed / 2;
+      t = particle.t += speed / 2;
 
-            const projectionFactor = 1 - cz / 50;
-            const projectedTargetX = targetX * projectionFactor;
-            const projectedTargetY = targetY * projectionFactor;
+      const projectionFactor = 1 - cz / 50;
+      const projectedTargetX = targetX * projectionFactor;
+      const projectedTargetY = targetY * projectionFactor;
 
-            const dx = mx - projectedTargetX;
-            const dy = my - projectedTargetY;
-            const dist = Math.sqrt(dx * dx + dy * dy);
+      const dx = mx - projectedTargetX;
+      const dy = my - projectedTargetY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
 
-            let targetPos = { x: mx, y: my, z: mz * depthFactor };
+      let targetPos = { x: mx, y: my, z: mz * depthFactor };
 
-            if (dist < magnetRadius) {
-                const angle = Math.atan2(dy, dx) + globalRotation;
+      if (dist < magnetRadius) {
+        const angle = Math.atan2(dy, dx) + globalRotation;
 
-                const wave = Math.sin(t * waveSpeed + angle) * (0.5 * waveAmplitude);
-                const deviation = randomRadiusOffset * (5 / (fieldStrength + 0.1));
+        const wave = Math.sin(t * waveSpeed + angle) * (0.5 * waveAmplitude);
+        const deviation = randomRadiusOffset * (5 / (fieldStrength + 0.1));
 
-                const currentRingRadius = ringRadius + wave + deviation;
+        const currentRingRadius = ringRadius + wave + deviation;
 
-                targetPos.x = projectedTargetX + currentRingRadius * Math.cos(angle);
-                targetPos.y = projectedTargetY + currentRingRadius * Math.sin(angle);
-                targetPos.z = mz * depthFactor + Math.sin(t) * (1 * waveAmplitude * depthFactor);
-            }
+        targetPos.x = projectedTargetX + currentRingRadius * Math.cos(angle);
+        targetPos.y = projectedTargetY + currentRingRadius * Math.sin(angle);
+        targetPos.z =
+          mz * depthFactor + Math.sin(t) * (1 * waveAmplitude * depthFactor);
+      }
 
-            particle.cx += (targetPos.x - particle.cx) * lerpSpeed;
-            particle.cy += (targetPos.y - particle.cy) * lerpSpeed;
-            particle.cz += (targetPos.z - particle.cz) * lerpSpeed;
+      particle.cx += (targetPos.x - particle.cx) * lerpSpeed;
+      particle.cy += (targetPos.y - particle.cy) * lerpSpeed;
+      particle.cz += (targetPos.z - particle.cz) * lerpSpeed;
 
-            dummy.position.set(particle.cx, particle.cy, particle.cz);
+      dummy.position.set(particle.cx, particle.cy, particle.cz);
 
-            dummy.lookAt(projectedTargetX, projectedTargetY, particle.cz);
-            dummy.rotateX(Math.PI / 2);
+      dummy.lookAt(projectedTargetX, projectedTargetY, particle.cz);
+      dummy.rotateX(Math.PI / 2);
 
-            const currentDistToMouse = Math.sqrt(
-                Math.pow(particle.cx - projectedTargetX, 2) + Math.pow(particle.cy - projectedTargetY, 2)
-            );
+      const currentDistToMouse = Math.sqrt(
+        Math.pow(particle.cx - projectedTargetX, 2) +
+          Math.pow(particle.cy - projectedTargetY, 2),
+      );
 
-            const distFromRing = Math.abs(currentDistToMouse - ringRadius);
-            let scaleFactor = 1 - distFromRing / 10;
+      const distFromRing = Math.abs(currentDistToMouse - ringRadius);
+      let scaleFactor = 1 - distFromRing / 10;
 
-            scaleFactor = Math.max(0, Math.min(1, scaleFactor));
+      scaleFactor = Math.max(0, Math.min(1, scaleFactor));
 
-            const finalScale = scaleFactor * (0.8 + Math.sin(t * pulseSpeed) * 0.2 * particleVariance) * particleSize;
-            dummy.scale.set(finalScale, finalScale, finalScale);
+      const finalScale =
+        scaleFactor *
+        (0.8 + Math.sin(t * pulseSpeed) * 0.2 * particleVariance) *
+        particleSize;
+      dummy.scale.set(finalScale, finalScale, finalScale);
 
-            dummy.updateMatrix();
+      dummy.updateMatrix();
 
-            mesh.setMatrixAt(i, dummy.matrix);
-        });
-
-        mesh.instanceMatrix.needsUpdate = true;
+      mesh.setMatrixAt(i, dummy.matrix);
     });
 
-    return (
-        <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
-            {particleShape === 'capsule' && <capsuleGeometry args={[0.1, 0.4, 4, 8]} />}
-            {particleShape === 'sphere' && <sphereGeometry args={[0.2, 16, 16]} />}
-            {particleShape === 'box' && <boxGeometry args={[0.3, 0.3, 0.3]} />}
-            {particleShape === 'tetrahedron' && <tetrahedronGeometry args={[0.3]} />}
-            <meshBasicMaterial color={color} />
-        </instancedMesh>
-    );
+    mesh.instanceMatrix.needsUpdate = true;
+  });
+
+  return (
+    <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
+      {particleShape === "capsule" && (
+        <capsuleGeometry args={[0.1, 0.4, 4, 8]} />
+      )}
+      {particleShape === "sphere" && <sphereGeometry args={[0.2, 16, 16]} />}
+      {particleShape === "box" && <boxGeometry args={[0.3, 0.3, 0.3]} />}
+      {particleShape === "tetrahedron" && <tetrahedronGeometry args={[0.3]} />}
+      <meshBasicMaterial color={color} />
+    </instancedMesh>
+  );
 };
 
-const Antigravity = props => {
-    return (
-        <Canvas
-            camera={{ position: [0, 0, 50], fov: 35 }}
-            dpr={[1, 1.5]}
-            gl={{ antialias: false, powerPreference: "low-power" }}
-        >
-            <AntigravityInner {...props} />
-        </Canvas>
-    );
+const Antigravity = (props) => {
+  return (
+    <Canvas
+      camera={{ position: [0, 0, 50], fov: 35 }}
+      dpr={[1, 1.5]}
+      gl={{ antialias: false, powerPreference: "low-power" }}
+    >
+      <AntigravityInner {...props} />
+    </Canvas>
+  );
 };
 
 /* ==========================================================================
    PRIMARY STEPPER PLATFORM
    ========================================================================== */
 export default function Stepper({
-                                    children,
-                                    initialStep = 1,
-                                    onStepChange = () => true,
-                                    onFinalStepCompleted = () => {},
-                                    stepCircleContainerClassName = '',
-                                    stepContainerClassName = '',
-                                    contentClassName = '',
-                                    footerClassName = '',
-                                    backButtonProps = {},
-                                    nextButtonProps = {},
-                                    backButtonText = 'Back',
-                                    nextButtonText = 'Continue',
-                                    disableStepIndicators = false,
-                                    renderStepIndicator,
-                                    handleCloseModal,
-                                    ...rest
-                                }) {
-    const [currentStep, setCurrentStep] = useState(initialStep);
-    const [direction, setDirection] = useState(0);
-    const stepsArray = Children.toArray(children);
-    const totalSteps = stepsArray.length;
-    const isCompleted = currentStep > totalSteps;
-    const isLastStep = currentStep === totalSteps;
-    const showAmbientEffects = useAmbientEffectsEnabled();
+  children,
+  initialStep = 1,
+  onStepChange = () => true,
+  onFinalStepCompleted = () => {},
+  stepCircleContainerClassName = "",
+  stepContainerClassName = "",
+  contentClassName = "",
+  footerClassName = "",
+  backButtonProps = {},
+  nextButtonProps = {},
+  backButtonText,
+  nextButtonText = "Continue",
+  disableStepIndicators = false,
+  renderStepIndicator,
+  handleCloseModal,
+  ...rest
+}) {
+  const [currentStep, setCurrentStep] = useState(initialStep);
+  const [direction, setDirection] = useState(0);
+  const stepsArray = Children.toArray(children);
+  const totalSteps = stepsArray.length;
+  const isCompleted = currentStep > totalSteps;
+  const isLastStep = currentStep === totalSteps;
+  const showAmbientEffects = useAmbientEffectsEnabled();
+  const t = useTranslation();
+  const effectiveBackText = backButtonText || t('stepper.back');
 
-    const updateStep = useCallback(async (newStep) => {
-        const result = await onStepChange(currentStep, newStep);
-        const shouldChange = result !== false;
+  const updateStep = useCallback(
+    async (newStep) => {
+      const result = await onStepChange(currentStep, newStep);
+      const shouldChange = result !== false;
 
-        if (shouldChange) {
-            setCurrentStep(newStep);
-            if (newStep > totalSteps) {
-                onFinalStepCompleted();
-            }
+      if (shouldChange) {
+        setCurrentStep(newStep);
+        if (newStep > totalSteps) {
+          onFinalStepCompleted();
         }
-    }, [currentStep, onFinalStepCompleted, onStepChange, totalSteps]);
+      }
+    },
+    [currentStep, onFinalStepCompleted, onStepChange, totalSteps],
+  );
 
-    const handleBack = () => {
-        if (currentStep > 1) {
-            setDirection(-1);
-            updateStep(currentStep - 1);
-        }
-    };
+  const handleBack = () => {
+    if (currentStep > 1) {
+      setDirection(-1);
+      updateStep(currentStep - 1);
+    }
+  };
 
-    const handleNext = () => {
-        if (!isLastStep) {
-            setDirection(1);
-            updateStep(currentStep + 1);
-        }
-    };
+  const handleNext = () => {
+    if (!isLastStep) {
+      setDirection(1);
+      updateStep(currentStep + 1);
+    }
+  };
 
-    const handleComplete = () => {
+  const handleComplete = () => {
+    setDirection(1);
+    updateStep(totalSteps + 1);
+  };
+
+  useEffect(() => {
+    if (isCompleted) return;
+    const handleKeyDown = (e) => {
+      if (e.key !== "Enter") return;
+      const tag = e.target.tagName;
+      if (tag === "TEXTAREA" || tag === "BUTTON" || tag === "SELECT") return;
+      if (e.target.type === "radio" || e.target.type === "checkbox") return;
+      e.preventDefault();
+      if (currentStep >= totalSteps) {
         setDirection(1);
         updateStep(totalSteps + 1);
+      } else {
+        setDirection(1);
+        updateStep(currentStep + 1);
+      }
     };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [currentStep, isCompleted, totalSteps, updateStep]);
 
-    useEffect(() => {
-        if (isCompleted) return;
-        const handleKeyDown = (e) => {
-            if (e.key !== "Enter") return;
-            const tag = e.target.tagName;
-            if (tag === "TEXTAREA" || tag === "BUTTON" || tag === "SELECT") return;
-            if (e.target.type === "radio" || e.target.type === "checkbox") return;
-            e.preventDefault();
-            if (currentStep >= totalSteps) {
-                setDirection(1);
-                updateStep(totalSteps + 1);
-            } else {
-                setDirection(1);
-                updateStep(currentStep + 1);
-            }
-        };
-        window.addEventListener("keydown", handleKeyDown);
-        return () => window.removeEventListener("keydown", handleKeyDown);
-    }, [currentStep, isCompleted, totalSteps, updateStep]);
+  return (
+    <StyledWrapper
+      className="outer-container"
+      {...rest}
+      onClick={handleCloseModal}
+    >
+      {/* Background Canvas Environment */}
+      {showAmbientEffects ? (
+        <div className="antigravity-background-layer">
+          <Antigravity
+            count={120}
+            magnetRadius={6}
+            ringRadius={7}
+            waveSpeed={0.4}
+            waveAmplitude={1}
+            particleSize={1.2}
+            lerpSpeed={0.05}
+            color={getCssVar("--stepper-particle", "#5227FF")}
+            autoAnimate
+            particleVariance={1}
+            rotationSpeed={0}
+            depthFactor={1}
+            pulseSpeed={3}
+            particleShape="capsule"
+            fieldStrength={10}
+          />
+        </div>
+      ) : null}
 
-    return (
-        <StyledWrapper className="outer-container" {...rest} onClick={handleCloseModal}>
-            {/* Background Canvas Environment */}
-            {showAmbientEffects ? (
-                <div className="antigravity-background-layer">
-                    <Antigravity
-                        count={120}
-                        magnetRadius={6}
-                        ringRadius={7}
-                        waveSpeed={0.4}
-                        waveAmplitude={1}
-                        particleSize={1.2}
-                        lerpSpeed={0.05}
-                        color={getCssVar("--stepper-particle", "#5227FF")}
-                        autoAnimate
-                        particleVariance={1}
-                        rotationSpeed={0}
-                        depthFactor={1}
-                        pulseSpeed={3}
-                        particleShape="capsule"
-                        fieldStrength={10}
-                    />
-                </div>
-            ) : null}
-
-            {/* Modal Container */}
-            <div
-                className={`step-circle-container ${stepCircleContainerClassName}`}
-                onClick={(e) => e.stopPropagation()} // Stop background events from triggering dismissals
+      {/* Modal Container */}
+      <div
+        className={`step-circle-container ${stepCircleContainerClassName}`}
+        onClick={(e) => e.stopPropagation()} // Stop background events from triggering dismissals
+      >
+        <div className={`step-indicator-row ${stepContainerClassName}`}>
+          {handleCloseModal && (
+            <button
+              type="button"
+              className="close-x"
+              onClick={handleCloseModal}
+              aria-label={t('stepper.close')}
             >
-                <div className={`step-indicator-row ${stepContainerClassName}`}>
-                    {handleCloseModal && (
-                        <button
-                            type="button"
-                            className="close-x"
-                            onClick={handleCloseModal}
-                            aria-label="Close"
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                        </button>
-                    )}
-                    {stepsArray.map((_, index) => {
-                        const stepNumber = index + 1;
-                        const isNotLastStep = index < totalSteps - 1;
-                        return (
-                            <React.Fragment key={stepNumber}>
-                                {renderStepIndicator ? (
-                                    renderStepIndicator({
-                                        step: stepNumber,
-                                        currentStep,
-                                        onStepClick: (clicked) => {
-                                            setDirection(clicked > currentStep ? 1 : -1);
-                                            updateStep(clicked);
-                                        }
-                                    })
-                                ) : (
-                                    <StepIndicator
-                                        step={stepNumber}
-                                        disableStepIndicators={disableStepIndicators}
-                                        currentStep={currentStep}
-                                        onClickStep={(clicked) => {
-                                            setDirection(clicked > currentStep ? 1 : -1);
-                                            updateStep(clicked);
-                                        }}
-                                    />
-                                )}
-                                {isNotLastStep && <StepConnector isComplete={currentStep > stepNumber} />}
-                            </React.Fragment>
-                        );
-                    })}
-                </div>
-
-                <StepContentWrapper
-                    isCompleted={isCompleted}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M18 6 6 18" />
+                <path d="m6 6 12 12" />
+              </svg>
+            </button>
+          )}
+          {stepsArray.map((_, index) => {
+            const stepNumber = index + 1;
+            const isNotLastStep = index < totalSteps - 1;
+            return (
+              <React.Fragment key={stepNumber}>
+                {renderStepIndicator ? (
+                  renderStepIndicator({
+                    step: stepNumber,
+                    currentStep,
+                    onStepClick: (clicked) => {
+                      setDirection(clicked > currentStep ? 1 : -1);
+                      updateStep(clicked);
+                    },
+                  })
+                ) : (
+                  <StepIndicator
+                    step={stepNumber}
+                    disableStepIndicators={disableStepIndicators}
                     currentStep={currentStep}
-                    direction={direction}
-                    className={`step-content-default ${contentClassName}`}
-                >
-                    {stepsArray[currentStep - 1]}
-                </StepContentWrapper>
-
-                {!isCompleted && (
-                    <div className={`footer-container ${footerClassName}`}>
-                        <div className={`footer-nav ${currentStep !== 1 ? 'spread' : 'end'}`}>
-                            {currentStep !== 1 && (
-                                <button
-                                    onClick={handleBack}
-                                    className={`back-button ${currentStep === 1 ? 'inactive' : ''}`}
-                                    {...backButtonProps}
-                                >
-                                    {backButtonText}
-                                </button>
-                            )}
-                            {!disableStepIndicators && <button className="skip-button">Skip</button>}
-                            <button
-                                onClick={isLastStep ? handleComplete : handleNext}
-                                className={isLastStep ? "complete-button" : "next-button"}
-                                {...nextButtonProps}
-                            >
-                                {isLastStep ? 'Complete' : nextButtonText}
-                            </button>
-                        </div>
-                    </div>
+                    onClickStep={(clicked) => {
+                      setDirection(clicked > currentStep ? 1 : -1);
+                      updateStep(clicked);
+                    }}
+                  />
                 )}
+                {isNotLastStep && (
+                  <StepConnector isComplete={currentStep > stepNumber} />
+                )}
+              </React.Fragment>
+            );
+          })}
+        </div>
+
+        <StepContentWrapper
+          isCompleted={isCompleted}
+          currentStep={currentStep}
+          direction={direction}
+          className={`step-content-default ${contentClassName}`}
+        >
+          {stepsArray[currentStep - 1]}
+        </StepContentWrapper>
+
+        {!isCompleted && (
+          <div className={`footer-container ${footerClassName}`}>
+            <div
+              className={`footer-nav ${currentStep !== 1 ? "spread" : "end"}`}
+            >
+              {currentStep !== 1 && (
+                <button
+                  onClick={handleBack}
+                  className={`back-button ${currentStep === 1 ? "inactive" : ""}`}
+                  {...backButtonProps}
+                >
+                  {effectiveBackText}
+                </button>
+              )}
+              {!disableStepIndicators && (
+                <button className="skip-button">{t('stepper.skip')}</button>
+              )}
+              <button
+                onClick={isLastStep ? handleComplete : handleNext}
+                className={isLastStep ? "complete-button" : "next-button"}
+                {...nextButtonProps}
+              >
+                {isLastStep ? t('stepper.complete') : nextButtonText}
+              </button>
             </div>
-        </StyledWrapper>
-    );
+          </div>
+        )}
+      </div>
+    </StyledWrapper>
+  );
 }
 
 /* ==========================================================================
    TRANSITIONAL LAYOUT WRAPPERS (HEIGHT AND POSITION ANIMATIONS)
    ========================================================================== */
-function StepContentWrapper({ isCompleted, currentStep, direction, children, className }) {
-    const [parentHeight, setParentHeight] = useState(0);
-    const heightRef = useRef(0);
+function StepContentWrapper({
+  isCompleted,
+  currentStep,
+  direction,
+  children,
+  className,
+}) {
+  const [parentHeight, setParentHeight] = useState(0);
+  const heightRef = useRef(0);
 
-    const handleHeightReady = useCallback((h) => {
-        if (h !== heightRef.current) {
-            heightRef.current = h;
-            setParentHeight(h);
-        }
-    }, []);
+  const handleHeightReady = useCallback((h) => {
+    if (h !== heightRef.current) {
+      heightRef.current = h;
+      setParentHeight(h);
+    }
+  }, []);
 
-    return (
-        <motion.div
-            className={className}
-            style={{ position: 'relative', overflow: 'hidden' }}
-            animate={{ height: isCompleted ? 0 : parentHeight }}
-            transition={{ type: 'spring', duration: 0.4 }}
-        >
-            <AnimatePresence initial={false} mode="sync" custom={direction}>
-                {!isCompleted && (
-                    <SlideTransition key={currentStep} direction={direction} onHeightReady={handleHeightReady}>
-                        {children}
-                    </SlideTransition>
-                )}
-            </AnimatePresence>
-        </motion.div>
-    );
+  return (
+    <motion.div
+      className={className}
+      style={{ position: "relative", overflow: "hidden" }}
+      animate={{ height: isCompleted ? 0 : parentHeight }}
+      transition={{ type: "spring", duration: 0.4 }}
+    >
+      <AnimatePresence initial={false} mode="sync" custom={direction}>
+        {!isCompleted && (
+          <SlideTransition
+            key={currentStep}
+            direction={direction}
+            onHeightReady={handleHeightReady}
+          >
+            {children}
+          </SlideTransition>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
 }
 
 function SlideTransition({ children, direction, onHeightReady }) {
-    const containerRef = useRef(null);
+  const containerRef = useRef(null);
 
-    useIsomorphicLayoutEffect(() => {
-        if (containerRef.current) {
-            onHeightReady(containerRef.current.offsetHeight);
-        }
-    }, []);
+  useIsomorphicLayoutEffect(() => {
+    if (containerRef.current) {
+      onHeightReady(containerRef.current.offsetHeight);
+    }
+  }, []);
 
-    return (
-        <motion.div
-            ref={containerRef}
-            custom={direction}
-            variants={stepVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{ duration: 0.4 }}
-            style={{ position: 'absolute', left: 0, right: 0, top: 0 }}
-        >
-            {children}
-        </motion.div>
-    );
+  return (
+    <motion.div
+      ref={containerRef}
+      custom={direction}
+      variants={stepVariants}
+      initial="enter"
+      animate="center"
+      exit="exit"
+      transition={{ duration: 0.4 }}
+      style={{ position: "absolute", left: 0, right: 0, top: 0 }}
+    >
+      {children}
+    </motion.div>
+  );
 }
 
 const stepVariants = {
-    enter: (dir) => ({
-        x: dir >= 0 ? '-100%' : '100%', opacity: 0
-    }),
-    center: {
-        x: '0%', opacity: 1
-    },
-    exit: (dir) => ({
-        x: dir >= 0 ? '50%' : '-50%', opacity: 0
-    })
+  enter: (dir) => ({
+    x: dir >= 0 ? "-100%" : "100%",
+    opacity: 0,
+  }),
+  center: {
+    x: "0%",
+    opacity: 1,
+  },
+  exit: (dir) => ({
+    x: dir >= 0 ? "50%" : "-50%",
+    opacity: 0,
+  }),
 };
 
 export function Step({ children }) {
-    return <div className="step-default">{children}</div>;
+  return <div className="step-default">{children}</div>;
 }
 
 /* ==========================================================================
    INDICATOR TRACKS & PLOTS
    ========================================================================== */
-const StepIndicator = memo(function StepIndicator({ step, currentStep, onClickStep, disableStepIndicators }) {
-    const status = currentStep === step ? 'active' : currentStep < step ? 'inactive' : 'complete';
+const StepIndicator = memo(function StepIndicator({
+  step,
+  currentStep,
+  onClickStep,
+  disableStepIndicators,
+}) {
+  const status =
+    currentStep === step
+      ? "active"
+      : currentStep < step
+        ? "inactive"
+        : "complete";
 
-    const handleClick = () => {
-        if (step !== currentStep && !disableStepIndicators) onClickStep(step);
-    };
+  const handleClick = () => {
+    if (step !== currentStep && !disableStepIndicators) onClickStep(step);
+  };
 
-    return (
-        <motion.div
-            onClick={handleClick}
-            className="step-indicator"
-            style={disableStepIndicators ? { pointerEvents: 'none', opacity: 0.5 } : {}}
-            animate={status}
-            initial={false}
-        >
-            <motion.div
-                variants={{
-                    inactive: { scale: 1, backgroundColor: 'var(--btn-secondary-bg)', color: 'var(--text-muted)' },
-                    active: { scale: 1, backgroundColor: 'var(--accent-purple)', color: 'var(--accent-purple)' },
-                    complete: { scale: 1, backgroundColor: 'var(--accent-purple)', color: 'var(--accent-blue)' }
-                }}
-                transition={{ duration: 0.3 }}
-                className="step-indicator-inner"
-            >
-                {status === 'complete' ? (
-                    <CheckIcon className="check-icon" />
-                ) : status === 'active' ? (
-                    <div className="active-dot" />
-                ) : (
-                    <span className="step-number">{step}</span>
-                )}
-            </motion.div>
-        </motion.div>
-    );
+  return (
+    <motion.div
+      onClick={handleClick}
+      className="step-indicator"
+      style={
+        disableStepIndicators ? { pointerEvents: "none", opacity: 0.5 } : {}
+      }
+      animate={status}
+      initial={false}
+    >
+      <motion.div
+        variants={{
+          inactive: {
+            scale: 1,
+            backgroundColor: "var(--btn-secondary-bg)",
+            color: "var(--text-muted)",
+          },
+          active: {
+            scale: 1,
+            backgroundColor: "var(--accent-purple)",
+            color: "var(--accent-purple)",
+          },
+          complete: {
+            scale: 1,
+            backgroundColor: "var(--accent-purple)",
+            color: "var(--accent-blue)",
+          },
+        }}
+        transition={{ duration: 0.3 }}
+        className="step-indicator-inner"
+      >
+        {status === "complete" ? (
+          <CheckIcon className="check-icon" />
+        ) : status === "active" ? (
+          <div className="active-dot" />
+        ) : (
+          <span className="step-number">{step}</span>
+        )}
+      </motion.div>
+    </motion.div>
+  );
 });
 
 const StepConnector = memo(function StepConnector({ isComplete }) {
-    const lineVariants = {
-        incomplete: { width: 0, backgroundColor: 'var(--text-muted)' },
-        complete: { width: '100%', backgroundColor: 'var(--accent-purple)' }
-    };
+  const lineVariants = {
+    incomplete: { width: 0, backgroundColor: "var(--text-muted)" },
+    complete: { width: "100%", backgroundColor: "var(--accent-purple)" },
+  };
 
-    return (
-        <div className="step-connector">
-            <motion.div
-                className="step-connector-inner"
-                variants={lineVariants}
-                initial={false}
-                animate={isComplete ? 'complete' : 'incomplete'}
-                transition={{ duration: 0.4 }}
-            />
-        </div>
-    );
+  return (
+    <div className="step-connector">
+      <motion.div
+        className="step-connector-inner"
+        variants={lineVariants}
+        initial={false}
+        animate={isComplete ? "complete" : "incomplete"}
+        transition={{ duration: 0.4 }}
+      />
+    </div>
+  );
 });
 
 const CheckIcon = memo(function CheckIcon(props) {
-    return (
-        <svg {...props} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-            <motion.path
-                initial={{ pathLength: 0 }}
-                animate={{ pathLength: 1 }}
-                transition={{ delay: 0.1, type: 'tween', ease: 'easeOut', duration: 0.3 }}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M5 13l4 4L19 7"
-            />
-        </svg>
-    );
+  return (
+    <svg
+      {...props}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      viewBox="0 0 24 24"
+    >
+      <motion.path
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{
+          delay: 0.1,
+          type: "tween",
+          ease: "easeOut",
+          duration: 0.3,
+        }}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M5 13l4 4L19 7"
+      />
+    </svg>
+  );
 });
 
 /* ==========================================================================
@@ -585,10 +685,18 @@ const StyledWrapper = styled.div`
     justify-content: space-between;
     border-radius: 2rem;
     box-shadow: var(--modal-shadow);
-    background: linear-gradient(-45deg, var(--stepper-bg-1), var(--stepper-bg-2), var(--stepper-bg-3), var(--stepper-bg-4));
+    background: linear-gradient(
+      -45deg,
+      var(--stepper-bg-1),
+      var(--stepper-bg-2),
+      var(--stepper-bg-3),
+      var(--stepper-bg-4)
+    );
     background-size: 400% 400%;
     /* Keep animation entries pristine and responsive */
-    animation: modalScaleIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards, gradient 15s ease infinite;
+    animation:
+      modalScaleIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards,
+      gradient 15s ease infinite;
     z-index: 2;
     overflow: visible;
   }
@@ -618,8 +726,8 @@ const StyledWrapper = styled.div`
     padding-right: 2rem;
     margin-bottom: 2rem;
   }
-  .error{
-    font-size: .8rem;
+  .error {
+    font-size: 0.8rem;
   }
 
   .footer-container {
@@ -667,7 +775,13 @@ const StyledWrapper = styled.div`
     align-items: center;
     justify-content: center;
     border-radius: 9999px;
-    background: linear-gradient(-45deg, var(--accent-purple), var(--card), var(--sidebar-primary-foreground), var(--sidebar-bg));
+    background: linear-gradient(
+      -45deg,
+      var(--accent-purple),
+      var(--card),
+      var(--sidebar-primary-foreground),
+      var(--sidebar-bg)
+    );
     background-size: 400% 400%;
     animation: gradient 15s ease infinite;
     color: var(--text-on-accent);
@@ -703,7 +817,13 @@ const StyledWrapper = styled.div`
     align-items: center;
     justify-content: center;
     border-radius: 9999px;
-    background: linear-gradient(-45deg, var(--accent-purple), var(--card), var(--sidebar-primary-foreground), var(--sidebar-bg));
+    background: linear-gradient(
+      -45deg,
+      var(--accent-purple),
+      var(--card),
+      var(--sidebar-primary-foreground),
+      var(--sidebar-bg)
+    );
     background-size: 400% 400%;
     animation: gradient 15s ease infinite;
     color: var(--text-on-accent);
@@ -781,18 +901,22 @@ const StyledWrapper = styled.div`
   }
 
   @keyframes gradient {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
   }
 
   @media (max-width: 640px) {
     .step-circle-container {
-      max-width: 95vw;
-      max-height: 90vh;
+      width: 100vw;
+      height: 100vh;
       border-radius: 1.25rem;
-      min-height: 30vh;
-      min-width: 75vw;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
     }
@@ -812,8 +936,8 @@ const StyledWrapper = styled.div`
       margin-bottom: 1rem;
       min-height: 65%;
     }
-    
-    .error{
+
+    .error {
       padding-top: 2.5rem;
     }
 
@@ -864,10 +988,11 @@ const StyledWrapper = styled.div`
 
   @media (max-width: 480px) {
     .step-circle-container {
-      min-width: 75vw;
       max-width: 100vw;
-      border-radius: 0;
       max-height: 100vh;
+      width: 100vw;
+      height: 100vh;
+      border-radius: 0;
     }
 
     .step-indicator-row {
@@ -877,7 +1002,7 @@ const StyledWrapper = styled.div`
     }
 
     .step-default {
-      gap: 2.5rem;
+    //   gap: 1.5rem;
       padding-left: 0.75rem;
       padding-right: 0.75rem;
       padding-top: 0.75rem;
@@ -948,7 +1073,9 @@ const StyledWrapper = styled.div`
       height: 8px;
       border-radius: 9999px;
       background: var(--text-muted);
-      transition: background 0.3s, transform 0.3s;
+      transition:
+        background 0.3s,
+        transform 0.3s;
     }
 
     .step-connector {

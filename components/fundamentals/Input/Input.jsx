@@ -123,7 +123,7 @@ const StyledWrapper = styled.div`
   @media (max-width: 640px) {
     input, textarea {
       height: 44px;
-      font-size: 15px;
+      font-size: .5rem;
       padding: 8px 10px;
       //margin-bottom: 10vw;
     }
@@ -141,7 +141,7 @@ const StyledWrapper = styled.div`
     }
 
     .placeholder {
-      font-size: 0.9rem;
+      font-size: 0.6rem;
     }
 
     input:focus + .placeholder, textarea:focus + .placeholder,
@@ -153,7 +153,7 @@ const StyledWrapper = styled.div`
   @media (max-width: 480px) {
     input, textarea {
       height: 40px;
-      font-size: 14px;
+      font-size: .7rem;
       padding: 6px 8px;
       border-radius: 8px;
     }

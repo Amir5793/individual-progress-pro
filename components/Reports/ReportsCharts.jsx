@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import useReportCommitments from "@/lib/hooks/useReportCommitments";
+import { useTranslation } from "@/lib/i18n/localeContext";
 import {
   ChartsSection,
   ChartsRow,
@@ -102,7 +103,7 @@ function useCategoryData(commitments, weekStart, weekEnd) {
   }, [commitments, weekStart, weekEnd]);
 }
 
-function useDailyProgress(commitments, weekStart) {
+function useDailyProgress(commitments, weekStart, dayNames) {
   return useMemo(() => {
     const days = [];
     for (let i = 0; i < 7; i++) {
@@ -141,7 +142,7 @@ function useDailyProgress(commitments, weekStart) {
         .reduce((sum, g) => sum + (g.actions?.filter((a) => a.completed).length || 0), 0);
       const goalRate = totalActions > 0 ? Math.round((completedActions / totalActions) * 100) : 0;
 
-      const dayLabel = DAY_NAMES[dayStart.getDay()];
+      const dayLabel = dayNames[dayStart.getDay()];
 
       days.push({ label: dayLabel, ideal: idealPct, minimum: minimumPct, missed: missedPct, goalRate });
     }
@@ -155,6 +156,7 @@ function useDailyProgress(commitments, weekStart) {
    ========================================================== */
 
 function PieChart({ counts, title, description, chartReady }) {
+  const t = useTranslation();
   const canvasRef = useRef(null);
   const chartRef = useRef(null);
   const [mounted, setMounted] = useState(false);
@@ -240,7 +242,7 @@ function PieChart({ counts, title, description, chartReady }) {
       <ChartTitle>{title}</ChartTitle>
       <ChartDesc>{description}</ChartDesc>
       {!mounted || isEmpty ? (
-        <EmptyChart>No items this week</EmptyChart>
+        <EmptyChart>{t('reports.chart.no_items')}</EmptyChart>
       ) : (
         <CanvasWrap $aspect="4 / 3">
           <canvas ref={canvasRef} />
@@ -255,6 +257,7 @@ function PieChart({ counts, title, description, chartReady }) {
    ========================================================== */
 
 function ProgressChart({ days, title, description, chartReady }) {
+  const t = useTranslation();
   const canvasRef = useRef(null);
   const chartRef = useRef(null);
   const [mounted, setMounted] = useState(false);
@@ -275,7 +278,7 @@ function ProgressChart({ days, title, description, chartReady }) {
         labels,
         datasets: [
           {
-            label: "Ideal",
+            label: t('reports.chart.ideal_label'),
             data: days.map((d) => d.ideal),
             backgroundColor: "rgba(46, 212, 122, 0.75)",
             borderRadius: 3,
@@ -283,7 +286,7 @@ function ProgressChart({ days, title, description, chartReady }) {
             categoryPercentage: 0.7,
           },
           {
-            label: "Minimum",
+            label: t('reports.chart.minimum_label'),
             data: days.map((d) => d.minimum),
             backgroundColor: "rgba(244, 197, 66, 0.75)",
             borderRadius: 3,
@@ -291,7 +294,7 @@ function ProgressChart({ days, title, description, chartReady }) {
             categoryPercentage: 0.7,
           },
           {
-            label: "Missed",
+            label: t('reports.chart.missed_label'),
             data: days.map((d) => d.missed),
             backgroundColor: "rgba(255, 92, 112, 0.75)",
             borderRadius: 3,
@@ -299,7 +302,7 @@ function ProgressChart({ days, title, description, chartReady }) {
             categoryPercentage: 0.7,
           },
           {
-            label: "Goal %",
+            label: t('reports.chart.goal_percent_label'),
             data: days.map((d) => d.goalRate),
             type: "line",
             borderColor: "#6c5ce7",
@@ -340,7 +343,7 @@ function ProgressChart({ days, title, description, chartReady }) {
             },
             title: {
               display: true,
-              text: "Habits",
+              text: t('reports.chart.habits_label'),
               color: getCssVar("--text-muted") || "rgba(240, 242, 250, 0.4)",
               font: { size: 10 },
             },
@@ -357,7 +360,7 @@ function ProgressChart({ days, title, description, chartReady }) {
             },
             title: {
               display: true,
-              text: "Goal %",
+              text: t('reports.chart.goal_percent_label'),
               color: getCssVar("--accent-purple") || "rgba(108, 92, 231, 0.5)",
               font: { size: 10 },
             },
@@ -386,7 +389,7 @@ function ProgressChart({ days, title, description, chartReady }) {
         },
       },
     });
-  }, [labels, days]);
+  }, [labels, days, t]);
 
   useEffect(() => {
     if (chartReady && mounted) {
@@ -413,32 +416,34 @@ function ProgressChart({ days, title, description, chartReady }) {
    ========================================================== */
 
 export default function ReportsCharts({ weekStart, weekEnd }) {
+  const t = useTranslation();
   const chartReady = useChartReady();
   const { commitments } = useReportCommitments(weekStart, weekEnd);
   const { goalCounts, habitCounts } = useCategoryData(commitments, weekStart, weekEnd);
-  const days = useDailyProgress(commitments, weekStart, weekEnd);
+  const dayNames = t('reports.day_names').split(',');
+  const days = useDailyProgress(commitments, weekStart, dayNames);
 
   return (
     <ChartsSection>
       <ChartsRow>
         <PieChart
           counts={goalCounts}
-          title="Goal Categories"
-          description="Categories of goals created this week. Larger slices indicate more goals in that area."
+          title={t('reports.chart.goal_categories_title')}
+          description={t('reports.chart.goal_categories_desc')}
           chartReady={chartReady}
         />
         <PieChart
           counts={habitCounts}
-          title="Habit Categories"
-          description="Categories of habits created this week. Shows which areas of life you are building routines in."
+          title={t('reports.chart.habit_categories_title')}
+          description={t('reports.chart.habit_categories_desc')}
           chartReady={chartReady}
         />
       </ChartsRow>
 
       <ProgressChart
         days={days}
-        title="Weekly Progress Overview"
-        description="Habit completion rate per day this week (ideal, minimum, missed as % of total habits). The line shows goal action completion rate."
+        title={t('reports.chart.weekly_title')}
+        description={t('reports.chart.weekly_desc')}
         chartReady={chartReady}
       />
     </ChartsSection>

@@ -45,10 +45,13 @@ import { getConsistency } from "@/lib/habits/consistency";
 import { getWeekTracker } from "@/lib/habits/tracker";
 import { calculateStreak } from "@/lib/habits/streak";
 import { getCategoryConfig } from "@/constants/categories";
+import { useTranslation } from "@/lib/i18n/localeContext";
 
 export default function HabitItem({
                                        item, onStatusChange, onEdit, onDelete, onMore, onClick
                                    }) {
+
+    const t = useTranslation();
 
     const {
         identity, title, category, minimumAction, target,
@@ -79,7 +82,7 @@ export default function HabitItem({
                     </CategoryIconWrapper>
                     <TitleSection>
                         <Identity>
-                            Become a {identity}
+                            {t('habititem.become', {identity})}
                         </Identity>
                         <HabitName>
                             {title}
@@ -92,7 +95,7 @@ export default function HabitItem({
             {streak > 0 && (
                 <StreakBadge $color={color}>
                     <Flame size={16}/>
-                    {streak}-day streak
+                    {t('habititem.streak', {count: streak})}
                 </StreakBadge>
             )}
 
@@ -107,7 +110,7 @@ export default function HabitItem({
                     }}
                 >
                     <span className="status-icon">✕</span>
-                    Missed
+                    {t('habititem.status_missed')}
                 </StatusButton>
 
                 <StatusButton
@@ -119,7 +122,7 @@ export default function HabitItem({
                     }}
                 >
                     <Zap size={14}/>
-                    Minimum
+                    {t('habititem.status_minimum')}
                 </StatusButton>
 
                 <StatusButton
@@ -131,7 +134,7 @@ export default function HabitItem({
                     }}
                 >
                     <Target size={14}/>
-                    Ideal
+                    {t('habititem.status_ideal')}
                 </StatusButton>
             </StatusButtonGroup>
 
@@ -142,7 +145,7 @@ export default function HabitItem({
                         <ContextRow>
                             <ContextLabel>
                                 <Clock size={13}/>
-                                Trigger
+                                {t('habititem.trigger_label')}
                             </ContextLabel>
                             <ContextText>{trigger}</ContextText>
                         </ContextRow>
@@ -151,7 +154,7 @@ export default function HabitItem({
                         <ContextRow $variant="fallback">
                             <ContextLabel>
                                 <AlertCircle size={13}/>
-                                Fallback
+                                {t('habititem.fallback_label')}
                             </ContextLabel>
                             <ContextText>{fallbackPlan}</ContextText>
                         </ContextRow>
@@ -164,15 +167,15 @@ export default function HabitItem({
                 <TargetItem $variant="minimum">
                     <TargetBadge $variant="minimum">MIN</TargetBadge>
                     <div>
-                        <ContextLabel>Minimum Action</ContextLabel>
+                        <ContextLabel>{t('habititem.minimum_action')}</ContextLabel>
                         <ActionText>{minimumAction}</ActionText>
                     </div>
                 </TargetItem>
                 <TargetItem $variant="ideal">
                     <TargetBadge $variant="ideal">IDEAL</TargetBadge>
                     <div>
-                        <ContextLabel>Target</ContextLabel>
-                        <ActionText>{target || "No target set"}</ActionText>
+                        <ContextLabel>{t('habititem.target_label')}</ContextLabel>
+                        <ActionText>{target || t('habititem.no_target')}</ActionText>
                     </div>
                 </TargetItem>
             </Targets>
@@ -196,10 +199,10 @@ export default function HabitItem({
             {/* ---------------- FOOTER ---------------- */}
             <Footer>
                 <Consistency>
-                    {consistency}% consistency
+                    {t('habititem.consistency', {consistency})}
                     {stats.total > 0 && (
                         <span className="stats-detail">
-                            {" "}· {stats.idealCount} ideal · {stats.minimumCount} min
+                            {" "}· {stats.idealCount} {t('habititem.ideal_count')} · {stats.minimumCount} {t('habititem.min_count')}
                         </span>
                     )}
                 </Consistency>
@@ -207,8 +210,8 @@ export default function HabitItem({
                     <ActionButton
                         as="button"
                         $color={color}
-                        aria-label="Edit habit"
-                        data-tooltip="Edit habit"
+                        aria-label={t('habititem.edit')}
+                        data-tooltip={t('habititem.edit')}
                         onClick={(e) => {
                             e.stopPropagation();
                             onEdit?.(item);
@@ -219,8 +222,8 @@ export default function HabitItem({
                     <ActionButton
                         as="button"
                         $color="var(--accent-red)"
-                        aria-label="Delete habit"
-                        data-tooltip="Delete habit"
+                        aria-label={t('habititem.delete')}
+                        data-tooltip={t('habititem.delete')}
                         onClick={(e) => {
                             e.stopPropagation();
                             onDelete?.(item);
@@ -230,8 +233,8 @@ export default function HabitItem({
                     </ActionButton>
                     <IconButton
                         as="button"
-                        aria-label="More options"
-                        data-tooltip="More options"
+                        aria-label={t('habititem.more')}
+                        data-tooltip={t('habititem.more')}
                         onClick={(e) => {
                             e.stopPropagation();
                             onMore?.(item);

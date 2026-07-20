@@ -3,12 +3,14 @@ import {CheckBox} from "@/components/fundamentals/CheckBox/CheckBox";
 import {Step} from "@/components/Stepper/Stepper";
 import React from "react";
 import styled from "styled-components";
+import {useTranslation} from "@/lib/i18n/localeContext";
 
 export const DifficultyOrTarget = ({mode, difficulty, target, handleFieldChange, errors}) => {
+    const t = useTranslation();
     return (
         <StyledWrapper>
         <Step>
-            <h1>{mode === "goal" ? "How difficult does it feel?" : "On a good day, what's your ideal target?"}</h1>
+            <h1>{mode === "goal" ? t('stepper.difficulty.goal_question') : t('stepper.difficulty.target_question')}</h1>
             {mode === "goal" ? (<>
                 <div className="checkbox-container">
                     {["low", "medium", "hard", "almost impossible"].map((level) => (<CheckBox
@@ -23,8 +25,8 @@ export const DifficultyOrTarget = ({mode, difficulty, target, handleFieldChange,
             </>) : (<>
                 <Input
                     autoFocus
-                    placeholder="e.g. 30 minutes"
-                    hintTxt="Your preferred goal on a good day."
+                    placeholder={t('stepper.difficulty.target_placeholder')}
+                    hintTxt={t('stepper.difficulty.target_hint')}
                     value={target}
                     onValueChange={(val) => handleFieldChange("target", val)}
                 />

@@ -2,16 +2,18 @@ import {Input} from "@/components/fundamentals/Input/Input";
 import {Step} from "@/components/Stepper/Stepper";
 import React from "react";
 import styled from "styled-components";
+import {useTranslation} from "@/lib/i18n/localeContext";
 
 export const Name = ({mode, title, identity, handleFieldChange, errors}) => {
+    const t = useTranslation();
     return (
         <StyledWrapper>
         <Step>
-            <h1>{mode === "goal" ? "What are you trying to achieve?" : "Who do you want to become?"}</h1>
+            <h1>{mode === "goal" ? t('stepper.name.goal_question') : t('stepper.name.habit_question')}</h1>
             <Input
                 autoFocus
-                placeholder={mode === "goal" ? "e.g. Finish Chapter 4 of React Course" : "e.g. A consistent runner"}
-                hintTxt={mode === "goal" ? "Describe the outcome you're aiming for." : "Imagine the person you see after adopting this habit."}
+                placeholder={mode === "goal" ? t('stepper.name.goal_placeholder') : t('stepper.name.habit_placeholder')}
+                hintTxt={mode === "goal" ? t('stepper.name.goal_hint') : t('stepper.name.habit_hint')}
                 value={mode === "goal" ? title : identity}
                 onValueChange={(val) => handleFieldChange(mode === "goal" ? "title" : "identity", val)}
             />

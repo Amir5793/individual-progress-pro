@@ -1,8 +1,10 @@
 // components/DatePicker/DatePicker.jsx
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import styled from 'styled-components';
+import { useTranslation } from "@/lib/i18n/localeContext";
 
-const DatePicker = ({ onDateSelect, initialDate = null, placeholder = 'Select date' }) => {
+const DatePicker = ({ onDateSelect, initialDate = null, placeholder }) => {
+    const t = useTranslation();
     const parsedInitialDate = useMemo(() => {
         return initialDate ? new Date(initialDate) : null;
     }, [initialDate]);
@@ -73,7 +75,7 @@ const DatePicker = ({ onDateSelect, initialDate = null, placeholder = 'Select da
     };
 
     const formatDate = (date) => {
-        if (!date) return placeholder;
+        if (!date) return placeholder ?? t('datepicker.placeholder');
         return date.toLocaleDateString('en-US', {
             weekday: 'short',
             month: 'short',
@@ -110,12 +112,9 @@ const DatePicker = ({ onDateSelect, initialDate = null, placeholder = 'Select da
         return days;
     };
 
-    const monthNames = [
-        'January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December'
-    ];
+    const monthNames = t('datepicker.months').split(',');
 
-    const dayNames = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+    const dayNames = t('datepicker.days_short').split(',');
 
     return (
         <StyledWrapper className="datePicker" ref={pickerRef}>
@@ -146,13 +145,13 @@ const DatePicker = ({ onDateSelect, initialDate = null, placeholder = 'Select da
                 <div className="calendarContainer">
                     <div className="calendarHeader">
                         <div className="monthYear">
-                            <button className="navButton" onClick={goToPreviousYear} aria-label="Previous year" type="button">
+                            <button className="navButton" onClick={goToPreviousYear} aria-label={t('datepicker.prev_year')} type="button">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                     <polyline points="15 18 9 12 15 6" />
                                     <polyline points="19 18 13 12 19 6" />
                                 </svg>
                             </button>
-                            <button className="navButton" onClick={goToPreviousMonth} aria-label="Previous month" type="button">
+                            <button className="navButton" onClick={goToPreviousMonth} aria-label={t('datepicker.prev_month')} type="button">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                     <polyline points="15 18 9 12 15 6" />
                                 </svg>
@@ -160,12 +159,12 @@ const DatePicker = ({ onDateSelect, initialDate = null, placeholder = 'Select da
                             <span className="monthYearText">
                                 {monthNames[viewDate.getMonth()]} {viewDate.getFullYear()}
                             </span>
-                            <button className="navButton" onClick={goToNextMonth} aria-label="Next month" type="button">
+                            <button className="navButton" onClick={goToNextMonth} aria-label={t('datepicker.next_month')} type="button">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                     <polyline points="9 18 15 12 9 6" />
                                 </svg>
                             </button>
-                            <button className="navButton" onClick={goToNextYear} aria-label="Next year" type="button">
+                            <button className="navButton" onClick={goToNextYear} aria-label={t('datepicker.next_year')} type="button">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                     <polyline points="9 18 15 12 9 6" />
                                     <polyline points="5 18 11 12 5 6" />
@@ -190,7 +189,7 @@ const DatePicker = ({ onDateSelect, initialDate = null, placeholder = 'Select da
                             setViewDate(today);
                             handleDateSelect(today.getDate());
                         }} type="button">
-                            Today
+                            {t('datepicker.today')}
                         </button>
                         {parsedInitialDate && (
                             <button className="clearButton" onClick={() => {
@@ -199,7 +198,7 @@ const DatePicker = ({ onDateSelect, initialDate = null, placeholder = 'Select da
                                 }
                                 setIsOpen(false);
                             }} type="button">
-                                Clear
+                                {t('datepicker.clear')}
                             </button>
                         )}
                     </div>
@@ -471,13 +470,12 @@ const StyledWrapper = styled.div`
     color: #FF8A80;
   }
 
-  @media (max-width: 360px) {
+  @media (max-width: 480px) {
     width: 100%;
     min-width: unset;
 
     .calendarContainer {
-      min-width: unset;
-      width: 100%;
+      left: calc(-50vw + 25%);
     }
   }
 `;

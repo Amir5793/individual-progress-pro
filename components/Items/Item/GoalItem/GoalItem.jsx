@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useState, useMemo, useCallback } from "react";
+import { useTranslation } from "@/lib/i18n/localeContext";
 import {
     Card,
     Header,
@@ -64,6 +65,7 @@ export default function GoalItem({
                                      onClick,
                                      onActionComplete,
                                  }) {
+    const t = useTranslation();
     const [showRoadmap, setShowRoadmap] = useState(false);
 
     const {
@@ -124,9 +126,9 @@ export default function GoalItem({
                         $checked={completed}
                         $color={hasUncompletedHighPriorityAction && !completed ? "var(--accent-red, #ff5c70)" : accentColor}
                         $disabled={hasUncompletedHighPriorityAction && !completed}
-                        aria-label={completed ? "Mark incomplete" : "Mark complete"}
+                        aria-label={completed ? t('goalitem.mark_incomplete') : t('goalitem.mark_complete')}
                         onClick={handleCheckboxComplete}
-                        title={hasUncompletedHighPriorityAction && !completed ? "Complete high priority actions first" : ""}
+                        title={hasUncompletedHighPriorityAction && !completed ? t('goalitem.high_priority_first') : ""}
                     >
                         {completed ? (
                             <Check size={18}/>
@@ -151,7 +153,7 @@ export default function GoalItem({
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <NextStepLabel $color={accentColor}>
                                         <PlayCircle size={13} />
-                                        Next Focus Step
+                                        {t('goalitem.next_focus_step')}
                                     </NextStepLabel>
 
                                     {/* FEATURE 2.1: Open modal trigger */}
@@ -163,7 +165,7 @@ export default function GoalItem({
                                             setShowRoadmap(true);
                                         }}
                                     >
-                                        Show all actions ({actions.length})
+                                        {t('goalitem.actions_count', {count: actions.length})}
                                     </button>
                                 </div>
 
@@ -196,7 +198,7 @@ export default function GoalItem({
                                     </ActionContent>
                                     <IconButton
                                         className="check-action-subtle"
-                                        aria-label="Validate active action step"
+                                        aria-label={t('goalitem.validate_action')}
                                         style={{ opacity: 0.5 }}
                                     >
                                         <Check size={14} />
@@ -205,7 +207,7 @@ export default function GoalItem({
                             </>
                         ) : (
                             <div className="all-actions-done-teaser">
-                                ✓ All scheduled plan milestones executed. Ready for validation!
+                                {t('goalitem.all_done_teaser')}
                             </div>
                         )}
                     </ActionsList>
@@ -215,7 +217,7 @@ export default function GoalItem({
                 <CompletionSection>
                     <CompletionLabel>
                         <Target size={15}/>
-                        Done when
+                        {t('goalitem.done_when')}
                     </CompletionLabel>
                     <CompletionText>
                         {completionCriteria}
@@ -227,11 +229,10 @@ export default function GoalItem({
                     <CompletionSection style={{ background: "rgba(255, 92, 112, 0.04)", borderLeft: "2.5px solid var(--accent-red, #ff5c70)" }}>
                         <CompletionLabel style={{ color: "var(--accent-red, #ff5c70)" }}>
                             <AlertCircle size={15}/>
-                            If-Then Guard Plan
+                            {t('goalitem.if_then_plan')}
                         </CompletionLabel>
                         <CompletionText>
-                            If <strong>{obstacle}</strong>, then{" "}
-                            <strong style={{ color: "var(--text-primary)" }}>{fallbackPlan || "execute backup procedure"}</strong>
+                            {t('goalitem.if_then_plan_text', {obstacle, fallback: fallbackPlan || t('goalitem.if_then_plan_fallback')})}
                         </CompletionText>
                     </CompletionSection>
                 )}
@@ -252,7 +253,7 @@ export default function GoalItem({
                         {totalActions > 0 && (
                             <Chip>
                                 <ArrowUpRight size={14}/>
-                                {completedActions}/{totalActions} Steps
+                                {completedActions}/{totalActions} {t('goalitem.steps')}
                             </Chip>
                         )}
                         {deadline && (
@@ -266,8 +267,8 @@ export default function GoalItem({
                         <ActionButton
                             as="button"
                             $color={accentColor}
-                            aria-label="Edit goal"
-                            data-tooltip="Edit goal"
+                            aria-label={t('goalitem.edit')}
+                            data-tooltip={t('goalitem.edit')}
                             onClick={(e) => {
                                 e.stopPropagation();
                                 onEdit?.(item);
@@ -348,7 +349,7 @@ export default function GoalItem({
                                                 <ActionItemTitle $completed={isDone}>
                                                     {act.title}
                                                     {act.priority === "high" && (
-                                                        <span className="pill-alert">HIGH</span>
+                                                <span className="pill-alert">{t('goalitem.high')}</span>
                                                     )}
                                                 </ActionItemTitle>
                                                 <ActionItemMeta>

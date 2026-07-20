@@ -1,8 +1,10 @@
 import localFont from "next/font/local";
 import {Geist, Geist_Mono} from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import {CommitmentProvider} from "@/lib/store/CommitmentContext";
 import {ThemeProvider} from "@/lib/store/ThemeContext";
+import {LocaleProvider} from "@/lib/i18n/localeContext";
 
 const inter = localFont({
     src: "../fonts/Inter-VariableFont_opsz,wght.ttf",
@@ -50,11 +52,15 @@ export default function RootLayout({children}) {
         <html lang="en" className={`${inter.variable} ${geistSans.variable} ${geistMono.variable}`}>
         <body>
         <ThemeProvider>
+        <LocaleProvider>
         <CommitmentProvider>
             {children}
         </CommitmentProvider>
+        </LocaleProvider>
         </ThemeProvider>
-        <script
+        <Script
+            id="sw-register"
+            strategy="afterInteractive"
             dangerouslySetInnerHTML={{
                 __html: `
                     if ('serviceWorker' in navigator) {

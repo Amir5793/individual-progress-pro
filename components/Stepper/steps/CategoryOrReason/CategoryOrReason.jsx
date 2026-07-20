@@ -3,6 +3,7 @@ import { Input } from "@/components/fundamentals/Input/Input";
 import { Step } from "@/components/Stepper/Stepper";
 import React from "react";
 import styled, { css, keyframes } from "styled-components";
+import { useTranslation } from "@/lib/i18n/localeContext";
 
 const CARD_DATA = {
     Learning: {
@@ -40,8 +41,27 @@ const CARD_DATA = {
 const CATEGORIES = ["Learning", "Career", "Health", "Hobby", "Personal", "Other"];
 
 export const CategoryOrReason = ({ mode, category, reason, handleFieldChange, errors, view }) => {
+    const t = useTranslation();
     const isGoalMode = mode === "goal";
     const showCategory = view === "category" || (view !== "reason" && isGoalMode);
+
+    const categoryLabels = {
+        Learning: t('stepper.category.learning'),
+        Career: t('stepper.category.career'),
+        Health: t('stepper.category.health'),
+        Hobby: t('stepper.category.hobby'),
+        Personal: t('stepper.category.personal'),
+        Other: t('stepper.category.other'),
+    };
+
+    const categoryDescriptions = {
+        Learning: t('stepper.category.learning_desc'),
+        Career: t('stepper.category.career_desc'),
+        Health: t('stepper.category.health_desc'),
+        Hobby: t('stepper.category.hobby_desc'),
+        Personal: t('stepper.category.personal_desc'),
+        Other: t('stepper.category.other_desc'),
+    };
 
     return (
         <StyledWrapper>
@@ -49,13 +69,13 @@ export const CategoryOrReason = ({ mode, category, reason, handleFieldChange, er
                 <HeaderGroup>
                     <StepTitle>
                         {showCategory
-                            ? "Identify the sphere of life."
-                            : "What is your deep incentive?"}
+                            ? t('stepper.category.identify_sphere')
+                            : t('stepper.category.deep_incentive')}
                     </StepTitle>
                     <StepSubtitle>
                         {showCategory
-                            ? "Choose the area of investment. Categorization clarifies attention balance."
-                            : "This statement is your psychological safeguard against procrastination."}
+                            ? t('stepper.category.choose_area')
+                            : t('stepper.category.psychological_safeguard')}
                     </StepSubtitle>
                 </HeaderGroup>
 
@@ -78,9 +98,9 @@ export const CategoryOrReason = ({ mode, category, reason, handleFieldChange, er
                                             <SphereIcon $active={isSelected} $accentColor={info.color}>
                                                 {info.icon}
                                             </SphereIcon>
-                                            <SphereTitleText>{tag}</SphereTitleText>
+                                            <SphereTitleText>{categoryLabels[tag]}</SphereTitleText>
                                         </SphereHeader>
-                                        <SphereDescription>{info.desc}</SphereDescription>
+                                        <SphereDescription>{categoryDescriptions[tag]}</SphereDescription>
                                         <CheckedIndicator $active={isSelected} $accentColor={info.color}>
                                             ✓
                                         </CheckedIndicator>
@@ -98,13 +118,13 @@ export const CategoryOrReason = ({ mode, category, reason, handleFieldChange, er
                 ) : (
                     <ReasonPortalCard>
                         <IdentityStatementLabel>
-                            <IdentityIcon>🕯️</IdentityIcon> Identity Statement Prompt
+                            <IdentityIcon>🕯️</IdentityIcon> {t('stepper.category.identity_prompt')}
                         </IdentityStatementLabel>
 
                         <InputContainer>
                             <Input
                                 autoFocus
-                                placeholder="e.g. I want to build physical strength to model health for my loved ones..."
+                                placeholder={t('stepper.category.identity_placeholder')}
                                 value={reason}
                                 onValueChange={(val) => handleFieldChange("reason", val)}
                                 size="large"
@@ -112,7 +132,7 @@ export const CategoryOrReason = ({ mode, category, reason, handleFieldChange, er
                         </InputContainer>
 
                         <CoachHintText>
-                            Focus on **who you are becoming**, rather than just the final target. Identity-based habits are statistically twice as likely to stick.
+                            {t('stepper.category.identity_hint')}
                         </CoachHintText>
 
                         {errors.reason && (

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useMemo, useState, useCallback } from "react";
+import { useTranslation, useLocale } from "@/lib/i18n/localeContext";
 import { useCommitments } from "@/lib/store/CommitmentContext";
 import { priorityScore } from "@/lib/items/sorting";
 import { getTodayStatus } from "@/components/Items/Item/HabitItem/helpers";
@@ -94,6 +95,7 @@ function countUndoneActions(goals) {
 }
 
 export default function DashboardSummary({ onLaunchCreator }) {
+  const t = useTranslation();
   const { commitments, loading, dispatch } = useCommitments();
   const [showWelcome, setShowWelcome] = useState(() => {
     if (typeof window === "undefined") return false;
@@ -161,36 +163,36 @@ export default function DashboardSummary({ onLaunchCreator }) {
             <EmptyIcon>
               <Inbox size={28} />
             </EmptyIcon>
-            <EmptyTitle>Welcome to your progress tracker</EmptyTitle>
+            <EmptyTitle>{t('dashboard.empty.title')}</EmptyTitle>
             <EmptyDesc>
-              Create your first goal or habit to start tracking your progress.
+              {t('dashboard.empty.desc')}
             </EmptyDesc>
             <CtaRow>
               <PrimaryCta
                 type="button"
                 onClick={() => onLaunchCreator?.("goal")}
-                aria-label="Create your first goal"
+                aria-label={t('dashboard.checklist.first_goal')}
               >
                 <Target size={16} />
-                New Goal
+                {t('dashboard.new_goal')}
               </PrimaryCta>
               <SecondaryCta
                 type="button"
                 onClick={() => onLaunchCreator?.("habit")}
-                aria-label="Create your first habit"
+                aria-label={t('dashboard.checklist.first_habit')}
               >
                 <Repeat size={16} />
-                New Habit
+                {t('dashboard.new_habit')}
               </SecondaryCta>
             </CtaRow>
             <Checklist>
               <ChecklistItem $done={hasGoal}>
                 <CheckCircle $done={hasGoal}>{hasGoal ? "✓" : ""}</CheckCircle>
-                Create your first goal
+                {t('dashboard.checklist.first_goal')}
               </ChecklistItem>
               <ChecklistItem $done={hasHabit}>
                 <CheckCircle $done={hasHabit}>{hasHabit ? "✓" : ""}</CheckCircle>
-                Create your first habit
+                {t('dashboard.checklist.first_habit')}
               </ChecklistItem>
             </Checklist>
           </EmptySlate>
@@ -199,10 +201,9 @@ export default function DashboardSummary({ onLaunchCreator }) {
         {showWelcome && (
           <WelcomeOverlay role="dialog" aria-label="Welcome">
             <WelcomeCard>
-              <WelcomeTitle>Welcome aboard!</WelcomeTitle>
+              <WelcomeTitle>{t('dashboard.welcome.title')}</WelcomeTitle>
               <WelcomeDesc>
-                Start building momentum by creating a goal or habit. You can
-                also load sample data to explore the app.
+                {t('dashboard.welcome.desc')}
               </WelcomeDesc>
               <WelcomeActions>
                 <PrimaryCta
@@ -213,7 +214,7 @@ export default function DashboardSummary({ onLaunchCreator }) {
                   }}
                 >
                   <Rocket size={16} />
-                  Create your first goal
+                  {t('dashboard.welcome.create_goal')}
                 </PrimaryCta>
                 <SecondaryCta
                   type="button"
@@ -223,13 +224,13 @@ export default function DashboardSummary({ onLaunchCreator }) {
                   }}
                 >
                   <Repeat size={16} />
-                  Create your first habit
+                  {t('dashboard.welcome.create_habit')}
                 </SecondaryCta>
                 <SecondaryCta type="button" onClick={loadSampleData}>
-                  Load sample data
+                  {t('dashboard.welcome.load_sample')}
                 </SecondaryCta>
                 <SecondaryCta type="button" onClick={dismissWelcome}>
-                  I&apos;ll do it later
+                  {t('dashboard.welcome.later')}
                 </SecondaryCta>
               </WelcomeActions>
             </WelcomeCard>
@@ -244,30 +245,30 @@ export default function DashboardSummary({ onLaunchCreator }) {
       <Card>
         {goals.length === 0 ? (
           <SummaryText>
-            No goals yet.{" "}
-            <SummaryLink href="/goals">Create one →</SummaryLink>
+            {t('dashboard.no_goal')}{" "}
+            <SummaryLink href="/goals">{t('dashboard.create_one')}</SummaryLink>
           </SummaryText>
         ) : undoneGoalsCount === 0 ? (
           <SummaryText>
-            All goals completed. Great work!{" "}
-            <SummaryLink href="/goals">See goals →</SummaryLink>
+            {t('dashboard.all_goal_done')}{" "}
+            <SummaryLink href="/goals">{t('dashboard.see_goals')}</SummaryLink>
           </SummaryText>
         ) : (
           <SummaryText>
-            You have <b>{undoneGoalsCount}</b> undone goal
-            {undoneGoalsCount !== 1 ? "s" : ""}
+            {t('dashboard.you_have')} <b>{undoneGoalsCount}</b>{" "}
+            {undoneGoalsCount !== 1
+              ? t('dashboard.undone_goals')
+              : t('dashboard.undone_goal')}
             {undoneActionsCount > 0 &&
-              `, ${undoneActionsCount} action${
-                undoneActionsCount !== 1 ? "s" : ""
-              } to do`}
+              `, ${t('dashboard.actions_to_do', { count: undoneActionsCount })}`}
             {goalBuckets.high > 0 &&
-              `, ${goalBuckets.high} in high priority`}
+              `, ${t('dashboard.in_high_priority', { count: goalBuckets.high })}`}
             {goalBuckets.medium > 0 &&
-              `, ${goalBuckets.medium} in medium priority`}
+              `, ${t('dashboard.in_medium_priority', { count: goalBuckets.medium })}`}
             {goalBuckets.low > 0 &&
-              `, ${goalBuckets.low} in low priority`}
+              `, ${t('dashboard.in_low_priority', { count: goalBuckets.low })}`}
             .{" "}
-            <SummaryLink href="/goals">See goals →</SummaryLink>
+            <SummaryLink href="/goals">{t('dashboard.see_goals')}</SummaryLink>
           </SummaryText>
         )}
       </Card>
@@ -275,19 +276,21 @@ export default function DashboardSummary({ onLaunchCreator }) {
       <Card>
         {habits.length === 0 ? (
           <SummaryText>
-            No habits yet.{" "}
-            <SummaryLink href="/habits">Create one →</SummaryLink>
+            {t('dashboard.no_habit')}{" "}
+            <SummaryLink href="/habits">{t('dashboard.create_one')}</SummaryLink>
           </SummaryText>
         ) : undoneHabitsCount === 0 ? (
           <SummaryText>
-            All habits done today. Keep it up!{" "}
-            <SummaryLink href="/habits">See habits →</SummaryLink>
+            {t('dashboard.all_habit_done')}{" "}
+            <SummaryLink href="/habits">{t('dashboard.see_habits')}</SummaryLink>
           </SummaryText>
         ) : (
           <SummaryText>
-            You have <b>{undoneHabitsCount}</b> undone habit
-            {undoneHabitsCount !== 1 ? "s" : ""}.{" "}
-            <SummaryLink href="/habits">See habits →</SummaryLink>
+            {t('dashboard.you_have')} <b>{undoneHabitsCount}</b>{" "}
+            {undoneHabitsCount !== 1
+              ? t('dashboard.undone_habits')
+              : t('dashboard.undone_habit')}.{" "}
+            <SummaryLink href="/habits">{t('dashboard.see_habits')}</SummaryLink>
           </SummaryText>
         )}
       </Card>
@@ -295,52 +298,48 @@ export default function DashboardSummary({ onLaunchCreator }) {
       <HelpButton
         type="button"
         onClick={() => setShowHelp(true)}
-        aria-label="Quick start guide"
+        aria-label={t('dashboard.help_label')}
       >
         <HelpCircle size={18} />
       </HelpButton>
 
       {showHelp && (
-        <QuickStartOverlay role="dialog" aria-label="Quick start guide">
+        <QuickStartOverlay role="dialog" aria-label={t('dashboard.help_label')}>
           <QuickStartCard>
-            <QuickStartTitle>Quick Start Guide</QuickStartTitle>
+            <QuickStartTitle>{t('dashboard.help_title')}</QuickStartTitle>
             <QuickStartStep>
               <StepNumber>1</StepNumber>
               <StepContent>
-                <StepLabel>Set a goal</StepLabel>
+                <StepLabel>{t('dashboard.step1_label')}</StepLabel>
                 <StepDesc>
-                  Define something you want to achieve, add actions, and track
-                  your progress.
+                  {t('dashboard.step1_desc')}
                 </StepDesc>
               </StepContent>
             </QuickStartStep>
             <QuickStartStep>
               <StepNumber>2</StepNumber>
               <StepContent>
-                <StepLabel>Build a habit</StepLabel>
+                <StepLabel>{t('dashboard.step2_label')}</StepLabel>
                 <StepDesc>
-                  Create a recurring habit with a trigger and minimum action to
-                  build consistency.
+                  {t('dashboard.step2_desc')}
                 </StepDesc>
               </StepContent>
             </QuickStartStep>
             <QuickStartStep>
               <StepNumber>3</StepNumber>
               <StepContent>
-                <StepLabel>Track daily</StepLabel>
+                <StepLabel>{t('dashboard.step3_label')}</StepLabel>
                 <StepDesc>
-                  Mark actions complete, check off habits, and watch your
-                  streaks grow.
+                  {t('dashboard.step3_desc')}
                 </StepDesc>
               </StepContent>
             </QuickStartStep>
             <QuickStartStep>
               <StepNumber>4</StepNumber>
               <StepContent>
-                <StepLabel>Review reports</StepLabel>
+                <StepLabel>{t('dashboard.step4_label')}</StepLabel>
                 <StepDesc>
-                  Visit the Reports page to see charts and weekly summaries of
-                  your progress.
+                  {t('dashboard.step4_desc')}
                 </StepDesc>
               </StepContent>
             </QuickStartStep>
@@ -349,7 +348,7 @@ export default function DashboardSummary({ onLaunchCreator }) {
               onClick={() => setShowHelp(false)}
               style={{ marginTop: 16, width: "100%", justifyContent: "center" }}
             >
-              Got it
+              {t('dashboard.got_it')}
             </SecondaryCta>
           </QuickStartCard>
         </QuickStartOverlay>

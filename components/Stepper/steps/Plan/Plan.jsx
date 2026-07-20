@@ -4,6 +4,7 @@ import { CheckBox } from "@/components/fundamentals/CheckBox/CheckBox";
 import { Step } from "@/components/Stepper/Stepper";
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { useTranslation } from "@/lib/i18n/localeContext";
 
 const ActionCard = ({
                         action,
@@ -18,6 +19,7 @@ const ActionCard = ({
                         draggedOverIndex,
                         currentIndex
                     }) => {
+    const t = useTranslation();
     const priority = action.priority || "medium";
     const displayNum = action.order || (currentIndex + 1);
 
@@ -36,7 +38,7 @@ const ActionCard = ({
             onDrop={(e) => onDrop(e, currentIndex)}
             onDragEnd={onDragEnd}
         >
-            <div className="drag-handle" title="Hold and drag to reschedule step sequential order">
+            <div className="drag-handle" title={t('stepper.plan.hold_tooltip')}>
                 ⋮⋮
             </div>
 
@@ -45,7 +47,7 @@ const ActionCard = ({
             <div className="action-content">
                 <div className="action-header">
                     <div className="action-title-group">
-                        <h3>{action.title || "Untitled Action"}</h3>
+                        <h3>{action.title || t('stepper.plan.untitled')}</h3>
                         <span className={`priority-pill priority-${priority}`}>
                             {priority.toUpperCase()}
                         </span>
@@ -54,7 +56,7 @@ const ActionCard = ({
                         <button
                             type="button"
                             onClick={() => onEdit(currentIndex)}
-                            aria-label="Edit action"
+                            aria-label={t('stepper.plan.edit_action')}
                             className="control-btn edit-btn"
                         >
                             ✏️
@@ -62,7 +64,7 @@ const ActionCard = ({
                         <button
                             type="button"
                             onClick={() => onDelete(currentIndex)}
-                            aria-label="Delete action"
+                            aria-label={t('stepper.plan.delete_action')}
                             className="control-btn delete-btn"
                         >
                             🗑️
@@ -71,10 +73,10 @@ const ActionCard = ({
                 </div>
                 <div className="action-details">
                     <span className="detail-pill success-criteria">
-                        <span className="pill-icon">🎯</span> {action.doneWhen || "No success criteria"}
+                        <span className="pill-icon">🎯</span> {action.doneWhen || t('stepper.plan.no_criteria')}
                     </span>
                     <span className="detail-pill pill-meta">
-                        <span>⏱ {action.estimatedMinutes} min</span>
+                        <span>⏱ {action.estimatedMinutes} {t('stepper.plan.min')}</span>
                         <span className="meta-separator">•</span>
                         <span>💪 {action.difficulty}</span>
                         {action.resources && action.resources.length > 0 && (
@@ -98,6 +100,7 @@ export const Plan = ({
                          saveAction, cancelModal,
                          onReorder
                      }) => {
+    const t = useTranslation();
     const [showAllModal, setShowAllModal] = useState(false);
     const [draggedIndex, setDraggedIndex] = useState(null);
     const [dragOverIndex, setDragOverIndex] = useState(null);
@@ -159,34 +162,34 @@ export const Plan = ({
         <StyledWrapper>
             <Step>
                 <div className="step-header">
-                    <h1>Let&apos;s make this achievable.</h1>
+                    <h1>{t('stepper.plan.title')}</h1>
                     <p className="subtitle">
-                        Break your goal into actions. Imagine you&apos;re explaining this to a friend. What would they do first? What after that?
+                        {t('stepper.plan.subtitle')}
                     </p>
                 </div>
 
                 <div className="roadmap-container">
                     <div className="roadmap-goal">
                         <div className="roadmap-goal-header">
-                            <strong>Active Goal Plan</strong>
+                            <strong>{t('stepper.plan.active_plan')}</strong>
                             {actions.length > 0 && (
                                 <button
                                     type="button"
                                     className="text-link-btn"
                                     onClick={() => setShowAllModal(true)}
                                 >
-                                    👁️ Show all actions ({actions.length})
+                                    👁️ {t('stepper.plan.show_all', {count: actions.length})}
                                 </button>
                             )}
                         </div>
-                        <p>{title || "Your goal"}</p>
+                        <p>{title || t('stepper.plan.your_goal')}</p>
                     </div>
 
                     <div className="action-list">
                         {actions.length === 0 ? (
                             <div className="empty-actions-state">
                                 <span className="empty-icon">🧭</span>
-                                <p>No steps planned yet. Build momentum by defining your first action.</p>
+                                <p>{t('stepper.plan.no_steps')}</p>
                             </div>
                         ) : (
                             actions.map((action, idx) => (
@@ -229,7 +232,7 @@ export const Plan = ({
                             setShowAddForm(true);
                         }}
                     >
-                        ＋ Add Action
+                        ＋ {t('stepper.plan.add_action')}
                     </button>
 
                     {errors.plan && <div className="error-message-banner">{errors.plan}</div>}
@@ -241,8 +244,8 @@ export const Plan = ({
                             <div className="modal-header">
                                 <div className="modal-header-row">
                                     <div>
-                                        <h4>All Actions Roadmap ({actions.length})</h4>
-                                        <p className="modal-teaser">Complete prioritised action list sorted by chronological execution order.</p>
+                                        <h4>{t('stepper.plan.section_header', {count: actions.length})}</h4>
+                                        <p className="modal-teaser">{t('stepper.plan.section_header_detail')}</p>
                                     </div>
                                     <button
                                         type="button"
@@ -283,7 +286,7 @@ export const Plan = ({
                                     onClick={() => setShowAllModal(false)}
                                     style={{ width: '100%' }}
                                 >
-                                    Close View
+                                    {t('stepper.plan.close_view')}
                                 </button>
                             </div>
                         </div>
@@ -294,24 +297,24 @@ export const Plan = ({
                     <div className="modal-overlay modal-fadeIn" onClick={cancelModal}>
                         <div className="modal-card modal-slideUp" onClick={(e) => e.stopPropagation()}>
                             <div className="modal-header">
-                                <h4>{isEditing ? "Precision Edit Plan Step" : "Add Action Step"}</h4>
-                                <p className="modal-teaser">Define a focused, isolated milestone with low initiation friction.</p>
+                                <h4>{isEditing ? t('stepper.plan.edit_header') : t('stepper.plan.add_header')}</h4>
+                                <p className="modal-teaser">{t('stepper.plan.add_subtitle')}</p>
                             </div>
 
                             <div className="modal-body-scroll">
                                 <div className="form-group">
-                                    <label className="input-label">Action Target</label>
+                                    <label className="input-label">{t('stepper.plan.action_target')}</label>
                                     <Input
-                                        placeholder="What is the immediate thing to do?"
+                                        placeholder={t('stepper.plan.action_placeholder')}
                                         value={newAction.title}
                                         onValueChange={(val) => setNewAction({ ...newAction, title: val })}
                                     />
                                 </div>
 
                                 <div className="form-group">
-                                    <label className="input-label">Clear Criteria of Completion</label>
+                                    <label className="input-label">{t('stepper.plan.criteria_label')}</label>
                                     <Input
-                                        placeholder="What physical evidence proves this step is completed?"
+                                        placeholder={t('stepper.plan.criteria_placeholder')}
                                         value={newAction.doneWhen}
                                         onValueChange={(val) => setNewAction({ ...newAction, doneWhen: val })}
                                     />
@@ -319,7 +322,7 @@ export const Plan = ({
 
                                 <div className="action-fields-row">
                                     <div className="form-group row-flex">
-                                        <label className="input-label">Time Allocation</label>
+                                        <label className="input-label">{t('stepper.plan.time_label')}</label>
                                         <select
                                             value={newAction.estimatedMinutes}
                                             onChange={(e) => setNewAction({
@@ -338,32 +341,32 @@ export const Plan = ({
                                     </div>
 
                                     <div className="form-group row-flex">
-                                        <label className="input-label">Cognitive Cost</label>
+                                        <label className="input-label">{t('stepper.plan.cognitive_cost')}</label>
                                         <select
                                             value={newAction.difficulty}
                                             onChange={(e) => setNewAction({ ...newAction, difficulty: e.target.value })}
                                         >
-                                            <option value="easy">Easy</option>
-                                            <option value="medium">Medium</option>
-                                            <option value="hard">Hard</option>
+                                            <option value="easy">{t('stepper.plan.easy')}</option>
+                                            <option value="medium">{t('stepper.plan.medium')}</option>
+                                            <option value="hard">{t('stepper.plan.hard')}</option>
                                         </select>
                                     </div>
 
                                     <div className="form-group row-flex">
-                                        <label className="input-label">Priority Tier</label>
+                                        <label className="input-label">{t('stepper.plan.priority_tier')}</label>
                                         <select
                                             value={newAction.priority || "medium"}
                                             onChange={(e) => setNewAction({ ...newAction, priority: e.target.value })}
                                         >
-                                            <option value="low">Low Priority</option>
-                                            <option value="medium">Medium Priority</option>
-                                            <option value="high">High Priority</option>
+                                            <option value="low">{t('stepper.plan.low_priority')}</option>
+                                            <option value="medium">{t('stepper.plan.medium_priority')}</option>
+                                            <option value="high">{t('stepper.plan.high_priority')}</option>
                                         </select>
                                     </div>
                                 </div>
 
                                 <div className="form-group">
-                                    <label className="input-label">Identified Constraints / Resources</label>
+                                    <label className="input-label">{t('stepper.plan.resources')}</label>
                                     <div className="resources-checkboxes">
                                         {['Computer', 'Internet', 'Book', 'Money', 'Someone Else', 'Nothing'].map((res) => {
                                             const isChecked = Array.isArray(newAction.resources) && newAction.resources.includes(res);
@@ -393,14 +396,14 @@ export const Plan = ({
                                     className="action-save-btn"
                                     onClick={saveAction}
                                 >
-                                    {isEditing ? "Update Plan Step" : "Integrate Step"}
+                                    {isEditing ? t('stepper.plan.update') : t('stepper.plan.integrate')}
                                 </button>
                                 <button
                                     type="button"
                                     className="action-cancel-btn"
                                     onClick={cancelModal}
                                 >
-                                    Cancel
+                                    {t('stepper.plan.cancel')}
                                 </button>
                             </div>
 

@@ -3,17 +3,19 @@ import { Input } from "@/components/fundamentals/Input/Input";
 import { Step } from "@/components/Stepper/Stepper";
 import React, { useState } from 'react';
 import styled from 'styled-components';
-
-const BARRIER_SUGGESTIONS = [
-    "Fatigue after work",
-    "Unexpected distractions",
-    "Lack of physical space",
-    "Overwhelmed by scope",
-    "Loss of motivation"
-];
+import { useTranslation } from "@/lib/i18n/localeContext";
 
 export const Obstacles = ({ obstacle, fallbackPlan, handleFieldChange, errors }) => {
+    const t = useTranslation();
     const [subStep, setSubStep] = useState(1);
+
+    const BARRIER_SUGGESTIONS = [
+        t('stepper.obstacle.barrier.fatigue'),
+        t('stepper.obstacle.barrier.distractions'),
+        t('stepper.obstacle.barrier.space'),
+        t('stepper.obstacle.barrier.scope'),
+        t('stepper.obstacle.barrier.loss')
+    ];
 
     const handleSuggestionClick = (suggestion) => {
         handleFieldChange("obstacle", suggestion);
@@ -23,9 +25,9 @@ export const Obstacles = ({ obstacle, fallbackPlan, handleFieldChange, errors })
         <StyledWrapper>
         <Step>
             <div className="step-header">
-                <h1>Safeguard your progress.</h1>
+                <h1>{t('stepper.obstacle.goal_desc')}</h1>
                 <p className="subtitle">
-                    Plans rarely fail from a lack of desire. They fail because of unexpected friction. Let&apos;s design a contingency path.
+                    {t('stepper.obstacle.goal_subtitle')}
                 </p>
             </div>
 
@@ -33,19 +35,19 @@ export const Obstacles = ({ obstacle, fallbackPlan, handleFieldChange, errors })
 
                 {subStep === 1 && (
                     <div className="condition-node if-node animate-slideIn">
-                        <div className="node-edge-badge error-badge">IF</div>
+                        <div className="node-edge-badge error-badge">{t('stepper.obstacle.if_label')}</div>
                         <div className="node-content">
-                            <h2 className="section-label">I encounter this obstacle (optional)</h2>
+                            <h2 className="section-label">{t('stepper.obstacle.obstacle_label_goal')}</h2>
                             <Input
                                 autoFocus
-                                placeholder="e.g. Extreme post-work exhaustion, feeling overwhelmed..."
+                                placeholder={t('stepper.obstacle.obstacle_placeholder_goal')}
                                 value={obstacle}
                                 onValueChange={(val) => handleFieldChange("obstacle", val)}
                             />
                             {errors.obstacle && <div className="error-message-banner">{errors.obstacle}</div>}
 
                             <div className="suggestions-wrapper">
-                                <span className="suggestions-label">Common barriers:</span>
+                                <span className="suggestions-label">{t('stepper.obstacle.common_barriers')}</span>
                                 <div className="suggestions-chips-group">
                                     {BARRIER_SUGGESTIONS.map((suggestion) => (
                                         <button
@@ -65,7 +67,7 @@ export const Obstacles = ({ obstacle, fallbackPlan, handleFieldChange, errors })
                                 className="sub-navigation-trigger"
                                 onClick={() => setSubStep(2)}
                             >
-                                Define Backup Response ➔
+                                {t('stepper.obstacle.define_response')} ➔
                             </button>
                         </div>
                     </div>
@@ -73,12 +75,12 @@ export const Obstacles = ({ obstacle, fallbackPlan, handleFieldChange, errors })
 
                 {subStep === 2 && (
                     <div className="condition-node then-node animate-slideIn">
-                        <div className="node-edge-badge success-badge">THEN</div>
+                        <div className="node-edge-badge success-badge">{t('stepper.obstacle.then_label')}</div>
                         <div className="node-content">
-                            <h2 className="section-label">I will execute this action (optional)</h2>
+                            <h2 className="section-label">{t('stepper.obstacle.response_label_goal')}</h2>
                             <Input
                                 autoFocus
-                                placeholder="e.g. I will set a timer and do just 5 minutes of study"
+                                placeholder={t('stepper.obstacle.response_placeholder_goal')}
                                 value={fallbackPlan}
                                 onValueChange={(val) => handleFieldChange("fallbackPlan", val)}
                             />
@@ -89,7 +91,7 @@ export const Obstacles = ({ obstacle, fallbackPlan, handleFieldChange, errors })
                                 className="sub-navigation-trigger back-trigger"
                                 onClick={() => setSubStep(1)}
                             >
-                                ⬅ Review Obstacle
+                                ⬅ {t('stepper.obstacle.review')}
                             </button>
                         </div>
                     </div>
@@ -100,13 +102,13 @@ export const Obstacles = ({ obstacle, fallbackPlan, handleFieldChange, errors })
                         type="button"
                         className={`instagram-dot ${subStep === 1 ? 'active' : ''}`}
                         onClick={() => setSubStep(1)}
-                        aria-label="View obstacle step"
+                        aria-label={t('stepper.obstacle.view_obstacle')}
                     />
                     <button
                         type="button"
                         className={`instagram-dot ${subStep === 2 ? 'active' : ''}`}
                         onClick={() => setSubStep(2)}
-                        aria-label="View backup response step"
+                        aria-label={t('stepper.obstacle.view_response')}
                     />
                 </div>
             </div>

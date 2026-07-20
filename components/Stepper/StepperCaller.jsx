@@ -6,6 +6,7 @@ import { datumHandler } from "./utils/datumHandler";
 import { validateStepInput, validateGoalData } from "@/components/Stepper/utils/validation";
 import { localStorageHandler } from "@/backend/local_storage/local_storage_api";
 import { useCommitments } from "@/lib/store/CommitmentContext";
+import { useTranslation } from "@/lib/i18n/localeContext";
 
 // Components for steps
 import { GoalOrTask } from "@/components/Stepper/steps/GoalOrTask/GoalOrTask";
@@ -47,6 +48,7 @@ const createSequentialId = (prefix) => {
 
 export const StepperCaller = ({ mode, datum, handleCloseModal, onCommitmentCreated }) => {
     const { refresh } = useCommitments();
+    const t = useTranslation();
 
     // ---------- Datum copy state (the full object) ----------
     const [datumCopy, setDatumCopy] = useState(datum);
@@ -289,7 +291,7 @@ export const StepperCaller = ({ mode, datum, handleCloseModal, onCommitmentCreat
     const handleFinalStepCompleted = () => {
         const validationResult = validateGoalData(datumCopy, mode, isAchieveAbleInOneAction);
         if (!validationResult.valid) {
-            alert("Please fix the following errors:\n" + Object.values(validationResult.errors).join("\n"));
+            alert(t('stepper.save_errors') + "\n" + Object.values(validationResult.errors).join("\n"));
             return;
         }
 
@@ -334,7 +336,7 @@ export const StepperCaller = ({ mode, datum, handleCloseModal, onCommitmentCreat
             refresh();
             handleCloseModal?.();
         } else {
-            alert('Failed to save: ' + saveResult.error);
+            alert(t('stepper.save_failed') + saveResult.error);
         }
     };
 
@@ -346,8 +348,8 @@ export const StepperCaller = ({ mode, datum, handleCloseModal, onCommitmentCreat
                 initialStep={1}
                 onStepChange={(prevStep, nextStep) => validateAndMove(prevStep, nextStep)}
                 onFinalStepCompleted={handleFinalStepCompleted}
-                backButtonText="Previous"
-                nextButtonText="Next"
+                backButtonText={t('stepper.previous')}
+                nextButtonText={t('stepper.next')}
                 handleCloseModal={handleCloseModal}
             >
                 {mode === "goal" && (

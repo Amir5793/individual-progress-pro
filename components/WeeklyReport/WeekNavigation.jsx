@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useTranslation } from "@/lib/i18n/localeContext";
 import { NavBar, NavBtn, WeekLabel, TodayBtn } from "./WeeklyReport.styles";
 
 export default function WeekNavigation({
@@ -11,6 +12,7 @@ export default function WeekNavigation({
   onToday,
   onJump,
 }) {
+  const t = useTranslation();
   const [mounted, setMounted] = useState(false);
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setMounted(true), []);
@@ -38,7 +40,7 @@ export default function WeekNavigation({
 
   return (
     <NavBar>
-      <NavBtn onClick={onPrev} aria-label="Previous week">
+      <NavBtn onClick={onPrev} aria-label={t('report.week.prev')}>
         <ChevronLeft size={18} />
       </NavBtn>
 
@@ -47,10 +49,10 @@ export default function WeekNavigation({
       </WeekLabel>
 
       {!isCurrentWeek && (
-        <TodayBtn onClick={onToday}>Today</TodayBtn>
+        <TodayBtn onClick={onToday}>{t('report.week.today')}</TodayBtn>
       )}
 
-      <NavBtn onClick={onNext} aria-label="Next week">
+      <NavBtn onClick={onNext} aria-label={t('report.week.next')}>
         <ChevronRight size={18} />
       </NavBtn>
     </NavBar>

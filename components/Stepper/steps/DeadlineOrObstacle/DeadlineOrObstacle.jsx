@@ -4,14 +4,7 @@ import DatePicker from "@/components/Calendar/DatePicker";
 import {Step} from "@/components/Stepper/Stepper";
 import React, {useState} from "react";
 import styled from "styled-components";
-
-const HABIT_BARRIER_SUGGESTIONS = [
-    "Fatigue after work",
-    "Unexpected distractions",
-    "Lack of motivation",
-    "Forgotten cue",
-    "Feeling overwhelmed"
-];
+import {useTranslation} from "@/lib/i18n/localeContext";
 
 export const DeadlineOrObstacle = ({
                                        mode, deadline, showCalendar,
@@ -19,35 +12,51 @@ export const DeadlineOrObstacle = ({
                                        obstacle, fallbackPlan,
                                        handleFieldChange, errors
                                    }) => {
+    const t = useTranslation();
     const [obstacleSubStep, setObstacleSubStep] = useState(1);
+
+    const HABIT_BARRIER_SUGGESTIONS = [
+        t('stepper.obstacle.barrier.fatigue'),
+        t('stepper.obstacle.barrier.distractions'),
+        t('stepper.obstacle.barrier.motivation'),
+        t('stepper.obstacle.barrier.cue'),
+        t('stepper.obstacle.barrier.overwhelmed'),
+    ];
+
+    const deadlineOptions = [
+        {key: "No deadline", label: t('stepper.deadline.no_deadline')},
+        {key: "tomorrow", label: t('stepper.deadline.tomorrow')},
+        {key: "this week", label: t('stepper.deadline.this_week')},
+        {key: "pick a date", label: t('stepper.deadline.pick_date')},
+    ];
 
     if (mode === "habit") {
         return (
             <StyledWrapper>
                 <Step>
                     <div className="step-header">
-                        <h1>Safeguard your habit.</h1>
+                        <h1>{t('stepper.obstacle.habit_subtitle')}</h1>
                         <p className="obstacle-subtitle">
-                            Habits break when friction appears unprepared. Let&apos;s build a safety net so you never lose momentum.
+                            {t('stepper.obstacle.habit_desc')}
                         </p>
                     </div>
 
                     <div className="obstacles-framework sub-stepper-viewport">
                         {obstacleSubStep === 1 && (
                             <div className="condition-node if-node animate-slideIn">
-                                <div className="node-edge-badge error-badge">IF</div>
+                                <div className="node-edge-badge error-badge">{t('stepper.obstacle.if_label')}</div>
                                 <div className="node-content">
-                                    <h2 className="section-label">I face this obstacle (optional)</h2>
+                                    <h2 className="section-label">{t('stepper.obstacle.obstacle_label_habit')}</h2>
                                     <Input
                                         autoFocus
-                                        placeholder="e.g. Too tired after work, forgot to do it..."
+                                        placeholder={t('stepper.obstacle.obstacle_placeholder_habit')}
                                         value={obstacle}
                                         onValueChange={(val) => handleFieldChange("obstacle", val)}
                                     />
                                     {errors.obstacle && <div className="error-message-banner">{errors.obstacle}</div>}
 
                                     <div className="suggestions-wrapper">
-                                        <span className="suggestions-label">Common barriers:</span>
+                                        <span className="suggestions-label">{t('stepper.obstacle.common_barriers')}</span>
                                         <div className="suggestions-chips-group">
                                             {HABIT_BARRIER_SUGGESTIONS.map((suggestion) => (
                                                 <button
@@ -67,7 +76,7 @@ export const DeadlineOrObstacle = ({
                                         className="sub-navigation-trigger"
                                         onClick={() => setObstacleSubStep(2)}
                                     >
-                                        Define Backup Response ➔
+                                        {t('stepper.obstacle.define_response')} ➔
                                     </button>
                                 </div>
                             </div>
@@ -75,12 +84,12 @@ export const DeadlineOrObstacle = ({
 
                         {obstacleSubStep === 2 && (
                             <div className="condition-node then-node animate-slideIn">
-                                <div className="node-edge-badge success-badge">THEN</div>
+                                <div className="node-edge-badge success-badge">{t('stepper.obstacle.then_label')}</div>
                                 <div className="node-content">
-                                    <h2 className="section-label">I will do this instead (optional)</h2>
+                                    <h2 className="section-label">{t('stepper.obstacle.response_label_habit')}</h2>
                                     <Input
                                         autoFocus
-                                        placeholder="e.g. I will do just 2 minutes of the habit"
+                                        placeholder={t('stepper.obstacle.response_placeholder_habit')}
                                         value={fallbackPlan}
                                         onValueChange={(val) => handleFieldChange("fallbackPlan", val)}
                                     />
@@ -91,7 +100,7 @@ export const DeadlineOrObstacle = ({
                                         className="sub-navigation-trigger back-trigger"
                                         onClick={() => setObstacleSubStep(1)}
                                     >
-                                        ⬅ Review Obstacle
+                                        ⬅ {t('stepper.obstacle.review')}
                                     </button>
                                 </div>
                             </div>
@@ -102,13 +111,13 @@ export const DeadlineOrObstacle = ({
                                 type="button"
                                 className={`instagram-dot ${obstacleSubStep === 1 ? 'active' : ''}`}
                                 onClick={() => setObstacleSubStep(1)}
-                                aria-label="View obstacle step"
+                                aria-label={t('stepper.obstacle.view_obstacle')}
                             />
                             <button
                                 type="button"
                                 className={`instagram-dot ${obstacleSubStep === 2 ? 'active' : ''}`}
                                 onClick={() => setObstacleSubStep(2)}
-                                aria-label="View backup response step"
+                                aria-label={t('stepper.obstacle.view_response')}
                             />
                         </div>
                     </div>
@@ -120,17 +129,17 @@ export const DeadlineOrObstacle = ({
     return (
         <StyledWrapper>
             <Step>
-                <h1>When would you like to finish?</h1>
+                <h1>{t('stepper.deadline.title')}</h1>
                 <div className="date-picker-container">
                     <div className="date-picker-checkbox-container">
-                        {["No deadline", "tomorrow", "this week", "pick a date"].map((option) => {
+                        {deadlineOptions.map((option) => {
                             let checked = false;
-                            if (option === "No deadline" && deadline === null) checked = true; else if (option === "tomorrow") {
+                            if (option.key === "No deadline" && deadline === null) checked = true; else if (option.key === "tomorrow") {
                                 const tomorrow = new Date()
                                 tomorrow.setDate(tomorrow.getDate() + 1);
                                 if (deadline && deadline ? (deadline instanceof Date ? deadline : new Date(deadline)).toDateString() : ""
                                     === tomorrow.toDateString()) checked = true;
-                            } else if (option === "this week") {
+                            } else if (option.key === "this week") {
                                 const today = new Date();
                                 const day = today.getDay();
                                 const diff = day === 0 ? 0 : 7 - day;
@@ -138,15 +147,15 @@ export const DeadlineOrObstacle = ({
                                 sunday.setDate(today.getDate() + diff);
                                 if (deadline && deadline ? (deadline instanceof Date ? deadline : new Date(deadline)).toDateString() : ""
                                     === sunday.toDateString()) checked = true;
-                            } else if (option === "pick a date") {
+                            } else if (option.key === "pick a date") {
                                 checked = showCalendar;
                             }
                             return (<CheckBox
-                                key={option}
+                                key={option.key}
                                 name="time"
-                                value={option}
+                                value={option.label}
                                 checked={checked}
-                                func={() => handleTimeSelection(option)}
+                                func={() => handleTimeSelection(option.key)}
                             />);
                         })}
                     </div>
@@ -387,12 +396,12 @@ const StyledWrapper = styled.div`
     }
 
     .date-picker-container {
-      flex-direction: column;
+      // flex-direction: column;
       gap: 1rem;
     }
 
     .date-picker-checkbox-container {
-      height: auto;
+      height: 60vh;
       gap: 0.5rem;
     }
 

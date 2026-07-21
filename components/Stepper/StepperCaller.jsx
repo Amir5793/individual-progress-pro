@@ -46,6 +46,15 @@ const createSequentialId = (prefix) => {
     return `${prefix}-${actionSequence}`;
 };
 
+const translateErrorKeys = (t, errors) => {
+    if (!errors) return errors;
+    const out = {};
+    for (const [key, val] of Object.entries(errors)) {
+        out[key] = typeof val === "string" ? t(val) : val;
+    }
+    return out;
+};
+
 export const StepperCaller = ({ mode, datum, handleCloseModal, onCommitmentCreated }) => {
     const { refresh } = useCommitments();
     const t = useTranslation();
@@ -87,7 +96,7 @@ export const StepperCaller = ({ mode, datum, handleCloseModal, onCommitmentCreat
     // ---------- Save (Add or Update) ----------
     const saveAction = () => {
         if (!newAction.title.trim()) {
-            setErrors((prev) => ({ ...prev, plan: "Action title is required" }));
+            setErrors((prev) => ({ ...prev, plan: t("stepper.validation.action_title_required") }));
             return;
         }
 
@@ -273,10 +282,10 @@ export const StepperCaller = ({ mode, datum, handleCloseModal, onCommitmentCreat
 
         if (!result.valid) {
             if (result.errors) {
-                setErrors(result.errors);
+                setErrors(translateErrorKeys(t, result.errors));
             } else if (result.error) {
                 const fieldName = getFieldNameForStep(previousStep);
-                setErrors({ [fieldName]: result.error });
+                setErrors({ [fieldName]: t(result.error) });
             }
             return false;
         } else {
@@ -291,7 +300,7 @@ export const StepperCaller = ({ mode, datum, handleCloseModal, onCommitmentCreat
     const handleFinalStepCompleted = () => {
         const validationResult = validateGoalData(datumCopy, mode, isAchieveAbleInOneAction);
         if (!validationResult.valid) {
-            alert(t('stepper.save_errors') + "\n" + Object.values(validationResult.errors).join("\n"));
+            alert(t('stepper.save_errors') + "\n" + Object.values(translateErrorKeys(t, validationResult.errors)).join("\n"));
             return;
         }
 

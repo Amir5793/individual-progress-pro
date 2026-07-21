@@ -35,8 +35,10 @@ export function LocaleProvider({ children }) {
     initialized.current = true;
     try {
       const stored = localStorage.getItem(LOCALE_KEY);
-      if (stored && (stored === "en" || stored === "fa")) {
+      if (stored === "fa" || stored === "en") {
         setLocaleState(stored);
+        document.documentElement.lang = stored;
+        document.documentElement.dir = stored === "fa" ? "rtl" : "ltr";
       }
     } catch {}
   }, []);

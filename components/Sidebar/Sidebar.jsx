@@ -43,9 +43,10 @@ export default function Sidebar() {
 
   const themeIcon = mounted ? (theme === "dark" ? SunIcon : MoonIcon) : SunIcon;
   const themeLabel = mounted ? (theme === "dark" ? t("nav.light") : t("nav.dark")) : t("nav.dark");
+  const isRTL = locale === "fa";
 
   return (
-    <StyledWrapper>
+    <StyledWrapper className={isRTL ? "rtl" : ""}>
       <div className="sidebar-stand"></div>
       <aside className="sidebar">
         <div className="sidebar-logo">
@@ -55,8 +56,8 @@ export default function Sidebar() {
             </div>
           </div>
           <div className="logo-text">
-            <span className="t1">Individual</span>
-            <span className="t2">Progress</span>
+            <span className="t1">{t("app.logo.line1")}</span>
+            <span className="t2">{t("app.logo.line2")}</span>
           </div>
         </div>
 
@@ -367,5 +368,30 @@ const StyledWrapper = styled.div`
 
   .locale-toggle svg {
     flex-shrink: 0;
+  }
+
+  /* RTL styles */
+  &.rtl .sidebar-stand {
+    // left: auto;
+    right: 0;
+    border-right: none;
+    border-left: 1px solid var(--sidebar-border);
+  }
+
+  &.rtl .sidebar {
+    // left: auto;
+    right: 0;
+    border-right: none;
+    border-left: 1px solid var(--sidebar-border);
+  }
+
+  &.rtl .sidebar-logo {
+    flex-direction: row-reverse;
+  }
+
+  &.rtl .nav-item.active::before {
+    left: auto;
+    right: 0;
+    border-radius: 3px 0 0 3px;
   }
 `;

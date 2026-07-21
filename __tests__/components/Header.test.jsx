@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import Header from "@/components/Header/Header";
 import { useCommitments } from "@/lib/store/CommitmentContext";
 import { clearAllCommitments } from "@/lib/services/commitmentService";
+import { LocaleProvider } from "@/lib/i18n/localeContext";
 
 jest.mock("@/lib/store/CommitmentContext");
 jest.mock("@/lib/services/commitmentService");
@@ -21,26 +22,26 @@ describe("Header", () => {
   });
 
   it("renders a time-based greeting", () => {
-    render(<Header />);
+    render(<LocaleProvider><Header /></LocaleProvider>);
     const title = screen.getByText(/^(Good (morning|afternoon|evening|night)|Hello there), Achiever/i);
     expect(title).toBeTruthy();
   });
 
   it("renders a motivation quote", () => {
-    render(<Header />);
+    render(<LocaleProvider><Header /></LocaleProvider>);
     const sub = screen.getByText(/^".*"$/);
     expect(sub).toBeTruthy();
     expect(sub.textContent.length).toBeGreaterThan(2);
   });
 
   it("has a delete button", () => {
-    render(<Header />);
+    render(<LocaleProvider><Header /></LocaleProvider>);
     const btn = screen.getByRole("button", { name: /delete all/i });
     expect(btn).toBeTruthy();
   });
 
   it("does nothing on delete click when no commitments", () => {
-    render(<Header />);
+    render(<LocaleProvider><Header /></LocaleProvider>);
     const btn = screen.getByRole("button", { name: /delete all/i });
     fireEvent.click(btn);
     expect(clearAllCommitments).not.toHaveBeenCalled();
@@ -55,7 +56,7 @@ describe("Header", () => {
     });
     window.confirm = jest.fn(() => true);
 
-    render(<Header />);
+    render(<LocaleProvider><Header /></LocaleProvider>);
     const btn = screen.getByRole("button", { name: /delete all/i });
     fireEvent.click(btn);
 
@@ -77,7 +78,7 @@ describe("Header", () => {
     });
     window.confirm = jest.fn(() => false);
 
-    render(<Header />);
+    render(<LocaleProvider><Header /></LocaleProvider>);
     const btn = screen.getByRole("button", { name: /delete all/i });
     fireEvent.click(btn);
 

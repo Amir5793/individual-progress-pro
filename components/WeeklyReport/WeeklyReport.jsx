@@ -35,23 +35,14 @@ export default function WeeklyReport({
     setTimeout(() => setToast(null), 3000);
   }, []);
 
-  const isInWeek = useCallback(
-    (item) => {
-      if (!item.createdAt) return false;
-      const created = new Date(item.createdAt);
-      return created >= weekStart && created < weekEnd;
-    },
-    [weekStart, weekEnd]
-  );
-
   const goals = useMemo(
-    () => commitments.filter((c) => c.type === "goal" && isInWeek(c)),
-    [commitments, isInWeek]
+    () => commitments.filter((c) => c.type === "goal"),
+    [commitments]
   );
 
   const habits = useMemo(
-    () => commitments.filter((c) => c.type === "habit" && isInWeek(c)),
-    [commitments, isInWeek]
+    () => commitments.filter((c) => c.type === "habit"),
+    [commitments]
   );
 
   const hasItems = goals.length > 0 || habits.length > 0;

@@ -181,7 +181,7 @@ export default function GoalItem({
                                         <ActionItemTitle $completed={false}>
                                             {nextAction.title}
                                             {nextAction.priority === "high" && (
-                                                <span className="pill-alert">HIGH</span>
+                                                <span className="pill-alert">{t('goalitem.high')}</span>
                                             )}
                                         </ActionItemTitle>
                                         <ActionItemMeta>
@@ -310,7 +310,7 @@ export default function GoalItem({
                         <ModalHeader>
                             <ModalHeaderRow>
                                 <div>
-                                    <ModalTitle>Goal Action Blueprint</ModalTitle>
+                                    <ModalTitle>{t('goalitem.roadmap_title')}</ModalTitle>
                                     <ModalTeaser>{title}</ModalTeaser>
                                 </div>
                                 <CloseXBtn onClick={() => setShowRoadmap(false)}>✕</CloseXBtn>
@@ -322,8 +322,8 @@ export default function GoalItem({
                             <PriorityAlertBanner>
                                 <AlertCircle size={16} />
                                 <div>
-                                    <strong>Completion Blocked</strong>
-                                    <p>Finish high-priority action steps before completing this goal.</p>
+                                    <strong>{t('goalitem.blocked_title')}</strong>
+                                    <p>{t('goalitem.blocked_desc')}</p>
                                 </div>
                             </PriorityAlertBanner>
                         )}

@@ -29,7 +29,7 @@ export default function Header() {
     setGreeting(idx !== null ? t(`header.greeting.${idx}`) : t("header.greeting.fallback"));
     const motIdx = Math.floor(Math.random() * 10);
     setMotivation(t(`header.motivation.${motIdx}`));
-  }, []);
+  }, [t]);
 
   const handleClearAll = () => {
     if (!commitments.length) return;

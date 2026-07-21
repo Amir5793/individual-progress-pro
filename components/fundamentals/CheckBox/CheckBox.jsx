@@ -5,6 +5,7 @@ import React from "react";
 export const CheckBox = ({
                              name,
                              value,
+                             label,
                              func = () => { console.log(value); },
                              checked,
                              type = "radio" // FIX: Defaults to "radio" to keep existing implementations intact
@@ -56,7 +57,7 @@ export const CheckBox = ({
                         <div className="spark s7"></div>
                         <div className="spark s8"></div>
                     </div>
-                    <span className="label-text">{value}</span>
+                    <span className="label-text">{label || value}</span>
                 </div>
             </label>
         </StyledWrapper>

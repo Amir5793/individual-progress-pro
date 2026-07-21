@@ -2,6 +2,7 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import Progress from "@/components/Progress/Progress";
 import { useCommitments } from "@/lib/store/CommitmentContext";
+import { LocaleProvider } from "@/lib/i18n/localeContext";
 
 jest.mock("@/lib/store/CommitmentContext");
 
@@ -46,7 +47,7 @@ describe("Progress", () => {
   });
 
   it("renders 0% when no commitments", () => {
-    render(<Progress />);
+    render(<LocaleProvider><Progress /></LocaleProvider>);
     expect(screen.getByText("0%")).toBeTruthy();
     expect(screen.getByText("0 / 0")).toBeTruthy();
   });
@@ -59,7 +60,7 @@ describe("Progress", () => {
       refresh: jest.fn(),
     });
 
-    render(<Progress />);
+    render(<LocaleProvider><Progress /></LocaleProvider>);
     expect(screen.getByText("67%")).toBeTruthy();
     expect(screen.getByText("2 / 3")).toBeTruthy();
   });
@@ -76,7 +77,7 @@ describe("Progress", () => {
       refresh: jest.fn(),
     });
 
-    render(<Progress />);
+    render(<LocaleProvider><Progress /></LocaleProvider>);
     expect(screen.getByText("67%")).toBeTruthy();
     expect(screen.getByText("2 / 3")).toBeTruthy();
   });
@@ -94,7 +95,7 @@ describe("Progress", () => {
       refresh: jest.fn(),
     });
 
-    render(<Progress />);
+    render(<LocaleProvider><Progress /></LocaleProvider>);
     expect(screen.getByText("50%")).toBeTruthy();
     expect(screen.getByText("2 / 4")).toBeTruthy();
   });
@@ -107,7 +108,7 @@ describe("Progress", () => {
       refresh: jest.fn(),
     });
 
-    render(<Progress />);
+    render(<LocaleProvider><Progress /></LocaleProvider>);
     expect(screen.getByText("100%")).toBeTruthy();
     expect(screen.getByText("1 / 1")).toBeTruthy();
   });
@@ -120,13 +121,13 @@ describe("Progress", () => {
       refresh: jest.fn(),
     });
 
-    render(<Progress />);
+    render(<LocaleProvider><Progress /></LocaleProvider>);
     expect(screen.getByText("0%")).toBeTruthy();
     expect(screen.getByText("0 / 1")).toBeTruthy();
   });
 
   it("links to /reports", () => {
-    render(<Progress />);
+    render(<LocaleProvider><Progress /></LocaleProvider>);
     const link = screen.getByText("View Reports").closest("a");
     expect(link).toBeTruthy();
     expect(link.getAttribute("href")).toBe("/reports");
@@ -140,7 +141,7 @@ describe("Progress", () => {
       refresh: jest.fn(),
     });
 
-    render(<Progress />);
+    render(<LocaleProvider><Progress /></LocaleProvider>);
     expect(screen.getByText("All done for today!")).toBeTruthy();
   });
 
@@ -152,7 +153,7 @@ describe("Progress", () => {
       refresh: jest.fn(),
     });
 
-    render(<Progress />);
+    render(<LocaleProvider><Progress /></LocaleProvider>);
     expect(screen.getByText("Keep going! You're doing great.")).toBeTruthy();
   });
 
@@ -164,7 +165,7 @@ describe("Progress", () => {
       refresh: jest.fn(),
     });
 
-    render(<Progress />);
+    render(<LocaleProvider><Progress /></LocaleProvider>);
     expect(screen.getByText("Time to get moving.")).toBeTruthy();
   });
 });

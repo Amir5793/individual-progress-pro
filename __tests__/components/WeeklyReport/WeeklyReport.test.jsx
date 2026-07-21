@@ -3,6 +3,7 @@ import { render, screen, fireEvent, act } from "@testing-library/react";
 import WeeklyReport from "@/components/WeeklyReport/WeeklyReport";
 import { useCommitments } from "@/lib/store/CommitmentContext";
 import { saveDraft } from "@/lib/services/draftService";
+import { LocaleProvider } from "@/lib/i18n/localeContext";
 
 jest.mock("@/lib/store/CommitmentContext");
 jest.mock("@/lib/services/draftService");
@@ -23,16 +24,18 @@ function renderWithCtx(commitments = [], loading = false) {
   const noop = jest.fn();
   return {
     ...render(
-      <WeeklyReport
-        weekStart={weekStart}
-        weekEnd={weekEnd}
-        currentDate={new Date()}
-        onPrev={noop}
-        onNext={noop}
-        onToday={noop}
-        onJump={noop}
-        onNavigate={noop}
-      />
+      <LocaleProvider>
+        <WeeklyReport
+          weekStart={weekStart}
+          weekEnd={weekEnd}
+          currentDate={new Date()}
+          onPrev={noop}
+          onNext={noop}
+          onToday={noop}
+          onJump={noop}
+          onNavigate={noop}
+        />
+      </LocaleProvider>
     ),
     weekStart,
     weekEnd,

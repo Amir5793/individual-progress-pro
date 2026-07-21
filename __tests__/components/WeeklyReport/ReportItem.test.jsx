@@ -1,6 +1,7 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import ReportItem from "@/components/WeeklyReport/ReportItem";
+import { LocaleProvider } from "@/lib/i18n/localeContext";
 
 describe("ReportItem", () => {
   it("renders goal with title and category", () => {
@@ -12,7 +13,7 @@ describe("ReportItem", () => {
       completed: false,
       actions: [],
     };
-    render(<ReportItem item={goal} />);
+    render(<LocaleProvider><ReportItem item={goal} /></LocaleProvider>);
     expect(screen.getByText("Learn Rust")).toBeTruthy();
     expect(screen.getByText("Active")).toBeTruthy();
   });
@@ -26,7 +27,7 @@ describe("ReportItem", () => {
       completed: true,
       actions: [],
     };
-    render(<ReportItem item={goal} />);
+    render(<LocaleProvider><ReportItem item={goal} /></LocaleProvider>);
     expect(screen.getByText("Done")).toBeTruthy();
   });
 
@@ -43,7 +44,7 @@ describe("ReportItem", () => {
         { completed: false },
       ],
     };
-    render(<ReportItem item={goal} />);
+    render(<LocaleProvider><ReportItem item={goal} /></LocaleProvider>);
     expect(screen.getByText("1/3 actions")).toBeTruthy();
   });
 
@@ -56,7 +57,7 @@ describe("ReportItem", () => {
       completions: [],
       streak: 0,
     };
-    render(<ReportItem item={habit} />);
+    render(<LocaleProvider><ReportItem item={habit} /></LocaleProvider>);
     expect(screen.getByText("Read Daily")).toBeTruthy();
     expect(screen.getByText("Pending")).toBeTruthy();
   });
@@ -71,7 +72,7 @@ describe("ReportItem", () => {
       completions: [{ date: today, status: "completed" }],
       streak: 1,
     };
-    render(<ReportItem item={habit} />);
+    render(<LocaleProvider><ReportItem item={habit} /></LocaleProvider>);
     expect(screen.getByText("Ideal")).toBeTruthy();
   });
 
@@ -85,7 +86,7 @@ describe("ReportItem", () => {
       completions: [{ date: today, status: "minimum" }],
       streak: 1,
     };
-    render(<ReportItem item={habit} />);
+    render(<LocaleProvider><ReportItem item={habit} /></LocaleProvider>);
     expect(screen.getByText("Minimum")).toBeTruthy();
   });
 
@@ -99,7 +100,7 @@ describe("ReportItem", () => {
       completions: [{ date: today, status: "failed" }],
       streak: 0,
     };
-    render(<ReportItem item={habit} />);
+    render(<LocaleProvider><ReportItem item={habit} /></LocaleProvider>);
     expect(screen.getByText("Missed")).toBeTruthy();
   });
 
@@ -119,12 +120,12 @@ describe("ReportItem", () => {
       ],
       streak: 2,
     };
-    render(<ReportItem item={habit} />);
+    render(<LocaleProvider><ReportItem item={habit} /></LocaleProvider>);
     expect(screen.getByText("2d")).toBeTruthy();
   });
 
   it("renders nothing for unknown type", () => {
-    const { container } = render(<ReportItem item={{ type: "unknown" }} />);
+    const { container } = render(<LocaleProvider><ReportItem item={{ type: "unknown" }} /></LocaleProvider>);
     expect(container.innerHTML).toBe("");
   });
 });

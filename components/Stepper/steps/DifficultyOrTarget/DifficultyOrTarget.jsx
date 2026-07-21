@@ -7,18 +7,25 @@ import {useTranslation} from "@/lib/i18n/localeContext";
 
 export const DifficultyOrTarget = ({mode, difficulty, target, handleFieldChange, errors}) => {
     const t = useTranslation();
+    const difficultyLevels = [
+        { value: "low", label: t('stepper.difficulty.low') },
+        { value: "medium", label: t('stepper.difficulty.medium') },
+        { value: "hard", label: t('stepper.difficulty.hard') },
+        { value: "almost impossible", label: t('stepper.difficulty.impossible') },
+    ];
     return (
         <StyledWrapper>
         <Step>
             <h1>{mode === "goal" ? t('stepper.difficulty.goal_question') : t('stepper.difficulty.target_question')}</h1>
             {mode === "goal" ? (<>
                 <div className="checkbox-container">
-                    {["low", "medium", "hard", "almost impossible"].map((level) => (<CheckBox
-                        key={level}
+                    {difficultyLevels.map((level) => (<CheckBox
+                        key={level.value}
                         name="difficulty"
-                        value={level}
-                        checked={difficulty === level}
-                        func={() => handleFieldChange("difficulty", level)}
+                        value={level.value}
+                        label={level.label}
+                        checked={difficulty === level.value}
+                        func={() => handleFieldChange("difficulty", level.value)}
                     />))}
                 </div>
                 {errors.difficulty && <div className="error">{errors.difficulty}</div>}

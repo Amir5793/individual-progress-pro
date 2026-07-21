@@ -7,18 +7,25 @@ import {useTranslation} from "@/lib/i18n/localeContext";
 
 export const EnergyOrTrigger = ({mode, energy, trigger, handleFieldChange, errors}) => {
     const t = useTranslation();
+    const energyLevels = [
+        { value: "low", label: t('stepper.energy.low') },
+        { value: "medium", label: t('stepper.energy.medium') },
+        { value: "much", label: t('stepper.energy.high') },
+        { value: "life or death", label: t('stepper.energy.extreme') },
+    ];
     return (
         <StyledWrapper>
         <Step>
             <h1>{mode === "goal" ? t('stepper.energy.goal_question') : t('stepper.energy.trigger_question')}</h1>
             {mode === "goal" ? (<>
                 <div className="checkbox-container">
-                    {["low", "medium", "much", "life or death"].map((level) => (<CheckBox
-                        key={level}
+                    {energyLevels.map((level) => (<CheckBox
+                        key={level.value}
                         name="energy"
-                        value={level}
-                        checked={energy === level}
-                        func={() => handleFieldChange("energy", level)}
+                        value={level.value}
+                        label={level.label}
+                        checked={energy === level.value}
+                        func={() => handleFieldChange("energy", level.value)}
                     />))}
                 </div>
                 {errors.energy && <div className="error">{errors.energy}</div>}

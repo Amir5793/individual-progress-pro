@@ -50,7 +50,7 @@ describe("useReportCommitments", () => {
         expect(result.current.loading).toBe(false);
     });
 
-    it("merges draft-only items when commitment is deleted", () => {
+    it("ignores draft items when live commitments exist for the week", () => {
         const now = new Date().toISOString();
         const { weekStart, weekEnd } = makeWeek(new Date());
 
@@ -68,10 +68,8 @@ describe("useReportCommitments", () => {
 
         const { result } = renderHook(() => useReportCommitments(weekStart, weekEnd));
 
-        expect(result.current.commitments).toHaveLength(2);
-        const ids = result.current.commitments.map(c => c.id);
-        expect(ids).toContain("g1");
-        expect(ids).toContain("g2");
+        expect(result.current.commitments).toHaveLength(1);
+        expect(result.current.commitments[0].title).toBe("Live Goal");
     });
 
     it("live version wins over draft version for same id", () => {
@@ -95,7 +93,7 @@ describe("useReportCommitments", () => {
         expect(result.current.commitments[0].title).toBe("Live Title");
     });
 
-    it("merges draft habits into live data", () => {
+    it("falls back to draft when no live commitments exist for the week", () => {
         const now = new Date().toISOString();
         const { weekStart, weekEnd } = makeWeek(new Date());
 
@@ -104,21 +102,18 @@ describe("useReportCommitments", () => {
         ]);
 
         useCommitments.mockReturnValue({
-            commitments: [
-                { id: "g1", type: "goal", title: "Live Goal", createdAt: now },
-            ],
+            commitments: [],
             loading: false,
         });
 
         const { result } = renderHook(() => useReportCommitments(weekStart, weekEnd));
 
-        expect(result.current.commitments).toHaveLength(2);
-        const types = result.current.commitments.map(c => c.type);
-        expect(types).toContain("goal");
-        expect(types).toContain("habit");
+        expect(result.current.commitments).toHaveLength(1);
+        expect(result.current.commitments[0].type).toBe("habit");
+        expect(result.current.commitments[0].title).toBe("Draft Habit");
     });
 
-    it("filters out items outside the week range", () => {
+    it("returns all live commitments regardless of createdAt date", () => {
         const { weekStart, weekEnd } = makeWeek(new Date());
         const outsideDate = "2020-01-01T00:00:00.000Z";
 
@@ -131,7 +126,8 @@ describe("useReportCommitments", () => {
 
         const { result } = renderHook(() => useReportCommitments(weekStart, weekEnd));
 
-        expect(result.current.commitments).toHaveLength(0);
+        expect(result.current.commitments).toHaveLength(1);
+        expect(result.current.commitments[0].title).toBe("Old");
     });
 
     it("returns loading from commitments context", () => {

@@ -359,7 +359,7 @@ describe("validateStepInput", () => {
   it("goal step 999 returns unknown step error", () => {
     const result = validateStepInput(999, null, "goal");
     expect(result.valid).toBe(false);
-    expect(result.error).toMatch(/Unknown goal step/);
+    expect(result.error).toBe("stepper.validation.unknown_goal_step");
   });
 
   it("habit step 2 validates title", () => {
@@ -412,7 +412,7 @@ describe("validateStepInput", () => {
   it("habit step 999 returns unknown step error", () => {
     const result = validateStepInput(999, null, "habit");
     expect(result.valid).toBe(false);
-    expect(result.error).toMatch(/Unknown habit step/);
+    expect(result.error).toBe("stepper.validation.unknown_habit_step");
   });
 
   it("returns error for unknown mode", () => {

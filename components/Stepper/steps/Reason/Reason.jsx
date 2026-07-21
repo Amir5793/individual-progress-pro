@@ -20,13 +20,12 @@ export const Reason = ({
         <div
           className="multiple-reasons-container"
           style={
-            mode === "goal" && {
+            mode === "goal" ? {
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
               gap: "2.5rem",
-              
-            }
+            } : undefined
           }
         >
           <h1>

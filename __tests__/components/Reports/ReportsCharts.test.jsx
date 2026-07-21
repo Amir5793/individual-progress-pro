@@ -2,6 +2,7 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import ReportsCharts from "@/components/Reports/ReportsCharts";
 import { useCommitments } from "@/lib/store/CommitmentContext";
+import { LocaleProvider } from "@/lib/i18n/localeContext";
 
 jest.mock("@/lib/store/CommitmentContext");
 
@@ -19,7 +20,7 @@ function renderWithCtx(commitments = [], overrides = {}) {
   useCommitments.mockReturnValue({ commitments, loading: false });
   const { weekStart, weekEnd } = makeWeekRange();
   return render(
-    <ReportsCharts weekStart={weekStart} weekEnd={weekEnd} {...overrides} />
+    <LocaleProvider><ReportsCharts weekStart={weekStart} weekEnd={weekEnd} {...overrides} /></LocaleProvider>
   );
 }
 
@@ -175,7 +176,7 @@ describe("ReportsCharts", () => {
     ];
     const { weekStart, weekEnd } = makeWeekRange();
     useCommitments.mockReturnValue({ commitments: items2, loading: false });
-    rerender(<ReportsCharts weekStart={weekStart} weekEnd={weekEnd} />);
+    rerender(<LocaleProvider><ReportsCharts weekStart={weekStart} weekEnd={weekEnd} /></LocaleProvider>);
 
     const destroyedCount = instances.filter((i) => i.destroy.mock.calls.length > 0).length;
     expect(destroyedCount).toBeGreaterThan(0);

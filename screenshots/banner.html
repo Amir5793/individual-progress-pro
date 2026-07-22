@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Individual Progress Pro — README Banner</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #050810;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .banner {
+    width: 1280px;
+    height: 640px;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(145deg, #0B1120 0%, #111827 40%, #0F172A 70%, #0B1120 100%);
+    border-radius: 0;
+  }
+
+  /* ── Background effects ── */
+  .bg-glow-1 {
+    position: absolute;
+    width: 600px; height: 600px;
+    top: -200px; left: -100px;
+    background: radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .bg-glow-2 {
+    position: absolute;
+    width: 500px; height: 500px;
+    bottom: -150px; right: 200px;
+    background: radial-gradient(circle, rgba(139,92,246,0.10) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .bg-glow-3 {
+    position: absolute;
+    width: 300px; height: 300px;
+    top: 100px; right: 400px;
+    background: radial-gradient(circle, rgba(34,211,238,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .grid-overlay {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(99,102,241,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(99,102,241,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 20%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 20%, transparent 100%);
+    pointer-events: none;
+  }
+
+  /* Subtle geometric shapes */
+  .geo-shape {
+    position: absolute;
+    border: 1px solid rgba(99,102,241,0.06);
+    border-radius: 12px;
+    pointer-events: none;
+  }
+  .geo-1 { width: 180px; height: 180px; top: 40px; right: 80px; transform: rotate(15deg); }
+  .geo-2 { width: 120px; height: 120px; bottom: 60px; left: 300px; transform: rotate(-10deg); border-color: rgba(34,211,238,0.05); }
+  .geo-3 { width: 80px; height: 80px; top: 200px; left: 50px; transform: rotate(25deg); border-radius: 50%; border-color: rgba(139,92,246,0.06); }
+
+  /* Particles */
+  .particle {
+    position: absolute;
+    width: 2px; height: 2px;
+    background: rgba(99,102,241,0.4);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .p1 { top: 15%; left: 12%; }
+  .p2 { top: 35%; left: 5%; background: rgba(34,211,238,0.3); }
+  .p3 { top: 70%; left: 25%; }
+  .p4 { top: 20%; left: 45%; background: rgba(139,92,246,0.3); }
+  .p5 { top: 80%; left: 55%; background: rgba(34,197,94,0.3); }
+  .p6 { top: 10%; left: 65%; }
+  .p7 { top: 55%; left: 48%; background: rgba(34,211,238,0.2); width: 3px; height: 3px; }
+  .p8 { top: 90%; left: 15%; background: rgba(139,92,246,0.3); }
+  .p9 { top: 45%; left: 38%; width: 1.5px; height: 1.5px; }
+
+  /* ── Left Content ── */
+  .left-content {
+    position: absolute;
+    left: 80px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    max-width: 480px;
+  }
+
+  .brand-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(99,102,241,0.1);
+    border: 1px solid rgba(99,102,241,0.2);
+    border-radius: 100px;
+    padding: 6px 16px;
+    margin-bottom: 28px;
+  }
+  .brand-badge .dot {
+    width: 6px; height: 6px;
+    background: #6366F1;
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(99,102,241,0.5);
+  }
+  .brand-badge span {
+    font-size: 12px;
+    font-weight: 600;
+    color: #A5B4FC;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .title {
+    font-size: 52px;
+    font-weight: 900;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    color: #F9FAFB;
+    margin-bottom: 20px;
+  }
+  .title .accent {
+    background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #22D3EE 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .tagline {
+    font-size: 18px;
+    font-weight: 500;
+    color: #94A3B8;
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+    margin-bottom: 36px;
+  }
+
+  .feature-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #CBD5E1;
+    backdrop-filter: blur(4px);
+  }
+  .pill .icon-dot {
+    width: 8px; height: 8px;
+    border-radius: 3px;
+  }
+  .pill .icon-dot.blue { background: #6366F1; }
+  .pill .icon-dot.purple { background: #8B5CF6; }
+  .pill .icon-dot.cyan { background: #22D3EE; }
+  .pill .icon-dot.green { background: #22C55E; }
+
+  /* ── Right UI Mockup ── */
+  .mockup-container {
+    position: absolute;
+    right: 50px;
+    top: 50%;
+    transform: translateY(-50%) perspective(1200px) rotateY(-5deg) rotateX(2deg);
+    z-index: 10;
+  }
+
+  .mockup-shadow {
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 500px;
+    height: 60px;
+    background: radial-gradient(ellipse, rgba(99,102,241,0.15) 0%, transparent 70%);
+    filter: blur(20px);
+  }
+
+  .app-window {
+    width: 520px;
+    background: linear-gradient(180deg, #1E293B 0%, #0F172A 100%);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow:
+      0 4px 6px rgba(0,0,0,0.3),
+      0 20px 50px rgba(0,0,0,0.4),
+      0 0 0 1px rgba(255,255,255,0.03) inset;
+  }
+
+  /* Title bar */
+  .title-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: rgba(15,23,42,0.8);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .title-bar .btn-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+  .title-bar .btn-dot.red { background: #EF4444; }
+  .title-bar .btn-dot.yellow { background: #F59E0B; }
+  .title-bar .btn-dot.green { background: #22C55E; }
+  .title-bar .tab-title {
+    margin-left: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #94A3B8;
+    letter-spacing: 0.02em;
+  }
+
+  /* App body */
+  .app-body {
+    display: flex;
+    min-height: 380px;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: 140px;
+    padding: 16px 0;
+    background: rgba(15,23,42,0.5);
+    border-right: 1px solid rgba(255,255,255,0.05);
+    flex-shrink: 0;
+  }
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    font-size: 11px;
+    font-weight: 500;
+    color: #64748B;
+    cursor: default;
+  }
+  .sidebar-item.active {
+    color: #E2E8F0;
+    background: rgba(99,102,241,0.1);
+    border-right: 2px solid #6366F1;
+  }
+  .sidebar-item .s-icon {
+    width: 14px; height: 14px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+  }
+  .sidebar-item.active .s-icon { background: rgba(99,102,241,0.3); color: #A5B4FC; }
+  .sidebar-item:not(.active) .s-icon { background: rgba(255,255,255,0.05); color: #475569; }
+
+  /* Main content */
+  .main-content {
+    flex: 1;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2px;
+  }
+  .section-header h3 {
+    font-size: 12px;
+    font-weight: 700;
+    color: #F1F5F9;
+    letter-spacing: 0.02em;
+  }
+  .section-header .badge {
+    font-size: 9px;
+    font-weight: 600;
+    color: #6366F1;
+    background: rgba(99,102,241,0.12);
+    border-radius: 6px;
+    padding: 3px 8px;
+  }
+
+  /* Task card */
+  .task-card {
+    background: rgba(30,41,59,0.7);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 12px;
+    backdrop-filter: blur(8px);
+  }
+  .task-card-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .task-icon {
+    width: 26px; height: 26px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .task-icon.blue { background: rgba(99,102,241,0.2); color: #818CF8; }
+  .task-icon.purple { background: rgba(139,92,246,0.2); color: #A78BFA; }
+  .task-icon.green { background: rgba(34,197,94,0.2); color: #4ADE80; }
+  .task-icon.cyan { background: rgba(34,211,238,0.2); color: #22D3EE; }
+
+  .task-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #E2E8F0;
+    flex: 1;
+  }
+  .task-streak {
+    font-size: 9px;
+    font-weight: 600;
+    color: #F59E0B;
+    background: rgba(245,158,11,0.1);
+    border-radius: 5px;
+    padding: 2px 7px;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+  .task-streak .flame { font-size: 10px; }
+
+  .task-desc {
+    font-size: 10px;
+    color: #64748B;
+    line-height: 1.5;
+    margin-bottom: 8px;
+    padding-left: 34px;
+  }
+
+  .task-tags {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    padding-left: 34px;
+  }
+  .tag {
+    font-size: 9px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 4px;
+    letter-spacing: 0.02em;
+  }
+  .tag.hard { background: rgba(239,68,68,0.12); color: #F87171; }
+  .tag.medium { background: rgba(245,158,11,0.12); color: #FBBF24; }
+  .tag.focus { background: rgba(139,92,246,0.12); color: #A78BFA; }
+  .tag.weekly { background: rgba(99,102,241,0.12); color: #818CF8; }
+  .tag.steps { background: rgba(34,197,94,0.12); color: #4ADE80; }
+  .tag.overdue { background: rgba(239,68,68,0.08); color: #F87171; }
+
+  /* Habit row */
+  .habit-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: rgba(30,41,59,0.5);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 8px;
+  }
+  .habit-icon {
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    flex-shrink: 0;
+  }
+  .habit-icon.green { background: rgba(34,197,94,0.2); color: #4ADE80; }
+  .habit-icon.cyan { background: rgba(34,211,238,0.2); color: #22D3EE; }
+
+  .habit-info { flex: 1; }
+  .habit-name { font-size: 11px; font-weight: 600; color: #CBD5E1; }
+  .habit-meta { font-size: 9px; color: #64748B; margin-top: 1px; }
+
+  .habit-week {
+    display: flex;
+    gap: 3px;
+  }
+  .habit-day {
+    width: 10px; height: 10px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.06);
+  }
+  .habit-day.done { background: #22C55E; }
+  .habit.day.today { background: rgba(99,102,241,0.4); border: 1px solid #6366F1; }
+
+  .habit-pct {
+    font-size: 10px;
+    font-weight: 700;
+    color: #4ADE80;
+    min-width: 30px;
+    text-align: right;
+  }
+
+  /* Progress bar mini */
+  .progress-mini {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background: rgba(30,41,59,0.5);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 8px;
+  }
+  .progress-mini .label {
+    font-size: 10px;
+    font-weight: 500;
+    color: #94A3B8;
+    flex: 1;
+  }
+  .progress-mini .pct {
+    font-size: 11px;
+    font-weight: 700;
+    color: #22D3EE;
+  }
+  .progress-bar-bg {
+    width: 80px;
+    height: 4px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: linear-gradient(90deg, #6366F1, #22D3EE);
+  }
+
+  /* Bottom row with ring chart */
+  .bottom-row {
+    display: flex;
+    gap: 10px;
+  }
+  .ring-card {
+    flex: 1;
+    background: rgba(30,41,59,0.5);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .ring-chart {
+    width: 44px;
+    height: 44px;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .ring-chart svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+  .ring-chart .bg-ring {
+    fill: none;
+    stroke: rgba(255,255,255,0.06);
+    stroke-width: 4;
+  }
+  .ring-chart .fg-ring {
+    fill: none;
+    stroke-width: 4;
+    stroke-linecap: round;
+  }
+  .ring-chart .center-val {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: #F1F5F9;
+  }
+  .ring-info .ring-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: #CBD5E1;
+  }
+  .ring-info .ring-sub {
+    font-size: 8px;
+    color: #64748B;
+    margin-top: 2px;
+  }
+  .ring-info .ring-tags {
+    display: flex;
+    gap: 3px;
+    margin-top: 4px;
+  }
+  .ring-info .mini-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+  }
+
+  /* Floating accent cards */
+  .float-card {
+    position: absolute;
+    background: rgba(30,41,59,0.85);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 10px 14px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    z-index: 20;
+  }
+  .float-card-1 {
+    right: 10px;
+    top: 30px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .float-card-1 .fc-icon {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #6366F1, #8B5CF6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .float-card-1 .fc-icon svg { width: 14px; height: 14px; }
+  .float-card-1 .fc-text .fc-label { font-size: 9px; color: #64748B; font-weight: 500; }
+  .float-card-1 .fc-text .fc-value { font-size: 13px; color: #F1F5F9; font-weight: 700; }
+
+  .float-card-2 {
+    right: -20px;
+    bottom: 80px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .float-card-2 .fc-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #22C55E;
+    box-shadow: 0 0 8px rgba(34,197,94,0.5);
+  }
+  .float-card-2 .fc-text { font-size: 10px; color: #CBD5E1; font-weight: 600; }
+  .float-card-2 .fc-sub { font-size: 8px; color: #64748B; font-weight: 400; margin-top: 1px; }
+
+  /* Decorative line accent */
+  .accent-line {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #6366F1, #8B5CF6, #22D3EE, transparent);
+    opacity: 0.4;
+  }
+</style>
+</head>
+<body>
+
+<div class="banner">
+  <!-- Background effects -->
+  <div class="bg-glow-1"></div>
+  <div class="bg-glow-2"></div>
+  <div class="bg-glow-3"></div>
+  <div class="grid-overlay"></div>
+  <div class="geo-shape geo-1"></div>
+  <div class="geo-shape geo-2"></div>
+  <div class="geo-shape geo-3"></div>
+  <div class="particle p1"></div>
+  <div class="particle p2"></div>
+  <div class="particle p3"></div>
+  <div class="particle p4"></div>
+  <div class="particle p5"></div>
+  <div class="particle p6"></div>
+  <div class="particle p7"></div>
+  <div class="particle p8"></div>
+  <div class="particle p9"></div>
+
+  <!-- Left Content -->
+  <div class="left-content">
+    <div class="brand-badge">
+      <span class="dot"></span>
+      <span>Personal Growth Platform</span>
+    </div>
+
+    <h1 class="title">
+      Individual<br>
+      <span class="accent">Progress Pro</span>
+    </h1>
+
+    <p class="tagline">Build habits. Track progress. Achieve goals.</p>
+
+    <div class="feature-pills">
+      <div class="pill">
+        <span class="icon-dot blue"></span>
+        Task Management
+      </div>
+      <div class="pill">
+        <span class="icon-dot purple"></span>
+        Habit Tracking
+      </div>
+      <div class="pill">
+        <span class="icon-dot cyan"></span>
+        Goal Analytics
+      </div>
+      <div class="pill">
+        <span class="icon-dot green"></span>
+        Self-Improvement
+      </div>
+    </div>
+  </div>
+
+  <!-- Right UI Mockup -->
+  <div class="mockup-container">
+    <div class="mockup-shadow"></div>
+
+    <div class="app-window">
+      <div class="title-bar">
+        <div class="btn-dot red"></div>
+        <div class="btn-dot yellow"></div>
+        <div class="btn-dot green"></div>
+        <span class="tab-title">Personal Progress</span>
+      </div>
+
+      <div class="app-body">
+        <!-- Sidebar -->
+        <div class="sidebar">
+          <div class="sidebar-item active">
+            <span class="s-icon">◉</span> Overview
+          </div>
+          <div class="sidebar-item">
+            <span class="s-icon">◎</span> Goals
+          </div>
+          <div class="sidebar-item">
+            <span class="s-icon">⬡</span> Habits
+          </div>
+          <div class="sidebar-item">
+            <span class="s-icon">◈</span> Reports
+          </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+          <!-- Section: Goals -->
+          <div class="section-header">
+            <h3>Active Goals</h3>
+            <span class="badge">3 active</span>
+          </div>
+
+          <div class="task-card">
+            <div class="task-card-head">
+              <div class="task-icon blue">G</div>
+              <span class="task-title">Complete ML Course</span>
+              <span class="task-streak"><span class="flame">🔥</span> 8-day</span>
+            </div>
+            <div class="task-desc">Finish the first chapter assignment</div>
+            <div class="task-tags">
+              <span class="tag hard">hard</span>
+              <span class="tag focus">medium Focus</span>
+              <span class="tag weekly">weekly</span>
+              <span class="tag steps">8/8 Steps</span>
+            </div>
+          </div>
+
+          <div class="task-card">
+            <div class="task-card-head">
+              <div class="task-icon purple">G</div>
+              <span class="task-title">Read 1984</span>
+            </div>
+            <div class="task-desc">Reading the last chapter of the book</div>
+            <div class="task-tags">
+              <span class="tag medium">medium</span>
+              <span class="tag focus">medium Focus</span>
+              <span class="tag weekly">daily</span>
+              <span class="tag steps">5/5 Steps</span>
+            </div>
+          </div>
+
+          <!-- Habits -->
+          <div class="section-header" style="margin-top:4px;">
+            <h3>Today's Habits</h3>
+            <span class="badge">2/3 done</span>
+          </div>
+
+          <div class="habit-row">
+            <div class="habit-icon green">✓</div>
+            <div class="habit-info">
+              <div class="habit-name">Morning Meditation</div>
+              <div class="habit-meta">8-day streak · 20 min target</div>
+            </div>
+            <div class="habit-week">
+              <div class="habit-day done"></div>
+              <div class="habit-day done"></div>
+              <div class="habit-day done"></div>
+              <div class="habit-day done"></div>
+              <div class="habit-day done"></div>
+              <div class="habit-day done"></div>
+              <div class="habit-day" style="background:rgba(99,102,241,0.4);border:1px solid #6366F1;"></div>
+            </div>
+            <div class="habit-pct">100%</div>
+          </div>
+
+          <div class="habit-row">
+            <div class="habit-icon cyan">✓</div>
+            <div class="habit-info">
+              <div class="habit-name">Read 30-50 Pages</div>
+              <div class="habit-meta">5-day streak · daily</div>
+            </div>
+            <div class="habit-week">
+              <div class="habit-day done"></div>
+              <div class="habit-day done"></div>
+              <div class="habit-day done"></div>
+              <div class="habit-day done"></div>
+              <div class="habit-day done"></div>
+              <div class="habit-day" style="background:rgba(255,255,255,0.08);"></div>
+              <div class="habit-day" style="background:rgba(99,102,241,0.4);border:1px solid #6366F1;"></div>
+            </div>
+            <div class="habit-pct" style="color:#22D3EE;">71%</div>
+          </div>
+
+          <!-- Bottom row -->
+          <div class="bottom-row">
+            <div class="ring-card">
+              <div class="ring-chart">
+                <svg viewBox="0 0 44 44">
+                  <circle class="bg-ring" cx="22" cy="22" r="18"></circle>
+                  <circle class="fg-ring" cx="22" cy="22" r="18" stroke="#6366F1" stroke-dasharray="79 113" stroke-dashoffset="0"></circle>
+                </svg>
+                <div class="center-val">72%</div>
+              </div>
+              <div class="ring-info">
+                <div class="ring-label">Weekly Progress</div>
+                <div class="ring-sub">Goal completion rate</div>
+              </div>
+            </div>
+
+            <div class="ring-card">
+              <div class="ring-chart">
+                <svg viewBox="0 0 44 44">
+                  <circle class="bg-ring" cx="22" cy="22" r="18"></circle>
+                  <circle class="fg-ring" cx="22" cy="22" r="18" stroke="#22C55E" stroke-dasharray="90 113" stroke-dashoffset="0"></circle>
+                </svg>
+                <div class="center-val">85%</div>
+              </div>
+              <div class="ring-info">
+                <div class="ring-label">Habit Score</div>
+                <div class="ring-tags">
+                  <span class="mini-dot" style="background:#22C55E;"></span>
+                  <span class="mini-dot" style="background:#6366F1;"></span>
+                  <span class="mini-dot" style="background:#8B5CF6;"></span>
+                  <span class="mini-dot" style="background:#22D3EE;"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Floating accent cards -->
+    <div class="float-card float-card-1">
+      <div class="fc-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+          <polyline points="17 6 23 6 23 12"></polyline>
+        </svg>
+      </div>
+      <div class="fc-text">
+        <div class="fc-label">Productivity</div>
+        <div class="fc-value">+24% this week</div>
+      </div>
+    </div>
+
+    <div class="float-card float-card-2">
+      <div class="fc-dot"></div>
+      <div>
+        <div class="fc-text">All on track</div>
+        <div class="fc-sub">3 goals, 5 habits active</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom accent line -->
+  <div class="accent-line"></div>
+</div>
+
+</body>
+</html>

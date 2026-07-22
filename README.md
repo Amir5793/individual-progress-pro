@@ -1,36 +1,203 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Individual Progress Pro
 
-## Getting Started
+> A personal productivity and self-improvement platform designed to help users build habits, manage tasks, and track progress toward their goals.
 
-First, run the development server:
+![Project Banner](./screenshots/banner.html)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## ✨ Overview
+
+Individual Progress Pro is a productivity application focused on helping users create consistency through task management, habit tracking, and progress visualization.
+
+The main idea is simple:
+
+**Small actions, repeated consistently, create meaningful progress.**
+
+The application provides tools to:
+- Manage daily tasks
+- Build and track habits
+- Monitor streaks and completion rates
+- Organize personal goals
+- Understand progress over time
+
+This project is built as a modern SaaS-style application with a focus on clean UX, scalable architecture, and real-world frontend practices.
+
+---
+
+# 🚀 Features
+
+## Task Management
+
+- Create, edit, and delete tasks
+- Organize tasks by:
+  - Priority
+  - Difficulty
+  - Category
+  - Frequency
+- Track completion status
+- View active and completed tasks
+
+## Habit Tracking
+
+- Create personal habits
+- Track daily consistency
+- Monitor streaks
+- Visualize habit completion
+
+## Progress System
+
+- Weekly progress tracking
+- Completion statistics
+- Productivity insights
+- Goal-oriented workflow
+
+## User Experience
+
+- Responsive design
+- Modern dashboard experience
+- Dark-themed interface
+- Consistent design system
+- Smooth interactions
+
+---
+
+# 🛠️ Tech Stack
+
+## Frontend
+
+| Technology | Purpose |
+|---|---|
+| Next.js | React framework and application structure |
+| React | UI development |
+| JavaScript | Application logic |
+| CSS | Styling and design system |
+
+## Data Management
+
+| Technology | Purpose |
+|---|---|
+| LocalStorage | Client-side persistence |
+| Custom CRUD API | Managing application data |
+
+## Development Tools
+
+| Tool | Purpose |
+|---|---|
+| Git | Version control |
+| GitHub | Repository management |
+| VS Code | Development environment |
+
+---
+
+# 🏗️ Architecture
+
+The project follows a component-based architecture.
+
+```
+src
+│
+├── app
+│   ├── tasks
+│   ├── habits
+│   └── components
+│
+├── components
+│   ├── TaskCard
+│   ├── HabitCard
+│   ├── ItemManager
+│   └── Stepper
+│
+├── services
+│   └── localStorage API
+│
+└── utils
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The application separates:
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+- UI components
+- Data management
+- Business logic
+- Reusable utilities
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This makes future migration to a backend system easier.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+# 🎯 Project Goals
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The main goals of Individual Progress Pro are:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Create a practical productivity tool
+- Learn real-world frontend architecture
+- Build a scalable SaaS-style application
+- Improve UI/UX engineering skills
+- Practice product development thinking
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# 🧪 Current Status
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+🚧 The project is currently under active development.
+
+Completed:
+
+- [x] LocalStorage CRUD system
+- [x] Task management foundation
+- [x] Habit management foundation
+- [x] Reusable item architecture
+- [x] Task UI
+- [x] Habit UI
+- [x] Item creation workflow
+
+In Progress:
+
+- [ ] Advanced progress reports
+- [ ] Backend integration
+- [ ] Authentication
+
+---
+
+# 🔮 Future Plans
+
+## Version 2
+
+- Backend API
+- User authentication
+- Cloud synchronization
+- Database integration
+- Multi-device support
+
+## Version 3
+
+- AI productivity assistant
+- Smart recommendations
+- Personalized improvement plans
+- Advanced analytics
+
+---
+
+# 💡 Development Philosophy
+
+Individual Progress Pro follows three principles:
+
+### 1. Consistency Over Intensity
+
+Progress comes from repeated small actions.
+
+### 2. Simple But Powerful
+
+The interface should stay simple while providing meaningful insights.
+
+### 3. User-Centered Design
+
+Every feature should help users answer:
+
+> "What should I do now to move closer to my goals?"
+
+---
+
+# 🤝 Contribution
+
+This project is currently a personal learning and portfolio project.
+
+Suggestions and feedback are welcome.

@@ -1,16 +1,18 @@
 # Individual Progress Pro
 
+[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge)](https://amir5793.github.io/individual-progress-pro)
 [![Project Status: Active Development](https://img.shields.io/badge/Status-Active%20Development-yellow)]()
 [![Tech Stack: Next.js](https://img.shields.io/badge/Tech%20Stack-Next.js-blue)]()
 [![License: Unspecified](https://img.shields.io/badge/License-To%20Be%20Determined-lightgrey)]()
+
+**🌐 View the Live Project:** [https://amir5793.github.io/individual-progress-pro](https://amir5793.github.io/individual-progress-pro)
+
+
 
 > A psychology-informed progressive web application designed to bridge the gap between intention and lasting behavior change.
 
 ![Project Banner](./screenshots/banner.png)
 
-## Visit
-
-![Project Website](https://amir5793.github.io/individual-progress-pro)
 
 ## 📖 Overview
 

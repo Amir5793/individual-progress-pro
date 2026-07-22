@@ -8,6 +8,10 @@
 
 ![Project Banner](./screenshots/banner.png)
 
+## Visit
+
+![Project Website](https://amir5793.github.io/individual-progress-pro)
+
 ## 📖 Overview
 
 **Individual Progress Pro** is not just another to-do list. It is a personal behavior-change platform built on cognitive science principles. While conventional productivity tools focus narrowly on task completion, this application models the full lifecycle of behavior change—from defining *why* a goal matters, through structured planning and execution, to regular reflection and recovery.
